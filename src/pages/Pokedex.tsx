@@ -1,15 +1,18 @@
 import {VersionGroup} from "../global/enums.ts";
 import PokedexSelector from "../components/PokedexSelector/PokedexSelector.tsx";
 import {VersionToImage} from "../global/utils.ts";
+import {Grid2 as Grid} from "@mui/material";
 
 export const Pokedex = () => {
     return (
         <>
             <h1>Select a Game</h1>
-            <div>
-
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
+            <Grid container spacing={2}>
+                <Grid size={{xs: 4.5}}></Grid>
+                <Grid size={{xs: 3}}>
+                    <PokedexSelector />
+                </Grid>
+                <Grid size={{xs: 4.5}}></Grid>
                 {
                     Object.values(VersionGroup).map((key) => {
                         if (!VersionToImage[key as VersionGroup]) {
@@ -17,11 +20,13 @@ export const Pokedex = () => {
                         }
 
                         return(
-                            <PokedexSelector group={key as VersionGroup} key={key} />
+                            <Grid size={{xs: 3}}>
+                                <PokedexSelector group={key as VersionGroup} key={key} />
+                            </Grid>
                         )
                     })
                 }
-            </div>
+            </Grid>
         </>
     )
 }
