@@ -11,7 +11,7 @@ interface IPokedexSelectorProps {
 const PokedexSelector = ({group}: IPokedexSelectorProps) => {
     const naviagate = useNavigate()
     const handleNavigate = () => {
-        naviagate(`/pokedex/${getFormattedVersion(group as VersionGroup)}`)
+        naviagate(`/pokedex/${getFormattedVersion(group as VersionGroup ?? 'national')}`)
     }
 
     return (

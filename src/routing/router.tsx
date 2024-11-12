@@ -2,7 +2,7 @@ import {createBrowserRouter} from "react-router-dom";
 import { Home } from "../pages/Home"
 import {PokedexHome} from "../pages/PokedexHome.tsx";
 import Layout from "../containers/layout/Layout.tsx";
-import Pokedex from "../pages/Pokedex.tsx";
+import Pokedex from "../pages/Pokedex/Pokedex.tsx";
 
 export const router = createBrowserRouter([{
         element: <Layout/>,
