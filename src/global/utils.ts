@@ -124,3 +124,16 @@ export const VersionToImage: Record<VersionGroup, string> = {
     [VersionGroup.SCARLET_VIOLET]: "sv.png"
 };
 
+export function getFormattedVersion(key: VersionGroup): string {
+    if (key === VersionGroup.LETS_GO_PIKACHU_LETS_GO_EEVEE) return "lets-go-pikachu-eevee"
+    if (key === VersionGroup.RED_BLUE) return "red-blue-yellow"
+    if (key === VersionGroup.GOLD_SILVER) return "gold-silver-crystal"
+    if (key === VersionGroup.RUBY_SAPPHIRE) return "ruby-sapphire-emerald"
+
+    return key
+        .replace(/_/g, ' ')            // Replace underscores with spaces
+        .toLowerCase()                // Convert to lowercase
+        .replace(/\s+/g, '-')          // Replace spaces with hyphens
+        .replace(/\//g, '-')          // Replace slashes with hyphens
+        .replace(/:/g, '');             // Remove colons
+}
