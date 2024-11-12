@@ -100,6 +100,9 @@ export const VersionToRegion: Record<VersionGroup, PokedexRegion[]> = {
         PokedexRegion.BLUEBERRY
     ]
 };
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-expect-error
 export const VersionToImage: Record<VersionGroup, string> = {
     [VersionGroup.RED_BLUE]: "rby.png",
     [VersionGroup.GOLD_SILVER]: "gsc.png",
