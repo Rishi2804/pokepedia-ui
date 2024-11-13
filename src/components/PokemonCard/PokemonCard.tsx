@@ -24,6 +24,7 @@ const PokedexSelector = ({pokemon}: IPokedexSelectorProps) => {
             <Typography>{pokemon.name}</Typography>
             <Box>
                 <TypeIcon type={pokemon.type1 as PokemonType} variant={"empty"}/>
+                {pokemon.type2 ? <TypeIcon type={pokemon.type2 as PokemonType} variant={"empty"}/> : <></>}
             </Box>
         </Card>
     )

@@ -1,7 +1,7 @@
 import { Paper } from "@mui/material";
 import { styled } from "@mui/system";
 import {PokemonType} from "../../global/enums.ts";
-import {TypeToCardColor, TypeToColor} from "../../global/utils.ts";
+import {TypeToCardBorder, TypeToCardColor} from "../../global/utils.ts";
 
 // Define the types for the custom props
 interface CardProps {
@@ -10,9 +10,9 @@ interface CardProps {
 }
 
 export const Card = styled(Paper)<CardProps>(({ type1, type2 }) => ({
-    borderColor: type2 ? TypeToColor[type2] : TypeToColor[type1],
+    borderColor: type2 ? TypeToCardBorder[type2] : TypeToCardBorder[type1],
     backgroundColor: TypeToCardColor[type1],
-    borderWidth: 3,
+    borderWidth: 4,
     borderRadius: 15,
     borderStyle: "solid",
     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
