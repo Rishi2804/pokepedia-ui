@@ -15,7 +15,7 @@ export const usePokedexDetails = ({ pokedex }: IPokedexProps) => {
 
     useEffect(() => {
         if (!pokedex) {
-            setError('No Pokedex provided');
+            setError('No PokedexPage provided');
             setLoading(false);
             return;
         }

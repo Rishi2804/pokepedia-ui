@@ -36,7 +36,7 @@ const TypeIcon = ({type, variant="full"}: ITypeIconProps) => {
     if (variant === 'outlined' || variant === 'empty') {
         return (
             <>
-                {TypeSVG ? <TypeSVG width={'50px'} height={"50px"} color={variant === 'outlined' ? TypeToColor[type] : "#fff"} /> : <p>Loading...</p>}
+                {TypeSVG ? <TypeSVG width={40} height={40} color={variant === 'outlined' ? TypeToColor[type] : "#fff"} /> : <p>Loading...</p>}
             </>
         )
     }

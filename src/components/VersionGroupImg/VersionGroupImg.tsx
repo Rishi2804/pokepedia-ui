@@ -1,15 +1,16 @@
-import {VersionGroup} from "../../global/enums.ts";
-import {VersionToImage} from "../../global/utils.ts";
+
+import {PokedexVersion} from "../../pages/Pokedex/enums.ts";
+import {VersionToImage} from "../../pages/Pokedex/utils.ts";
 
 interface IVersionGroupImgProps {
-    group?: VersionGroup
+    dex?: PokedexVersion
 }
 
-const VersionGroupImg = ({group}: IVersionGroupImgProps) => {
+const VersionGroupImg = ({dex}: IVersionGroupImgProps) => {
     function getImg() {
-        if (!group) return new URL(`./assets/home.png`, import.meta.url).href
+        if (!dex) return new URL(`./assets/home.png`, import.meta.url).href
 
-        return new URL(`./assets/${VersionToImage[group]}`, import.meta.url).href
+        return new URL(`./assets/${VersionToImage[dex]}`, import.meta.url).href
     }
 
 
