@@ -3,6 +3,7 @@ import {urlToVersion} from "./utils.ts";
 import {PokedexRegion, VersionGroup} from "../../global/enums.ts";
 import {VersionToRegion} from "../../global/utils.ts";
 import Header from "./Header/Header.tsx";
+import PokemonList from "./PokemonList/PokemonList.tsx";
 
 const Pokedex = () => {
     const { versionGroup: group } =  useParams<{ versionGroup: string }>()
@@ -23,7 +24,9 @@ const Pokedex = () => {
     return (
         <>
             <Header group={version} />
-            {/*<PokemonList />*/}
+            {
+                dexes.map((dex, index) => <PokemonList pokedex={dex} key={index}/>)
+            }
         </>
     )
 }

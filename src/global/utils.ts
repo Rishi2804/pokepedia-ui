@@ -21,6 +21,29 @@ export const TypeToColor: Record<PokemonType, string> = {
     [PokemonType.FAIRY]: "#c78bd5"
 };
 
+export const TypeToCardColor: Record<PokemonType, string> = {
+    [PokemonType.NORMAL]: "#D2B48C",
+    [PokemonType.FIRE]: "#e03a3a",
+    [PokemonType.WATER]: "#1E90FF",
+    [PokemonType.GRASS]: "#50C878",
+    [PokemonType.ELECTRIC]: "#fad343",
+    [PokemonType.FLYING]: "#87CEEB",
+    [PokemonType.FIGHTING]: "#bf5858",
+    [PokemonType.PSYCHIC]: "#882eff",
+    [PokemonType.DARK]: "#414063",
+    [PokemonType.GHOST]: "#7B62A3",
+    [PokemonType.ICE]: "#98D8D8",
+    [PokemonType.BUG]: "#A8B820",
+    [PokemonType.GROUND]: "#735139",
+    [PokemonType.ROCK]: "#63594f",
+    [PokemonType.STEEL]: "#808080",
+    [PokemonType.POISON]: "#b34fb3",
+    [PokemonType.DRAGON]: "#fc883a",
+    [PokemonType.FAIRY]: "#EE99AC"
+};
+
+
+
 export const VersionToRegion: Record<VersionGroup, PokedexRegion[]> = {
     [VersionGroup.RED_BLUE]: [
         PokedexRegion.KANTO

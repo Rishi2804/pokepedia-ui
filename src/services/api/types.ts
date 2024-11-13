@@ -87,3 +87,11 @@ export interface IPokemonDetails {
 export interface ISpeciesDetails {
     pokemon: IPokemonDetails[];
 }
+
+export interface IPokemonSnapshot {
+    dexNumber: number;
+    pokemonId: number;
+    name: string;
+    type1: string;
+    type2: string | null;
+}
