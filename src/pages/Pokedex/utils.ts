@@ -14,10 +14,7 @@ export const VersionToRegion: Record<PokedexVersion, PokedexRegion[]> = {
     [PokedexVersion.FIRERED_LEAFGREEN]: [
         PokedexRegion.KANTO
     ],
-    [PokedexVersion.DIAMOND_PEARL]: [
-        PokedexRegion.ORIGINAL_SINNOH
-    ],
-    [PokedexVersion.PLATINUM]: [
+    [PokedexVersion.DIAMOND_PEARL_PLATINUM]: [
         PokedexRegion.EXTENDED_SINNOH
     ],
     [PokedexVersion.HEARTGOLD_SOULSILVER]: [
@@ -78,8 +75,7 @@ export const VersionToImage: Record<PokedexVersion, string> = {
     [PokedexVersion.GOLD_SILVER_CRYSTAL]: "gsc.png",
     [PokedexVersion.RUBY_SAPPHIRE_EMERALD]: "rse.png",
     [PokedexVersion.FIRERED_LEAFGREEN]: "frlg.png",
-    [PokedexVersion.DIAMOND_PEARL]: "dppt.png",
-    [PokedexVersion.PLATINUM]: "dppt.png",
+    [PokedexVersion.DIAMOND_PEARL_PLATINUM]: "dppt.png",
     [PokedexVersion.HEARTGOLD_SOULSILVER]: "hgss.png",
     [PokedexVersion.BLACK_WHITE]: "bw.png",
     [PokedexVersion.BLACK_2_WHITE_2]: "b2w2.png",
