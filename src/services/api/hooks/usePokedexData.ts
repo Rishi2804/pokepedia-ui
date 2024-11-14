@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import {makeGetRequest} from "../api.servies.ts";
 import {ENDPOINTS} from "../constants.ts";
-import {IPokemonSnapshot} from "../types.ts";
 import {prepareForUI} from "../transformers/pokedexTransformer.ts";
+import {PokemonSnapshot} from "../../../global/types.ts";
 
 interface IPokedexProps {
     pokedex: string | number;
 }
 
 export const usePokedexDetails = ({ pokedex }: IPokedexProps) => {
-    const [data, setData] = useState<IPokemonSnapshot[] | null>(null);
+    const [data, setData] = useState<PokemonSnapshot[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
