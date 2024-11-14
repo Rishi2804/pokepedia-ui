@@ -3,13 +3,15 @@ import React, {useEffect, useState} from 'react';
 import {PokemonType} from "../../global/enums.ts";
 import {TypeToColor} from "../../global/utils.ts";
 import {Box, Typography} from "@mui/material";
+import {IconContainer} from "./styles.ts";
 
 interface ITypeIconProps {
     type: PokemonType
-    variant?: "full" | "filled" | "outlined" | 'empty'
+    variant?: "full" | "filled" | "circular" | "outlined" | 'empty',
+    size?: number,
 }
 
-const TypeIcon = ({type, variant="full"}: ITypeIconProps) => {
+const TypeIcon = ({type, variant="full", size}: ITypeIconProps) => {
     const [TypeSVG, setTypeSVG] = useState<React.FC<React.SVGProps<SVGElement>> | null>(null)
 
     useEffect(() => {
@@ -25,11 +27,13 @@ const TypeIcon = ({type, variant="full"}: ITypeIconProps) => {
         loadSvg()
     }, [type]);
 
-    if (variant === 'filled') {
+    if (variant === 'filled' || variant === 'circular') {
         return (
-            <Box style={{justifyContent: 'space-between', width: '50px', height: '50px', backgroundColor: TypeToColor[type], borderRadius: 10, alignItems: 'center'}}>
+            <IconContainer type={type} size={size} circular={variant === 'circular'}>
+            {/*<Box style={{justifyContent: 'space-between', width: size ?? '50px', height: size ?? '50px', backgroundColor: TypeToColor[type], borderRadius: 10, alignItems: 'center'}}>*/}
                 {TypeSVG ? <TypeSVG width={"100%"} height={"100%"} color={"#fff"}/> : <p>Loading...</p>}
-            </Box>
+            {/*</Box>*/}
+            </IconContainer>
         )
     }
 

@@ -7,11 +7,11 @@ import {Box, Typography} from "@mui/material";
 import {PokemonType} from "../../global/enums.ts";
 import TypeIcon from "../TypeIcon/TypeIcon.tsx";
 
-interface IPokedexSelectorProps {
-    pokemon: IPokemonSnapshot;
+interface IPokemonCardProps {
+    data: IPokemonSnapshot;
 }
 
-const PokedexSelector = ({pokemon}: IPokedexSelectorProps) => {
+const PokemonCard = ({data}: IPokemonCardProps) => {
     //const naviagate = useNavigate()
 
     // const handleNavigate = () => {
@@ -19,15 +19,18 @@ const PokedexSelector = ({pokemon}: IPokedexSelectorProps) => {
     // }
 
     return (
-        <Card type1={pokemon.type1 as PokemonType} type2={pokemon.type2 as PokemonType}>
-            <PokemonImg id={pokemon.pokemonId} />
-            <Typography>{pokemon.name}</Typography>
-            <Box>
-                <TypeIcon type={pokemon.type1 as PokemonType} variant={"empty"}/>
-                {pokemon.type2 ? <TypeIcon type={pokemon.type2 as PokemonType} variant={"empty"}/> : <></>}
+        <Card type1={data.type1 as PokemonType} type2={data.type2 as PokemonType}>
+            <Typography>{data.dexNumber}</Typography>
+            <PokemonImg id={data.pokemonId} />
+            <Box sx={{alignItems: "center", display: "flex", flexDirection: "column"}}>
+                <Typography>{data.name}</Typography>
+                <Box sx={{display: "flex", flexDirection: "row", gap: 1}}>
+                    <TypeIcon type={data.type1 as PokemonType} variant={"circular"} size={30}/>
+                    {data.type2 ? <TypeIcon type={data.type2 as PokemonType} variant={"circular"} size={30}/> : <></>}
+                </Box>
             </Box>
         </Card>
     )
 }
 
-export default PokedexSelector
+export default PokemonCard

@@ -12,7 +12,6 @@ const PokemonImg = ({id, shiny, female}: IPokemonImgProps) => {
     const [imgPath, setImgPath] = useState<string>(homeImg)
 
     useEffect(() => {
-        console.log(id)
         let homeImgBuild: string = `./assets/home`
         let artworkImg: string = `./assets/official`
         if (shiny) {

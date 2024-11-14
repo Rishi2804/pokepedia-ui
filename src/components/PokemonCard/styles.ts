@@ -12,7 +12,7 @@ interface CardProps {
 export const Card = styled(Paper)<CardProps>(({ type1, type2 }) => ({
     borderColor: type2 ? TypeToCardBorder[type2] : TypeToCardBorder[type1],
     backgroundColor: TypeToCardColor[type1],
-    borderWidth: 4,
+    borderWidth: 6,
     borderRadius: 15,
     borderStyle: "solid",
     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
@@ -20,6 +20,7 @@ export const Card = styled(Paper)<CardProps>(({ type1, type2 }) => ({
     padding: 1,
     transition: "transform 0.2s ease, box-shadow 0.2s ease",
     flexDirection: "column",
+    justifyContent: "center",
 
     "&:active": {
         transform: "scale(0.95)",
