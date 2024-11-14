@@ -29,7 +29,7 @@ export const TypeToCardColor: Record<PokemonType, string> = {
     [PokemonType.ELECTRIC]: "#EDD53E",
     [PokemonType.FLYING]: "#81BAEF",
     [PokemonType.FIGHTING]: "#FFAC59",
-    [PokemonType.PSYCHIC]: "#F04178",
+    [PokemonType.PSYCHIC]: "#F584A7",
     [PokemonType.DARK]: "#5F606D",
     [PokemonType.GHOST]: "#A284A2",
     [PokemonType.ICE]: "#98D8D8",
