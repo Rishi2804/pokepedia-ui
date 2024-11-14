@@ -8,7 +8,7 @@ export const TypeToColor: Record<PokemonType, string> = {
     [PokemonType.ELECTRIC]: "#d1b752",
     [PokemonType.FLYING]: "#7d9ec4",
     [PokemonType.FIGHTING]: "#ca8e43",
-    [PokemonType.PSYCHIC]: "#F584A7",
+    [PokemonType.PSYCHIC]: "#c87183",
     [PokemonType.DARK]: "#433f3e",
     [PokemonType.GHOST]: "#594061",
     [PokemonType.ICE]: "#79bcc0",
