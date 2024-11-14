@@ -1,12 +1,14 @@
 
 import {PokedexVersion} from "../../pages/Pokedex/enums.ts";
 import {VersionToImage} from "../../pages/Pokedex/utils.ts";
+import React from "react";
 
 interface IVersionGroupImgProps {
     dex?: PokedexVersion
+    sx?: React.CSSProperties
 }
 
-const VersionGroupImg = ({dex}: IVersionGroupImgProps) => {
+const VersionGroupImg = ({dex, sx}: IVersionGroupImgProps) => {
     function getImg() {
         if (!dex) return new URL(`./assets/home.png`, import.meta.url).href
 
@@ -15,7 +17,7 @@ const VersionGroupImg = ({dex}: IVersionGroupImgProps) => {
 
 
     return (
-        <img src={getImg()} style={{objectFit: "contain"}}/>
+        <img src={getImg()} style={{objectFit: "contain", ...sx}}/>
     )
 }
 

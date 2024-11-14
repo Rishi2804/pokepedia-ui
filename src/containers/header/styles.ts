@@ -1,5 +1,5 @@
 import {AppBar, Button, InputBase, styled, alpha} from "@mui/material";
-import {COLORS} from "../../theme/colors.ts";
+import {COLORS} from "../../theme/styles/colors.ts";
 
 export const Header = styled(AppBar)(() => ({
     height: 98,

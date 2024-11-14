@@ -4,6 +4,8 @@ import Header from "./Header/Header.tsx";
 import PokemonList from "./PokemonList/PokemonList.tsx";
 import {VersionToRegion} from "../utils.ts";
 import {PokedexVersion} from "../enums.ts";
+import {Typography} from "@mui/material";
+import {formatText} from "./utils.ts";
 
 const Pokedex = () => {
     const { pokedexVersion: dex } =  useParams<{ pokedexVersion: PokedexVersion }>()
@@ -20,7 +22,19 @@ const Pokedex = () => {
         <>
             <Header dex={dex as string !== "national" ? dex : undefined} />
             {
-                dexes.map((dex, index) => <PokemonList pokedex={dex} key={index}/>)
+                dexes.map((dex, index) => {
+                    return (
+                        <>
+                            {
+                                dexes.length > 1 &&
+                                <Typography variant="h2" sx={{paddingBottom: 1.5}}>
+                                    {formatText(dex)}
+                                </Typography>
+                            }
+                            <PokemonList pokedex={dex} key={index}/>
+                        </>
+                    )
+                })
             }
         </>
     )

@@ -1,4 +1,4 @@
-import { Paper } from "@mui/material";
+import {Box, Paper} from "@mui/material";
 import { styled } from "@mui/system";
 import {PokemonType} from "../../global/enums.ts";
 import {TypeToCardBorder, TypeToCardColor} from "../../global/utils.ts";
@@ -27,3 +27,11 @@ export const Card = styled(Paper)<CardProps>(({ type1, type2 }) => ({
         boxShadow: '0px 6px 25px rgba(0, 0, 0, 0.5)',
     },
 }));
+
+export const TypeIconContainer = styled(Box)(() => ({
+    display: "flex",
+    flexDirection: "row",
+    gap: 1,
+    paddingBottom: 1,
+    paddingTop: 0.5
+}))

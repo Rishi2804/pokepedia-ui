@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {usePokedexDetails} from "../../../../services/api/hooks/usePokedexData.ts";
 import {Grid2 as Grid} from "@mui/material";
 import PokemonCard from "../../../../components/PokemonCard/PokemonCard.tsx";
@@ -8,14 +8,10 @@ interface IPokemonListProps {
 }
 
 const PokemonList: React.FC<IPokemonListProps> = ({pokedex}) => {
-    const { data, loading } = usePokedexDetails({pokedex: pokedex})
-    useEffect(() => {
-        if (!loading) console.log(data)
-    }, [loading])
-
+    const { data } = usePokedexDetails({pokedex: pokedex})
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ paddingBottom: 6 }}>
             {
                 data?.map((pokemon, index) => {
                     return (

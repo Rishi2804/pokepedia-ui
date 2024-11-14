@@ -1,15 +1,16 @@
-import {Box, Typography} from "@mui/material";
+import {Typography} from "@mui/material";
 import VersionGroupImg from "../../../../components/VersionGroupImg/VersionGroupImg.tsx";
 import {PokedexVersion} from "../../enums.ts";
 import {VersionToHeaderText} from "../utils.ts";
+import {DexHeader} from "./styles.ts";
 
 const Header = ({dex}: {dex?: PokedexVersion}) => {
 
     return (
-        <Box style={{justifyContent: 'center', alignItems: 'center', display: "flex", flexDirection: 'column'}}>
+        <DexHeader>
             <VersionGroupImg dex={dex} />
-            <Typography>{(dex ? VersionToHeaderText[dex] : "National") + " Pokedex"}</Typography>
-        </Box>
+            <Typography variant="h1">{(dex ? VersionToHeaderText[dex] : "National") + " Pokedex"}</Typography>
+        </DexHeader>
     )
 }
 

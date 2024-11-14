@@ -20,7 +20,7 @@ const AppHeader: React.FC = () => {
     return (
         <Header position={"static"}>
             <Toolbar>
-                <Typography variant="h4" sx={{paddingRight: 3}}>
+                <Typography variant="h1" sx={{paddingRight: 3, color: 'white'}}>
                     POKEPEDIA
                 </Typography>
                 <Box>

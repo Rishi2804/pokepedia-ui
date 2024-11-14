@@ -86,7 +86,7 @@ export enum VersionGroup {
 export enum PokedexRegion {
     NATIONAL = "national",
     KANTO = "kanto",
-    ORIGINAL_JOHTO = "original-Johto",
+    ORIGINAL_JOHTO = "original-johto",
     HOENN = "hoenn",
     ORIGINAL_SINNOH = "original-sinnoh",
     EXTENDED_SINNOH = "extended-sinnoh",

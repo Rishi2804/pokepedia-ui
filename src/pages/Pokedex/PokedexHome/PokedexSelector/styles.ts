@@ -1,5 +1,5 @@
 import {Paper, styled} from "@mui/material";
-import {COLORS} from "../../../../theme/colors.ts";
+import {COLORS} from "../../../../theme/styles/colors.ts";
 
 export const Selector = styled(Paper)(() => ({
     borderColor: COLORS.BLACK,

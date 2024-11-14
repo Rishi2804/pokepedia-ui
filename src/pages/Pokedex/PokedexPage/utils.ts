@@ -20,3 +20,9 @@ export const VersionToHeaderText: Record<PokedexVersion, string> = {
     [PokedexVersion.LEGENDS_ARCEUS]: "Legends: Arceus",
     [PokedexVersion.SCARLET_VIOLET]: "Scarlet & Violet"
 };
+
+export function formatText(name: string): string {
+    return name.split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}

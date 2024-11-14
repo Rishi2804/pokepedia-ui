@@ -1,5 +1,6 @@
 import {COLORS} from "./colors.ts";
 import {createTheme} from "@mui/material";
+import {typography} from "../mui/typescript.ts";
 
 const palette = {
     mode: 'light',
@@ -39,6 +40,7 @@ const theme = createTheme({
     breakpoints: {
         values: breakpoints
     },
+    typography,
     components: {
 
     }
