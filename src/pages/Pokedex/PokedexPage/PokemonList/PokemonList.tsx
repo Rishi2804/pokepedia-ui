@@ -1,17 +1,17 @@
 import React from "react";
 import {usePokedexDetails} from "../../../../services/api/hooks/usePokedexData.ts";
-import {Grid2 as Grid} from "@mui/material";
+import {Grid2 as Grid, Typography} from "@mui/material";
 import PokemonCard from "../../../../components/PokemonCard/PokemonCard.tsx";
+import {PokedexRegion} from "../../../../global/enums.ts";
+import {PokemonSnapshot} from "../../../../global/types.ts";
 
-interface IPokemonListProps {
-    pokedex: string
+interface PokemonGridProps {
+    data?: PokemonSnapshot[] | null
 }
 
-const PokemonList: React.FC<IPokemonListProps> = ({pokedex}) => {
-    const { data } = usePokedexDetails({pokedex: pokedex})
-
+const PokemonGrid: React.FC<PokemonGridProps> = ({data}) => {
     return (
-        <Grid container spacing={2} sx={{ paddingBottom: 6 }}>
+        <Grid container spacing={2} sx={{paddingBottom: 6}}>
             {
                 data?.map((pokemon, index) => {
                     return (
@@ -22,6 +22,37 @@ const PokemonList: React.FC<IPokemonListProps> = ({pokedex}) => {
                 })
             }
         </Grid>
+    );
+};
+
+
+interface IPokemonListProps {
+    pokedex: PokedexRegion
+}
+
+const PokemonList: React.FC<IPokemonListProps> = ({pokedex}) => {
+    const {data} = usePokedexDetails({pokedex: pokedex})
+
+    if (pokedex === PokedexRegion.EXTENDED_SINNOH) {
+        const seperator = data?.findIndex(pokemon => pokemon.dexNumber === 152);
+        const originalSinnoh = data?.slice(0, seperator);
+        const platinumExpansion = data?.slice(seperator);
+        return (
+            <>
+                <Typography variant="h2" sx={{paddingBottom: 1.5}}>
+                    {"Original Sinnoh"}
+                </Typography>
+                <PokemonGrid data={originalSinnoh}/>
+                <Typography variant="h2" sx={{paddingBottom: 1.5}}>
+                    {"Platinum Expansion"}
+                </Typography>
+                <PokemonGrid data={platinumExpansion}/>
+            </>
+        )
+    }
+
+    return (
+        <PokemonGrid data={data}/>
     )
 }
 
