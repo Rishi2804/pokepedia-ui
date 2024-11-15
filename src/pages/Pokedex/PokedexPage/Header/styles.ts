@@ -6,6 +6,6 @@ export const DexHeader = styled(Box)(() => ({
     alignItems: 'center',
     display: "flex",
     flexDirection: 'column',
-    paddingBottom: 40,
+    paddingBottom: 20,
     paddingTop: 20
 }))

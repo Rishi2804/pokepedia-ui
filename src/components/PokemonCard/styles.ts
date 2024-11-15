@@ -32,6 +32,6 @@ export const TypeIconContainer = styled(Box)(() => ({
     display: "flex",
     flexDirection: "row",
     gap: 1,
-    paddingBottom: 1,
-    paddingTop: 0.5
+    paddingBottom: 5,
+    paddingTop: 3
 }))
