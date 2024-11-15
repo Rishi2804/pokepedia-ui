@@ -1,5 +1,11 @@
 import {PokemonType} from "./enums.ts";
 
+export function formatText(name: string): string {
+    return name.split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
 export const TypeToColor: Record<PokemonType, string> = {
     [PokemonType.NORMAL]: "#777777",
     [PokemonType.FIRE]: "#c26746",

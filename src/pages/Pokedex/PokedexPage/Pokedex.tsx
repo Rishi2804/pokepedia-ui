@@ -4,35 +4,33 @@ import Header from "./Header/Header.tsx";
 import PokemonList from "./PokemonList/PokemonList.tsx";
 import {VersionToRegion} from "../utils.ts";
 import {PokedexVersion} from "../enums.ts";
-import {Typography} from "@mui/material";
-import {formatText} from "./utils.ts";
+import {usePokedexDetails} from "../../../services/api/hooks/usePokedexData.ts";
+import {useEffect, useState} from "react";
 
 const Pokedex = () => {
     const { pokedexVersion: dex } =  useParams<{ pokedexVersion: PokedexVersion }>()
-    let dexes: PokedexRegion[] = []
+    const [dexes, setDexes] = useState<PokedexRegion[]>([])
 
-    if (dex) {
-        if (dex as string === "national") {
-            dexes.push(PokedexRegion.NATIONAL)
+    useEffect(() => {
+        if (dex) {
+            if (dex as string !== "national") {
+                setDexes(VersionToRegion[dex]);
+            } else {
+                setDexes([PokedexRegion.NATIONAL])
+            }
         }
-        else dexes = VersionToRegion[dex];
-    }
+    }, [])
+
+    const { data } = usePokedexDetails({pokedexes: dexes});
 
     return (
         <>
             <Header dex={dex as string !== "national" ? dex : undefined} />
+            {/*<Typography variant="h2">Test</Typography>*/}
             {
-                dexes.map((dex, index) => {
+                data.map(({dex, data: dexData}, index) => {
                     return (
-                        <>
-                            {
-                                dexes.length > 1 &&
-                                <Typography variant="h2" sx={{paddingBottom: 1.5}}>
-                                    {formatText(dex)}
-                                </Typography>
-                            }
-                            <PokemonList pokedex={dex} key={index}/>
-                        </>
+                        <PokemonList key={index} data={dexData} header={data.length > 1 ? dex : undefined}/>
                     )
                 })
             }
