@@ -7,7 +7,8 @@ const palette = {
     background: {
         default: COLORS.GHOST_WHITE,
         paper: COLORS.WHITE,
-        selected: COLORS.BLUE
+        selected: COLORS.BLUE,
+        info: COLORS.SKY_BLUE,
     },
     text: {
         primary: COLORS.DARK_GRAY,

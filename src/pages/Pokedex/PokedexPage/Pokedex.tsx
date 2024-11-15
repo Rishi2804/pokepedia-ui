@@ -6,6 +6,8 @@ import {VersionToRegion} from "../utils.ts";
 import {PokedexVersion} from "../enums.ts";
 import {usePokedexDetails} from "../../../services/api/hooks/usePokedexData.ts";
 import {useEffect, useState} from "react";
+import {Box} from "@mui/material";
+import QuickScroll from "./QuickScroll/QuickScroll.tsx";
 
 const Pokedex = () => {
     const { pokedexVersion: dex } =  useParams<{ pokedexVersion: PokedexVersion }>()
@@ -23,14 +25,17 @@ const Pokedex = () => {
 
     const { data } = usePokedexDetails({pokedexes: dexes});
 
+
     return (
         <>
             <Header dex={dex as string !== "national" ? dex : undefined} />
-            {/*<Typography variant="h2">Test</Typography>*/}
+            <QuickScroll dexes={data.map((item) => item.dex)} />
             {
                 data.map(({dex, data: dexData}, index) => {
                     return (
-                        <PokemonList key={index} data={dexData} header={data.length > 1 ? dex : undefined}/>
+                        <Box key={index} id={dex}>
+                            <PokemonList key={index} data={dexData} header={data.length > 1 ? dex : undefined}/>
+                        </Box>
                     )
                 })
             }
