@@ -19,8 +19,8 @@ const QuickScroll = ({ dexes }: {dexes: string[]}) => {
                     <Button
                         key={index}
                         variant="contained"
-                        color={"default"}
                         onClick={() => handleSelectDex(dex)}
+                        sx={{backgroundColor: 'transparent', color: 'black'}}
                     >
                         {dex}
                     </Button>
