@@ -17,7 +17,7 @@ const TypeIcon = ({type, variant="full", size}: ITypeIconProps) => {
     useEffect(() => {
         const loadSvg = async () => {
             try {
-                const ReactComponent = await import(`./assets/${type}-icon.svg`);
+                const ReactComponent = await import(`./assets/${type.toLowerCase()}-icon.svg`);
                 setTypeSVG(() => ReactComponent.default);
             } catch (error) {
                 console.error("Error loading SVG:", error);

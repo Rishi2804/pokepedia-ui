@@ -2,14 +2,16 @@ import React from "react";
 import {Grid2 as Grid, Typography} from "@mui/material";
 import PokemonCard from "../../../../components/PokemonCard/PokemonCard.tsx";
 import {PokemonSnapshot} from "../../../../global/types.ts";
+import {PokemonType} from "../../../../global/enums.ts";
 
 interface IPokemonListProps {
     data: PokemonSnapshot[],
     header?: string,
     searchTerm?: string,
+    typeFilters?: PokemonType[]
 }
 
-const PokemonList: React.FC<IPokemonListProps> = ({data, header, searchTerm}) => {
+const PokemonList: React.FC<IPokemonListProps> = ({data, header, searchTerm, typeFilters}) => {
 
     return (
         <>
@@ -25,6 +27,13 @@ const PokemonList: React.FC<IPokemonListProps> = ({data, header, searchTerm}) =>
                                 return null;
                             }
                         }
+
+                        if (typeFilters && typeFilters.length > 0) {
+                            if (!(typeFilters.includes(pokemon.type1) || (pokemon.type2 && typeFilters.includes(pokemon.type2)))) {
+                                return null;
+                            }
+                        }
+
                         return (
                             <Grid size={{xs: 3, sm: 2, md: 1.5}} key={index}>
                                 <PokemonCard data={pokemon}/>

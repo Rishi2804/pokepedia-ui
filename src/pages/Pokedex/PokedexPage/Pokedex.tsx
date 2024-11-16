@@ -1,18 +1,20 @@
 import {useParams} from "react-router-dom";
-import {PokedexRegion} from "../../../global/enums.ts";
+import {PokedexRegion, PokemonType} from "../../../global/enums.ts";
 import Header from "./Header/Header.tsx";
 import PokemonList from "./PokemonList/PokemonList.tsx";
 import {VersionToRegion} from "../utils.ts";
 import {PokedexVersion} from "../enums.ts";
 import {usePokedexDetails} from "../../../services/api/hooks/usePokedexData.ts";
 import {useEffect, useState} from "react";
-import {Box, TextField} from "@mui/material";
+import {Box} from "@mui/material";
 import QuickScroll from "./QuickScroll/QuickScroll.tsx";
+import Filters from "./Filters/Filters.tsx";
 
 const Pokedex = () => {
     const { pokedexVersion: dex } =  useParams<{ pokedexVersion: PokedexVersion }>()
     const [dexes, setDexes] = useState<PokedexRegion[]>([])
     const [searchTerm, setSearchTerm] = useState<string>("");
+    const [typefilters, settypefilters] = useState<PokemonType[]>([])
 
     useEffect(() => {
         if (dex) {
@@ -33,28 +35,28 @@ const Pokedex = () => {
         }
     };
 
-    useEffect(() => {
-        console.log(searchTerm);
-    }, [searchTerm]);
-
     return (
         <>
             <Header dex={dex as string !== "national" ? dex : undefined} />
             <QuickScroll dexes={data.map((item) => item.dex)} />
-            <TextField
-                label="Search Pokémon"
-                variant="outlined"
-                fullWidth
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.currentTarget.value)}
-                onKeyDown={handleKeyDown}
-                sx={{ marginBottom: 2 }}
+            <Filters
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                handleKeyDown={handleKeyDown}
+                typeFilters={typefilters}
+                setTypeFilters={settypefilters}
             />
             {
                 data.map(({dex, data: dexData}, index) => {
                     return (
                         <Box key={index} id={dex}>
-                            <PokemonList key={index} data={dexData} header={data.length > 1 ? dex : undefined} searchTerm={searchTerm}/>
+                            <PokemonList
+                                key={index}
+                                data={dexData}
+                                header={data.length > 1 ? dex : undefined}
+                                searchTerm={searchTerm}
+                                typeFilters={typefilters}
+                            />
                         </Box>
                     )
                 })
