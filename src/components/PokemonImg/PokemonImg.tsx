@@ -9,9 +9,6 @@ interface IPokemonImgProps {
 const PokemonImg = ({id, shiny, female}: IPokemonImgProps) => {
     const [homeImg, setHomeImg] = useState<string>("")
     const [officialImg, setOfficialImg] = useState<string>("")
-    const [imgPath, setImgPath] = useState<string>(homeImg)
-
-    const [counter, setCounter] = useState<number>(0);
 
     useEffect(() => {
         let homeImgBuild: string = `./assets/home`
@@ -28,28 +25,20 @@ const PokemonImg = ({id, shiny, female}: IPokemonImgProps) => {
         artworkImg += `/${id}.png`
         setHomeImg(homeImgBuild)
         setOfficialImg(artworkImg)
-        setCounter(0)
 
-        setImgPath(homeImgBuild)
     }, [id, shiny, female])
 
-    useEffect(() => {
-        if (homeImg && counter < 3) {
-            // Increment the counter each time setHomeImg is called
-            setCounter((prevCount) => prevCount + 1);
-        }
-    }, [homeImg, counter])
-
     function getImg() {
-        return new URL(imgPath, import.meta.url).href
-    }
+        const specialImgs = [10158, 10159, 10061, 10181, 10182, 10183, 10187, 10192]
+        if (specialImgs.includes(id)) {
+            return new URL(officialImg, import.meta.url).href
+        }
 
-    function onError() {
-        setImgPath(officialImg)
+        return new URL(homeImg, import.meta.url).href
     }
 
     return (
-        <img src={getImg()} onError={onError} alt={`${id}`}/>
+        <img src={getImg()} alt={`${id}`}/>
     )
 }
 
