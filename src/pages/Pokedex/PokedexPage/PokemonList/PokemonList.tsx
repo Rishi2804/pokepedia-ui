@@ -6,9 +6,10 @@ import {PokemonSnapshot} from "../../../../global/types.ts";
 interface IPokemonListProps {
     data: PokemonSnapshot[],
     header?: string,
+    searchTerm?: string,
 }
 
-const PokemonList: React.FC<IPokemonListProps> = ({data, header}) => {
+const PokemonList: React.FC<IPokemonListProps> = ({data, header, searchTerm}) => {
 
     return (
         <>
@@ -18,6 +19,12 @@ const PokemonList: React.FC<IPokemonListProps> = ({data, header}) => {
             <Grid container spacing={2} sx={{paddingBottom: 6}}>
                 {
                     data?.map((pokemon, index) => {
+                        if (searchTerm) {
+                            const regex = new RegExp(searchTerm, "i");
+                            if (!regex.test(pokemon.name)) {
+                                return null;
+                            }
+                        }
                         return (
                             <Grid size={{xs: 3, sm: 2, md: 1.5}} key={index}>
                                 <PokemonCard data={pokemon}/>
