@@ -9,7 +9,7 @@ const QuickScroll = ({ dexes }: {dexes: string[]}) => {
         }
     };
 
-    if (dexes.length < 1) return null
+    if (dexes.length <= 1) return null
 
     return (
         <Container>
