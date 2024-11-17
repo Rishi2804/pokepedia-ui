@@ -43,8 +43,8 @@ interface IEvolution {
 
 interface IPokemonMove {
     name: string;
-    type: PokemonType;
-    moveClass: MoveClass;
+    type: keyof typeof PokemonType;
+    moveClass: keyof typeof MoveClass;
     power: number;
     accuracy: number;
     pp: number;
@@ -52,9 +52,9 @@ interface IPokemonMove {
 }
 
 interface IMoveset {
-    versionGroup: VersionGroup;
+    versionGroup: keyof typeof VersionGroup;
     learnMethodSets: {
-        method: LearnMethod;
+        method: keyof typeof LearnMethod;
         moves: IPokemonMove[];
     }[];
 }
@@ -64,27 +64,29 @@ export interface IPokemonDetails {
     speciesId: number;
     name: string;
     gen: number;
-    type1: PokemonType;
-    type2: PokemonType | null;
+    type1: keyof typeof PokemonType;
+    type2: keyof typeof PokemonType | null;
     abilities: IPokemonAbility[];
     weight: number;
     height: number;
     genderRate: number;
     stats: IStats;
-    forms: string | null;
-    dexEntries: Array<{
+    forms: string[] | null;
+    dexEntries: {
         game: keyof typeof Game;
         entry: string;
-    }>;
-    dexNumbers: Array<{
+    }[];
+    dexNumbers: {
         dexName: keyof typeof PokedexRegion;
         dexNumber: number;
-    }>
+    }[];
     evolutionChain: IEvolution[];
-    moveset: IMoveset[];
+    movesets: IMoveset[];
 }
 
 export interface ISpeciesDetails {
+    id: number;
+    name: string;
     pokemon: IPokemonDetails[];
 }
 
@@ -93,6 +95,6 @@ export interface IPokemonSnapshot {
     speciesId: number;
     pokemonId: number;
     name: string;
-    type1: string;
-    type2: string | null;
+    type1: keyof typeof PokemonType;
+    type2: keyof typeof PokemonType | null;
 }

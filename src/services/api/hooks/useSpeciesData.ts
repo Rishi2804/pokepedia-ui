@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import {makeGetRequest} from "../api.servies.ts";
 import {ENDPOINTS} from "../constants.ts";
-import {ISpeciesDetails} from "../types.ts";
+import {prepareForUI} from "../transformers/speciesTransformer.ts";
+import {SpeciesDetails} from "../../../global/types.ts";
 
 interface ISpeciesProps {
     speciesIdOrName: string | number;
 }
 
 export const useSpeciesDetails = ({ speciesIdOrName }: ISpeciesProps) => {
-    const [data, setData] = useState<ISpeciesDetails | null>(null);
+    const [data, setData] = useState<SpeciesDetails | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +28,7 @@ export const useSpeciesDetails = ({ speciesIdOrName }: ISpeciesProps) => {
                 const response = await makeGetRequest(`${ENDPOINTS.GET_SPECIES_LIST}/${speciesIdOrName}`);
 
                 if (response.ok) {
-                    setData(response.data);  // Set the Pokémon data if successful
+                    setData(prepareForUI(response.data));  // Set the Pokémon data if successful
                 } else {
                     setError(response.error || 'An error occurred while fetching Species details');
                 }
@@ -39,7 +40,7 @@ export const useSpeciesDetails = ({ speciesIdOrName }: ISpeciesProps) => {
         };
 
         fetch();
-    }, [speciesIdOrName]);  // This hook will rerun when pokemonIdOrName changes
+    }, [speciesIdOrName]);
 
     return { data, loading, error };
 
