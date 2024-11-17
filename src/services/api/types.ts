@@ -90,6 +90,7 @@ export interface ISpeciesDetails {
 
 export interface IPokemonSnapshot {
     dexNumber: number;
+    speciesId: number;
     pokemonId: number;
     name: string;
     type1: string;
