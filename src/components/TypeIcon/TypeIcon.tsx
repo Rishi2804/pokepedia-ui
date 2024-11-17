@@ -1,5 +1,5 @@
 /// <reference types="vite-plugin-svgr/client" />
-import React, {useEffect, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {PokemonType} from "../../global/enums.ts";
 import {TypeToColor} from "../../global/utils.ts";
 import {Box, Typography} from "@mui/material";
@@ -11,7 +11,7 @@ interface ITypeIconProps {
     size?: number,
 }
 
-const TypeIcon = ({type, variant="full", size}: ITypeIconProps) => {
+const TypeIcon: FC<ITypeIconProps> = ({type, variant="full", size}) => {
     const [TypeSVG, setTypeSVG] = useState<React.FC<React.SVGProps<SVGElement>> | null>(null)
 
     useEffect(() => {
@@ -30,9 +30,7 @@ const TypeIcon = ({type, variant="full", size}: ITypeIconProps) => {
     if (variant === 'filled' || variant === 'circular') {
         return (
             <IconContainer type={type} size={size} circular={variant === 'circular'}>
-            {/*<Box style={{justifyContent: 'space-between', width: size ?? '50px', height: size ?? '50px', backgroundColor: TypeToColor[type], borderRadius: 10, alignItems: 'center'}}>*/}
-                {TypeSVG ? <TypeSVG width={"100%"} height={"100%"} color={"#fff"}/> : <p>Loading...</p>}
-            {/*</Box>*/}
+                {TypeSVG && <TypeSVG width={"100%"} height={"100%"} color={"#fff"}/>}
             </IconContainer>
         )
     }

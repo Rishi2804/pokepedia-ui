@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {FC, useEffect, useState} from "react";
 
 interface IPokemonImgProps {
     id: number
@@ -6,7 +6,7 @@ interface IPokemonImgProps {
     female?: boolean
 }
 
-const PokemonImg = ({id, shiny, female}: IPokemonImgProps) => {
+const PokemonImg: FC<IPokemonImgProps> = ({id, shiny, female}) => {
     const [homeImg, setHomeImg] = useState<string>("")
     const [officialImg, setOfficialImg] = useState<string>("")
 

@@ -1,17 +1,18 @@
 
 import {Card, TypeIconContainer} from "./styles.ts";
 // import {useNavigate} from "react-router-dom";
-import {IPokemonSnapshot} from "../../services/api/types.ts";
 import PokemonImg from "../PokemonImg/PokemonImg.tsx";
 import {Box, Typography} from "@mui/material";
 import {PokemonType} from "../../global/enums.ts";
 import TypeIcon from "../TypeIcon/TypeIcon.tsx";
+import {PokemonSnapshot} from "../../global/types.ts";
+import {FC} from "react";
 
 interface IPokemonCardProps {
-    data: IPokemonSnapshot;
+    data: PokemonSnapshot;
 }
 
-const PokemonCard = ({data}: IPokemonCardProps) => {
+const PokemonCard: FC<IPokemonCardProps> = ({data}) => {
     //const naviagate = useNavigate()
 
     // const handleNavigate = () => {

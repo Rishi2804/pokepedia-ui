@@ -8,7 +8,7 @@ interface IVersionGroupImgProps {
     sx?: React.CSSProperties
 }
 
-const VersionGroupImg = ({dex, sx}: IVersionGroupImgProps) => {
+const VersionGroupImg: React.FC<IVersionGroupImgProps> = ({dex, sx}) => {
     function getImg() {
         if (!dex) return new URL(`./assets/home.png`, import.meta.url).href
 
