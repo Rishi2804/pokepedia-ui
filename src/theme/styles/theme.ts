@@ -17,14 +17,37 @@ const palette = {
         selected: COLORS.BLUE,
     },
     primary: {
-        main: COLORS.RED,
+        main: COLORS.BLUE,
     },
     error: {
         light: COLORS.LIGHT_RED,
         main: COLORS.RED,
     },
-    // activeBorder: "",
     primaryBorder: COLORS.BLACK,
+} as const
+
+const darkpallete = {
+    mode: 'dark',
+    background: {
+        default: COLORS.DARK_GRAY,
+        paper: COLORS.BLACK,
+        selected: COLORS.BLUE,
+        info: COLORS.SKY_BLUE,
+    },
+    text: {
+        primary: COLORS.WHITE,
+        secondary: COLORS.GHOST_WHITE,
+        active: COLORS.RED,
+        selected: COLORS.BLUE,
+    },
+    primary: {
+        main: COLORS.BLUE,
+    },
+    error: {
+        light: COLORS.LIGHT_RED,
+        main: COLORS.RED,
+    },
+    primaryBorder: COLORS.WHITE,
 } as const
 
 const breakpoints = {
