@@ -2,6 +2,7 @@ import {Game, LearnMethod, MoveClass, PokedexRegion, PokemonType, VersionGroup} 
 
 export interface PokemonSnapshot {
     dexNumber: number;
+    speciesId: number;
     pokemonId: number;
     name: string;
     type1: PokemonType;

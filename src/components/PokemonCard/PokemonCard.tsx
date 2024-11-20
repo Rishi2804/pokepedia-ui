@@ -1,6 +1,6 @@
 
 import {Card, TypeIconContainer} from "./styles.ts";
-// import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import PokemonImg from "../PokemonImg/PokemonImg.tsx";
 import {Box, Typography} from "@mui/material";
 import {PokemonType} from "../../global/enums.ts";
@@ -13,14 +13,14 @@ interface IPokemonCardProps {
 }
 
 const PokemonCard: FC<IPokemonCardProps> = ({data}) => {
-    //const naviagate = useNavigate()
+    const naviagate = useNavigate()
 
-    // const handleNavigate = () => {
-    //     naviagate(`/pokemon/${pokemon.pokemonId}`)
-    // }
+    const handleNavigate = () => {
+        naviagate(`/pokemon/${data.speciesId}`)
+    }
 
     return (
-        <Card type1={data.type1 as PokemonType} type2={data.type2 as PokemonType}>
+        <Card type1={data.type1 as PokemonType} type2={data.type2 as PokemonType} onClick={handleNavigate}>
             <Typography sx={{paddingLeft: 1, color: "#fff"}}>{data.dexNumber}</Typography>
             <PokemonImg id={data.pokemonId} />
             <Box sx={{alignItems: "center", display: "flex", flexDirection: "column"}}>
