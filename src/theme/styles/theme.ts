@@ -1,8 +1,8 @@
 import {COLORS} from "./colors.ts";
-import {createTheme} from "@mui/material";
+import {PaletteMode} from "@mui/material";
 import {typography} from "../mui/typescript.ts";
 
-const palette = {
+const lightpalette = {
     mode: 'light',
     background: {
         default: COLORS.GHOST_WHITE,
@@ -26,11 +26,11 @@ const palette = {
     primaryBorder: COLORS.BLACK,
 } as const
 
-const darkpallete = {
+const darkpalette = {
     mode: 'dark',
     background: {
-        default: COLORS.DARK_GRAY,
-        paper: COLORS.BLACK,
+        default: COLORS.BLACK,
+        paper: COLORS.SYSTEM_GRAY,
         selected: COLORS.BLUE,
         info: COLORS.SKY_BLUE,
     },
@@ -59,8 +59,8 @@ const breakpoints = {
     xxl: 1920,
 } as const
 
-const theme = createTheme({
-    palette,
+export const theme = {
+    palette: lightpalette,
     breakpoints: {
         values: breakpoints
     },
@@ -68,8 +68,15 @@ const theme = createTheme({
     components: {
 
     }
-})
-
-export const getTheme = () => {
-    return theme;
 }
+
+export const getTheme = (mode: PaletteMode) => ({
+    palette: mode === 'light' ? lightpalette : darkpalette,
+    breakpoints: {
+        values: breakpoints
+    },
+    typography,
+    components: {
+
+    },
+});

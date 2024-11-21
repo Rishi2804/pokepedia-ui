@@ -1,9 +1,11 @@
 import {Header, LightDarkSwitch, MenuButton} from "./styles.ts";
 import {Box, Toolbar, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import {useThemeContext} from "../../theme/context/ThemeContext.tsx";
 
 const AppHeader: React.FC = () => {
     const navigate = useNavigate();
+    const { toggleTheme } = useThemeContext();
 
     const pagePaths: { [key: string]: string } = {
         'Pokedex': '/pokedex',
@@ -38,7 +40,9 @@ const AppHeader: React.FC = () => {
                 </Box>
             </Toolbar>
             <Box>
-                <LightDarkSwitch />
+                <LightDarkSwitch
+                    onChange={toggleTheme}
+                />
                 <Typography variant={"caption"}>Dark Mode</Typography>
             </Box>
         </Header>

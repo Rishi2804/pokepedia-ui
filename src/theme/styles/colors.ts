@@ -10,4 +10,5 @@ export enum COLORS {
     BLACK_PEARL = "#101316",
     DARK_GRAY = "#212121",
     MEDIUM_GRAY = "#757575",
+    SYSTEM_GRAY = "#242424",
 }
