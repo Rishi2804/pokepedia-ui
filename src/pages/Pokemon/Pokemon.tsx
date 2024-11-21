@@ -6,6 +6,7 @@ import {useState} from "react";
 import PokemonImg from "../../components/PokemonImg/PokemonImg.tsx";
 import {formatText} from "../../global/utils.ts";
 import {StyledTab, StyledTabs} from "./FormTabs/styles.tsx";
+import MetaData from "../../components/MetaData/MetaData.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
@@ -22,6 +23,7 @@ const Pokemon = () => {
 
     return (
         <>
+            <MetaData pageTitle={`${formatText(data.name)} | PokePedia`} />
             <Typography variant="h1" textAlign={"center"}>{formatText(data.name)}</Typography>
             <StyledTabs value={i} onChange={handleChange}>
                 {

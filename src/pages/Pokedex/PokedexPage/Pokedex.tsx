@@ -9,6 +9,8 @@ import {useEffect, useState} from "react";
 import {Box} from "@mui/material";
 import QuickScroll from "./QuickScroll/QuickScroll.tsx";
 import Filters from "./Filters/Filters.tsx";
+import MetaData from "../../../components/MetaData/MetaData.tsx";
+import {VersionToHeaderText} from "./utils.ts";
 
 const Pokedex = () => {
     const { pokedexVersion: dex } =  useParams<{ pokedexVersion: PokedexVersion }>()
@@ -37,6 +39,7 @@ const Pokedex = () => {
 
     return (
         <>
+            <MetaData pageTitle={`${dex ? VersionToHeaderText[dex] ?? "National" : ""} | PokePedia`} />
             <Header dex={dex as string !== "national" ? dex : undefined} />
             <QuickScroll dexes={data.map((item) => item.dex)} />
             <Filters
