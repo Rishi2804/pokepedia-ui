@@ -1,5 +1,5 @@
 import {styled} from "@mui/system";
-import {Box} from "@mui/material";
+import {Box, Button} from "@mui/material";
 
 export const Container = styled(Box)(({ theme }) => ({
     marginBottom: 25,
@@ -11,4 +11,9 @@ export const Container = styled(Box)(({ theme }) => ({
     justifyContent: "center",
     gap: 20,
     borderRadius: 10
+}))
+
+export const SectionButton = styled(Button)(({ theme }) => ({
+    backgroundColor: 'transparent',
+    color: theme.palette.text.primary,
 }))

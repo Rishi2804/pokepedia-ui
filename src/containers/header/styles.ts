@@ -1,16 +1,16 @@
 import {AppBar, Button, Switch, styled, alpha} from "@mui/material";
 import {COLORS} from "../../theme/styles/colors.ts";
 
-export const Header = styled(AppBar)({
+export const Header = styled(AppBar)(({ theme }) => ({
     height: 98,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottom: `1px solid ${COLORS.BLACK}`,
+    borderBottom: `1px solid ${theme.palette.primaryBorder}`,
     backgroundColor: COLORS.HEADER_GRAY,
     paddingRight: 30,
-})
+}))
 
 export const MenuButton = styled(Button)({
     color: 'white',

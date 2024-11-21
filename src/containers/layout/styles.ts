@@ -6,7 +6,7 @@ export const MainContainer = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
     borderRadius: 20,
     border: '1px solid',
-    borderColor: 'black',
+    borderColor: theme.palette.primaryBorder,
     paddingRight: theme.spacing(6),
     paddingLeft: theme.spacing(6),
     paddingBottom: theme.spacing(6),

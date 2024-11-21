@@ -1,6 +1,7 @@
 export enum COLORS {
     GHOST_WHITE = "#F2F3F2",
     WHITE = "#FFFFFF",
+    OFF_WHITE = "#F5F5F5",
     RED = "#D32F2F",
     LIGHT_RED = "#FF5252",
     BLUE = "#1976D2",

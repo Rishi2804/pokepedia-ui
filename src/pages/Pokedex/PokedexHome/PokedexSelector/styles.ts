@@ -1,12 +1,11 @@
-import {Paper, styled} from "@mui/material";
-import {COLORS} from "../../../../theme/styles/colors.ts";
+import {alpha, Paper, styled} from "@mui/material";
 
-export const Selector = styled(Paper)(() => ({
-    borderColor: COLORS.BLACK,
+export const Selector = styled(Paper)(({theme}) => ({
+    borderColor: theme.palette.primaryBorder,
     borderWidth: 1,
     borderRadius: 20,
     borderStyle: "solid",
-    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
+    boxShadow: `0px 4px 20px ${alpha(theme.palette.primaryBorder, 0.2)}`,
     height: 120,
     align:'center',
     display: "flex",
@@ -16,6 +15,7 @@ export const Selector = styled(Paper)(() => ({
 
     "&:active": {
         transform: "scale(0.95)",
-        boxShadow: '0px 6px 25px rgba(0, 0, 0, 0.5)',
+        boxShadow: `0px 6px 25px ${alpha(theme.palette.primaryBorder, 0.5)}`,
+        borderColor: theme.palette.background.selected
     },
 }))

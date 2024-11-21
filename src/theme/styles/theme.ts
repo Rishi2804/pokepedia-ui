@@ -1,6 +1,19 @@
 import {COLORS} from "./colors.ts";
 import {PaletteMode} from "@mui/material";
-import {typography} from "../mui/typescript.ts";
+import {typography} from "../mui/typography.ts";
+
+declare module "@mui/material/styles" {
+    interface TypeBackground {
+        selected: string;
+    }
+
+    interface Palette {
+        primaryBorder: string;
+    }
+    interface PaletteOptions {
+        primaryBorder?: string;
+    }
+}
 
 const lightpalette = {
     mode: 'light',
@@ -75,7 +88,7 @@ export const getTheme = (mode: PaletteMode) => ({
     breakpoints: {
         values: breakpoints
     },
-    typography,
+    typography: typography(mode),
     components: {
 
     },
