@@ -14,7 +14,7 @@ interface IAbilitiesProps {
 const Abilities: FC<IAbilitiesProps> = ({abilities}) => {
 
     return (
-        <InfoSection>
+        <InfoSection sx={{borderBottom: '1px solid'}}>
             <Typography>Abilities</Typography>
             <Stack>
                 {

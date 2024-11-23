@@ -8,6 +8,7 @@ import {formatText} from "../../global/utils.ts";
 import MetaData from "../../components/MetaData/MetaData.tsx";
 import FormTabs from "./FormTabs/FormTabs.tsx";
 import PokedexData from "./PokedexData/PokedexData.tsx";
+import BaseStats from "./BaseStats/BaseStats.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
@@ -39,6 +40,11 @@ const Pokemon = () => {
                     height={data.pokemon[i].height}
                     weight={data.pokemon[i].weight}
                     abilities={data.pokemon[i].abilities}
+                />
+                <BaseStats
+                    {...data.pokemon[i].stats}
+                    type1={data.pokemon[i].type1}
+                    type2={data.pokemon[i].type2}
                 />
             </Grid>
         </>
