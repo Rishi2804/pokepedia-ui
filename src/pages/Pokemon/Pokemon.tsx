@@ -1,13 +1,13 @@
 import {useParams} from "react-router-dom";
 import {useSpeciesDetails} from "../../services/api/hooks/useSpeciesData.ts";
-import {Box, Grid2 as Grid, Stack, Typography} from "@mui/material";
+import {Grid2 as Grid, Typography} from "@mui/material";
 import {Card} from "./styles.ts";
 import {useState} from "react";
 import PokemonImg from "../../components/PokemonImg/PokemonImg.tsx";
 import {formatText} from "../../global/utils.ts";
 import MetaData from "../../components/MetaData/MetaData.tsx";
-import TypeIcon from "../../components/TypeIcon/TypeIcon.tsx";
 import FormTabs from "./FormTabs/FormTabs.tsx";
+import PokedexData from "./PokedexData/PokedexData.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
@@ -26,21 +26,20 @@ const Pokemon = () => {
             <FormTabs forms={data.pokemon.map((pokemon) => (pokemon.name))} i={i} setI={setI} />
 
             <Grid container spacing={4} sx={{paddingTop: 4}}>
-                <Grid size={{xs: 4}}>
+                <Grid size={{xs: 7, sm: 4}}>
                     <Card type1={data.pokemon[i].type1} type2={data.pokemon[i].type2}>
                         <PokemonImg id={data.pokemon[i].id} />
                     </Card>
                 </Grid>
-                <Grid size={{xs: 8}}>
-                    <Stack>
-                        <Typography variant="h2">Data</Typography>
-                        <Box>
-                            <Typography variant="h4">Type</Typography>
-                            <TypeIcon type={data.pokemon[i].type1} />
-                            {data.pokemon[i].type2 && <TypeIcon type={data.pokemon[i].type2}/>}
-                        </Box>
-                    </Stack>
-                </Grid>
+                <PokedexData
+                    id={data.id}
+                    type1={data.pokemon[i].type1}
+                    type2={data.pokemon[i].type2}
+                    genderRatio={data.pokemon[i].genderRate}
+                    height={data.pokemon[i].height}
+                    weight={data.pokemon[i].weight}
+                    abilities={data.pokemon[i].abilities}
+                />
             </Grid>
         </>
     )

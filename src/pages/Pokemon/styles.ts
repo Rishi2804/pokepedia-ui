@@ -18,4 +18,3 @@ export const Card = styled(Paper)<CardProps>(({ type1, type2 }) => ({
     padding: 1,
     flexDirection: "column",
 }));
-
