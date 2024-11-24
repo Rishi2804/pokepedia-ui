@@ -24,14 +24,14 @@ const EvolutionData: FC<IEvolutionDataProps> = ({lines})  => {
             <Typography variant="h2">Evolution Data</Typography>
             <LinesContainer>
                 {
-                    roots.map((root) => {
+                    roots.map((root, index) => {
                         const handleClick = () => {
                             navigate(`/pokemon/${root.pokemonId}`)
                             window.scroll(0, 0)
                         }
 
                         return (
-                            <Stack direction="row" alignItems="center" justifyContent={"center"}>
+                            <Stack direction="row" alignItems="center" justifyContent={"center"} key={index}>
                                 <PokemonBox onClick={handleClick}>
                                     <PokemonImg id={root.pokemonId} />
                                     <Typography variant="h4" textAlign="center">{root.pokemonName}</Typography>

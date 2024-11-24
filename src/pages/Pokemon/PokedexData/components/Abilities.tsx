@@ -18,9 +18,9 @@ const Abilities: FC<IAbilitiesProps> = ({abilities}) => {
             <Typography>Abilities</Typography>
             <Stack>
                 {
-                    abilities.map((ability) => {
+                    abilities.map((ability, index) => {
                         return (
-                            <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
+                            <Stack direction="row" spacing={1} sx={{alignItems: "center"}} key={index}>
                                 <Typography>{ability.abilityName}</Typography>
                                 {ability.genRemoved && <Typography variant="caption">(Gen {ability.genRemoved} and prior)</Typography>}
                                 {ability.isHidden && <Typography variant="caption">(Hidden Ability)</Typography>}

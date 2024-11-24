@@ -17,8 +17,8 @@ export const PokedexHome = () => {
                 {
                     Object.values(PokedexVersion).map((key, index) => {
                         return(
-                            <Grid size={{xs: 6, sm: 4, lg: 3}}>
-                                <PokedexSelector dex={key} key={index} />
+                            <Grid size={{xs: 6, sm: 4, lg: 3}} key={index}>
+                                <PokedexSelector dex={key} />
                             </Grid>
                         )
                     })

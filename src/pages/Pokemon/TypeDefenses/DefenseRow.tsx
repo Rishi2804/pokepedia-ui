@@ -17,7 +17,7 @@ const DefenseRow: FC<IDefenseRowProps> = ({mult, types}) => {
             <MultiplierBox mult={mult} />
             <Stack direction="row" spacing={0.5} sx={{flexWrap: "wrap"}}>
                 {
-                    types.map((type) => <TypeIcon variant={"filled"} type={type} size={45}/>)
+                    types.map((type, index) => <TypeIcon variant={"filled"} type={type} size={45} key={index}/>)
                 }
             </Stack>
         </Stack>

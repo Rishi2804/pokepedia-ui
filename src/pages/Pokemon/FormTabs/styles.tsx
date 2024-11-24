@@ -6,6 +6,7 @@ export const StyledTabs = styled(Tabs)(({ theme }) => ({
     display: "inline-flex",
     borderRadius: 15,
     padding: theme.spacing(1),
+    marginTop: theme.spacing(2),
     '& .MuiTabs-indicator': {
         backgroundColor: 'transparent',
     },

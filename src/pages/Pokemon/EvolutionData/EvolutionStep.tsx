@@ -16,19 +16,19 @@ const EvolutionStep: FC<IEvolutionStepProps> = ({edges}) => {
     return (
         <Stack spacing={1}>
             {
-                edges.map((edge) => {
+                edges.map((edge, index) => {
                     const handleClick = () => {
                         navigate(`/pokemon/${edge.child.pokemonId}`)
                         window.scroll(0, 0)
                     }
 
                     return(
-                        <StepBox>
+                        <StepBox key={index}>
                             <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                                 <EastIcon />
                                 {
-                                    edge.details.map((detail) =>
-                                        (<Typography variant="caption" textAlign={"center"} sx={{width: '150px'}}>
+                                    edge.details.map((detail, index) =>
+                                        (<Typography variant="caption" textAlign={"center"} sx={{width: '150px'}} key={index}>
                                             {detail}{edge.region ? ` in ${edge.region}` : "" }
                                         </Typography> ))
                                 }
