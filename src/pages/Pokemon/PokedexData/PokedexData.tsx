@@ -1,6 +1,6 @@
 import {PokemonType} from "../../../global/enums.ts";
 import {FC} from "react";
-import {Grid2 as Grid, Stack, Typography} from "@mui/material";
+import {Divider, Grid2 as Grid, Stack, Typography} from "@mui/material";
 import GenderRatio from "./components/GenderRatio.tsx";
 import PTypes from "./components/PTypes.tsx";
 import NationalDexNumber from "./components/NationalDexNumber.tsx";
@@ -26,7 +26,7 @@ const PokedexData: FC<IPokedexDataProps> = ({id, type1, type2, genderRatio, heig
 
     return (
         <Grid size={{xs: 12, sm: 8}}>
-            <Stack>
+            <Stack divider={<Divider orientation={"horizontal"} flexItem/>  }>
                 <Typography variant="h2" sx={{marginBottom: 2}}>Data</Typography>
                 <NationalDexNumber id={id} />
                 <PTypes type1={type1} type2={type2} />
@@ -34,6 +34,7 @@ const PokedexData: FC<IPokedexDataProps> = ({id, type1, type2, genderRatio, heig
                 <Measurements height={height} weight={weight} />
                 <Abilities abilities={abilities} />
             </Stack>
+            <Divider flexItem />
         </Grid>
     )
 }

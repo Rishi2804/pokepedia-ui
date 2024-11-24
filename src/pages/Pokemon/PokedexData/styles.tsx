@@ -8,7 +8,6 @@ interface IInfoSectionProps {
 export const InfoSection = styled((props: IInfoSectionProps) =>
     <Stack direction="row" spacing={4} {...props} />
 )({
-    borderTop: '1px solid',
     padding: '10px 0px 10px 5px',
     alignItems: "center"
 });

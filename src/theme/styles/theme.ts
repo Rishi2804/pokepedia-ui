@@ -72,24 +72,10 @@ const breakpoints = {
     xxl: 1920,
 } as const
 
-export const theme = {
-    palette: lightpalette,
-    breakpoints: {
-        values: breakpoints
-    },
-    typography,
-    components: {
-
-    }
-}
-
 export const getTheme = (mode: PaletteMode) => ({
     palette: mode === 'light' ? lightpalette : darkpalette,
     breakpoints: {
         values: breakpoints
     },
     typography: typography(mode),
-    components: {
-
-    },
 });

@@ -8,7 +8,7 @@ interface IDexNumberProps {
 
 const InfoSection: FC<IDexNumberProps> = ({bst}) => {
     return (
-        <StatRow sx={{borderBottom: 1}}>
+        <StatRow>
             <Typography minWidth={80}>Total</Typography>
             <Typography minWidth={20}>{bst}</Typography>
             <Box sx={{display: "flex", width: "100%"}} />

@@ -1,5 +1,5 @@
 import {FC} from "react";
-import {Typography} from "@mui/material";
+import {Divider, Typography} from "@mui/material";
 import {InfoSection} from "../styles.tsx";
 
 interface IMeasureProps {
@@ -31,6 +31,7 @@ const NationalDexNumber: FC<IMeasureProps> = ({height, weight}) => {
                 <Typography>Height</Typography>
                 <Typography>{height.toFixed(1)} m ({metersToFeet(height)})</Typography>
             </InfoSection>
+            <Divider flexItem/>
             <InfoSection>
                 <Typography>Weight</Typography>
                 <Typography>{weight.toFixed(2)} kg ({kgToPounds(weight)} lbs)</Typography>

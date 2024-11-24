@@ -10,7 +10,6 @@ interface StatRowProps {
 export const StatRow = styled((props: StatRowProps) =>
     <Stack direction="row" spacing={4} {...props} />
 )({
-    borderTop: '1px solid',
     alignItems: "center"
 });
 
