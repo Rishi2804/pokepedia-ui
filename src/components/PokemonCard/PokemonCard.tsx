@@ -16,7 +16,7 @@ const PokemonCard: FC<IPokemonCardProps> = ({data}) => {
     const naviagate = useNavigate()
 
     const handleNavigate = () => {
-        naviagate(`/pokemon/${data.speciesId}`)
+        naviagate(`/pokemon/${data.pokemonId}`)
     }
 
     return (

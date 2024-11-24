@@ -1,4 +1,4 @@
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import {useSpeciesDetails} from "../../services/api/hooks/useSpeciesData.ts";
 import {Grid2 as Grid, Typography} from "@mui/material";
 import {Card} from "./styles.ts";
@@ -14,13 +14,20 @@ import EvolutionData from "./EvolutionData/EvolutionData.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_searchParams, setSearchParams] = useSearchParams();
     const { data } = useSpeciesDetails({speciesIdOrName: id ?? 0})
     const [i, setI] = useState<number>(0)
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (id && !isNaN(Number(id)) && Number(id) === data?.id && data?.name) {
-            navigate(`/pokemon/${data.name}`);
+        if (id && !isNaN(Number(id))) {
+            if (data?.pokemon.map(mon => mon.id).includes(Number(id)) && data?.name) {
+                navigate(`/pokemon/${data.name}`);
+                setSearchParams({id: id})
+                setI(data.pokemon.findIndex(pokemon => pokemon.id === Number(id)))
+                setSearchParams()
+            }
         }
     }, [id, data, navigate]);
 
