@@ -28,7 +28,7 @@ const MultiplierBox: FC<IMultiplierBoxProps> = ({ mult }) => {
     const getBorderColor = (mult: IMultiplierBoxProps['mult']) => {
         switch (mult) {
             case '0':
-                return '#2E3436';
+                return '#808080';
             case '2':
                 return '#4E9A06';
             case '4':
