@@ -14,19 +14,30 @@ import EvolutionData from "./EvolutionData/EvolutionData.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const { data } = useSpeciesDetails({speciesIdOrName: id ?? 0})
     const [i, setI] = useState<number>(0)
     const navigate = useNavigate()
 
     useEffect(() => {
         if (id && !isNaN(Number(id))) {
-            if (data?.pokemon.map(mon => mon.id).includes(Number(id)) && data?.name) {
-                navigate(`/pokemon/${data.name}`);
-                setSearchParams({id: id})
-                setI(data.pokemon.findIndex(pokemon => pokemon.id === Number(id)))
-                setSearchParams()
+            setSearchParams({ id: id }, {replace: true});
+        } else {
+            setSearchParams({}, {replace: true});
+        }
+    }, [id, searchParams]);
+
+    // Effect to handle navigation based on species data
+    useEffect(() => {
+        if (id && !isNaN(Number(id)) && data?.pokemon && data?.name) {
+            setI(0);
+            const pokemonId = Number(id);
+            const pokemonExists = data.pokemon.some(mon => mon.id === pokemonId);
+
+            if (pokemonExists) {
+                const pokemonIndex = data.pokemon.findIndex(pokemon => pokemon.id === pokemonId);
+                setI(pokemonIndex);
+                navigate(`/pokemon/${data.name}`, { replace: true });
             }
         }
     }, [id, data, navigate]);
