@@ -17,4 +17,5 @@ export const LinesContainer = styled(Box)({
     display: 'flex',
     overflow: 'scroll',
     justifyContent: 'center',
+    flexDirection: 'column',
 })

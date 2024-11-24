@@ -19,7 +19,7 @@ const Pokemon = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (id && !isNaN(Number(id)) && data?.name) {
+        if (id && !isNaN(Number(id)) && Number(id) === data?.id && data?.name) {
             navigate(`/pokemon/${data.name}`);
         }
     }, [id, data, navigate]);
