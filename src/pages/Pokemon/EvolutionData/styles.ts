@@ -12,3 +12,9 @@ export const StepBox = styled(Box)({
     flexDirection: 'row',
     alignItems: 'center',
 })
+
+export const LinesContainer = styled(Box)({
+    display: 'flex',
+    overflow: 'scroll',
+    justifyContent: 'center',
+})

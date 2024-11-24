@@ -3,7 +3,7 @@ import {EvolutionLine} from "./types.ts";
 import {Box, Stack, Typography} from "@mui/material";
 import {getEvolutionTree} from "./utils.ts";
 import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
-import {PokemonBox} from "./styles.ts";
+import {LinesContainer, PokemonBox} from "./styles.ts";
 import EvolutionStep from "./EvolutionStep.tsx";
 
 interface IEvolutionDataProps {
@@ -21,20 +21,22 @@ const EvolutionData: FC<IEvolutionDataProps> = ({lines})  => {
     return (
         <Box sx={{width: "100%"}}>
             <Typography variant="h2">Evolution Data</Typography>
-            {
-                roots.map((root) => {
+            <LinesContainer>
+                {
+                    roots.map((root) => {
 
-                    return (
-                        <Stack direction="row" alignItems="center" justifyContent={"center"}>
-                            <PokemonBox>
-                                <PokemonImg id={root.pokemonId} />
-                                <Typography variant="h4" textAlign="center">{root.pokemonName}</Typography>
-                            </PokemonBox>
-                            <EvolutionStep edges={root.edges} />
-                        </Stack>
-                    )
-                })
-            }
+                        return (
+                            <Stack direction="row" alignItems="center" justifyContent={"center"}>
+                                <PokemonBox>
+                                    <PokemonImg id={root.pokemonId} />
+                                    <Typography variant="h4" textAlign="center">{root.pokemonName}</Typography>
+                                </PokemonBox>
+                                <EvolutionStep edges={root.edges} />
+                            </Stack>
+                        )
+                    })
+                }
+            </LinesContainer>
         </Box>
     )
 }
