@@ -1,8 +1,8 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useSpeciesDetails} from "../../services/api/hooks/useSpeciesData.ts";
 import {Grid2 as Grid, Typography} from "@mui/material";
 import {Card} from "./styles.ts";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import PokemonImg from "../../components/PokemonImg/PokemonImg.tsx";
 import {formatText} from "../../global/utils.ts";
 import MetaData from "../../components/MetaData/MetaData.tsx";
@@ -15,6 +15,13 @@ const Pokemon = () => {
     const { id } = useParams();
     const { data } = useSpeciesDetails({speciesIdOrName: id ?? 0})
     const [i, setI] = useState<number>(0)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (id && !isNaN(Number(id)) && data?.name) {
+            navigate(`/pokemon/${data.name}`);
+        }
+    }, [id, data, navigate]);
 
     if (!data) {
         return null
