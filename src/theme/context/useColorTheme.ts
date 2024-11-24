@@ -3,10 +3,16 @@ import {createTheme, PaletteMode} from "@mui/material";
 import {getTheme} from "../styles/theme.ts";
 
 export const useColorTheme = () => {
-    const [mode, setMode] = useState<PaletteMode>("light");
+    const storedMode = localStorage.getItem("themeMode") as PaletteMode;
+    const initialMode: PaletteMode = storedMode ? storedMode : "light";
 
-    const toggleTheme = () =>
-        setMode((prev) => prev === "light" ? "dark" : "light");
+    const [mode, setMode] = useState<PaletteMode>(initialMode);
+
+    const toggleTheme = () => {
+        const newMode = mode === "light" ? "dark" : "light";
+        setMode(newMode);
+        localStorage.setItem("themeMode", newMode);
+    };
 
     const theme = useMemo(
         () => createTheme(getTheme(mode)),
