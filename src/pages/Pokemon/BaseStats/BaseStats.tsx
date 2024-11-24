@@ -22,7 +22,7 @@ const BaseStats: FC<IBaseStatsProps> = ({hp, atk, def, spatk, spdef, speed, bst,
             <Typography variant="h2" sx={{marginBottom: 2}}>Base Stats</Typography>
             <StatSection stat={hp} name={"HP"} type1={type1} type2={type2} />
             <StatSection stat={atk} name={"Attack"} type1={type1} type2={type2} />
-            <StatSection stat={def} name={"Defence"} type1={type1} type2={type2} />
+            <StatSection stat={def} name={"Defense"} type1={type1} type2={type2} />
             <StatSection stat={spatk} name={"Sp. Atk"} type1={type1} type2={type2} />
             <StatSection stat={spdef} name={"Sp. Def"} type1={type1} type2={type2} />
             <StatSection stat={speed} name={"Speed"} type1={type1} type2={type2} />

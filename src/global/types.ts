@@ -85,3 +85,11 @@ export interface SpeciesDetails {
     name: string;
     pokemon: PokemonDetails[];
 }
+
+export interface TypeDefences {
+    x0: PokemonType[],
+    x1_4: PokemonType[],
+    x1_2: PokemonType[],
+    x2: PokemonType[],
+    x4: PokemonType[]
+}

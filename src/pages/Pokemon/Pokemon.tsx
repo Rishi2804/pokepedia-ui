@@ -9,6 +9,7 @@ import MetaData from "../../components/MetaData/MetaData.tsx";
 import FormTabs from "./FormTabs/FormTabs.tsx";
 import PokedexData from "./PokedexData/PokedexData.tsx";
 import BaseStats from "./BaseStats/BaseStats.tsx";
+import TypeDefenses from "./TypeDefenses/TypeDefenses.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
@@ -43,6 +44,10 @@ const Pokemon = () => {
                 />
                 <BaseStats
                     {...data.pokemon[i].stats}
+                    type1={data.pokemon[i].type1}
+                    type2={data.pokemon[i].type2}
+                />
+                <TypeDefenses
                     type1={data.pokemon[i].type1}
                     type2={data.pokemon[i].type2}
                 />
