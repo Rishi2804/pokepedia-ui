@@ -11,6 +11,7 @@ import PokedexData from "./PokedexData/PokedexData.tsx";
 import BaseStats from "./BaseStats/BaseStats.tsx";
 import TypeDefenses from "./TypeDefenses/TypeDefenses.tsx";
 import EvolutionData from "./EvolutionData/EvolutionData.tsx";
+import PokedexEntries from "./PokedexEntries/PokedexEntries.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
@@ -78,6 +79,13 @@ const Pokemon = () => {
                     type2={data.pokemon[i].type2}
                 />
                 <EvolutionData lines={data.pokemon[i].evolutionChain} />
+                <PokedexEntries
+                    gen={data.pokemon[i].gen}
+                    dexEntries={data.pokemon[i].dexEntries}
+                    dexNumbers={data.pokemon[i].dexNumbers}
+                    type1={data.pokemon[i].type1}
+                    type2={data.pokemon[i].type2}
+                />
             </Grid>
         </>
     )
