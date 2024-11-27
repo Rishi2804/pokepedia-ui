@@ -1,6 +1,6 @@
 import {FC} from "react";
 import {EvolutionLine} from "./types.ts";
-import {Box, Stack, Typography} from "@mui/material";
+import {Grid2 as Grid, Stack, Typography} from "@mui/material";
 import {getEvolutionTree} from "./utils.ts";
 import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
 import {LinesContainer, PokemonBox} from "./styles.ts";
@@ -20,7 +20,7 @@ const EvolutionData: FC<IEvolutionDataProps> = ({lines})  => {
     if (!roots.length) return null
 
     return (
-        <Box sx={{width: "100%"}}>
+        <Grid sx={{width: "100%"}}>
             <Typography variant="h2">Evolution Data</Typography>
             <LinesContainer>
                 {
@@ -42,7 +42,7 @@ const EvolutionData: FC<IEvolutionDataProps> = ({lines})  => {
                     })
                 }
             </LinesContainer>
-        </Box>
+        </Grid>
     )
 }
 
