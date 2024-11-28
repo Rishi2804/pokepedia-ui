@@ -1,6 +1,6 @@
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import {useSpeciesDetails} from "../../services/api/hooks/useSpeciesData.ts";
-import {Grid2 as Grid, Typography} from "@mui/material";
+import {Box, Grid2 as Grid, Typography} from "@mui/material";
 import {Card} from "./styles.ts";
 import {useEffect, useState} from "react";
 import PokemonImg from "../../components/PokemonImg/PokemonImg.tsx";
@@ -13,6 +13,7 @@ import TypeDefenses from "./TypeDefenses/TypeDefenses.tsx";
 import EvolutionData from "./EvolutionData/EvolutionData.tsx";
 import PokedexEntries from "./PokedexEntries/PokedexEntries.tsx";
 import Learnset from "./Learnset/Learnset.tsx";
+import {ArrowBack, ArrowForward} from '@mui/icons-material';
 
 const Pokemon = () => {
     const { id } = useParams();
@@ -44,6 +45,10 @@ const Pokemon = () => {
         }
     }, [id, data, navigate]);
 
+    const handleNavigate = (id: number) => {
+        navigate(`/pokemon/${id}`);
+    }
+
     if (!data) {
         return null
     }
@@ -51,8 +56,11 @@ const Pokemon = () => {
     return (
         <>
             <MetaData pageTitle={`${formatText(data.name)} | PokePedia`} />
-
-            <Typography variant="h1" textAlign={"center"} sx={{marginTop: 3}}>{formatText(data.name)}</Typography>
+            <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                {data.id > 1 ? <ArrowBack onClick={() => handleNavigate(data.id - 1)}/> : <Box></Box>}
+                <Typography variant="h1" textAlign={"center"} sx={{marginTop: 3}}>{formatText(data.name)}</Typography>
+                {data.id < 1025 ? <ArrowForward onClick={() => handleNavigate(data.id + 1)}/> : <Box></Box>}
+            </Box>
             <FormTabs forms={data.pokemon.map((pokemon) => (pokemon.name))} i={i} setI={setI} />
 
             <Grid container spacing={4} sx={{paddingTop: 4}}>
