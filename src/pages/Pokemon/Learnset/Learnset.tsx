@@ -44,7 +44,7 @@ const Learnset: FC<ILearnsetProps> = ({learnset}) => {
             {
                 learnset.find(set => set.versionGroup === currentVG)?.learnMethodSets.map((set, index) => {
                     return (
-                        <Box key={index}>
+                        <Box key={index} sx={{width: '100%'}}>
                             <MoveList moves={set.moves} title={set.method}/>
                         </Box>
                     )

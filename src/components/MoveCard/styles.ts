@@ -16,15 +16,18 @@ export const Card = styled(Paper)<CardProps>(({ type1, type2 }) => ({
     borderStyle: "solid",
     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
     display: "flex",
-    padding: 3,
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft: 8,
+    paddingRight: 8,
     transition: "transform 0.2s ease, box-shadow 0.2s ease",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
 
     "&:active": {
-        transform: "scale(0.95)",
-        boxShadow: '0px 6px 25px rgba(0, 0, 0, 0.5)',
+        transform: "scale(0.98)",
+        boxShadow: '0px 6px 25px rgba(0, 0, 0, 0.3)',
     },
 }));
 
