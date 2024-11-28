@@ -12,6 +12,7 @@ import BaseStats from "./BaseStats/BaseStats.tsx";
 import TypeDefenses from "./TypeDefenses/TypeDefenses.tsx";
 import EvolutionData from "./EvolutionData/EvolutionData.tsx";
 import PokedexEntries from "./PokedexEntries/PokedexEntries.tsx";
+import Learnset from "./Learnset/Learnset.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
@@ -86,6 +87,13 @@ const Pokemon = () => {
                     type1={data.pokemon[i].type1}
                     type2={data.pokemon[i].type2}
                 />
+                {
+                    !!data.pokemon[i].movesets.length &&
+
+                    <Learnset
+                        learnset={data.pokemon[i].movesets}
+                    />
+                }
             </Grid>
         </>
     )

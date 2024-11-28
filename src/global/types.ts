@@ -37,7 +37,7 @@ interface Evolution {
     altForm: number;
 }
 
-interface PokemonMove {
+export interface PokemonMoveSnapshot {
     name: string;
     type: PokemonType;
     moveClass: MoveClass;
@@ -47,11 +47,11 @@ interface PokemonMove {
     levelLearned: number;
 }
 
-interface Moveset {
+export interface Moveset {
     versionGroup: VersionGroup;
     learnMethodSets: {
         method: LearnMethod;
-        moves: PokemonMove[];
+        moves: PokemonMoveSnapshot[];
     }[];
 }
 
