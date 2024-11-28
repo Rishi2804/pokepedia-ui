@@ -24,7 +24,7 @@ const Learnset: FC<ILearnsetProps> = ({learnset}) => {
     }, [learnset]);
 
     return (
-        <Grid size={{xs: 12}}>
+        <Grid size={{xs: 12}} id={"Learnset"}>
             <Typography variant="h2" sx={{marginBottom: 2}}>Learnset</Typography>
             <FormControl fullWidth sx={{marginBottom: 2}}>
                 <InputLabel>Version Group</InputLabel>

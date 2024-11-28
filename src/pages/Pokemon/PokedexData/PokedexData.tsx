@@ -25,7 +25,7 @@ interface IPokedexDataProps {
 const PokedexData: FC<IPokedexDataProps> = ({id, type1, type2, genderRatio, height, weight, abilities}) => {
 
     return (
-        <Grid size={{xs: 12, sm: 8}}>
+        <Grid size={{xs: 12, sm: 8}} id={"Data"}>
             <Stack divider={<Divider orientation={"horizontal"} flexItem/>  }>
                 <Typography variant="h2" sx={{marginBottom: 2}}>Data</Typography>
                 <NationalDexNumber id={id} />

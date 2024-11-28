@@ -13,7 +13,7 @@ const TypeDefenses: FC<IDexNumberProps> = ({type1, type2}) => {
     const defences = getTypeDefenses(type1, type2)
 
     return (
-        <Grid size={{xs: 12, sm: 5}}>
+        <Grid size={{xs: 12, sm: 5}} id={"Type Defenses"}>
             <Typography variant="h2" marginBottom={2}>Type Defenses</Typography>
             <Stack spacing={1}>
                 <DefenseRow mult={"2"} types={defences.x2}/>

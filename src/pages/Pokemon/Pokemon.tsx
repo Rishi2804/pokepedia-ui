@@ -14,6 +14,7 @@ import EvolutionData from "./EvolutionData/EvolutionData.tsx";
 import PokedexEntries from "./PokedexEntries/PokedexEntries.tsx";
 import Learnset from "./Learnset/Learnset.tsx";
 import {ArrowBack, ArrowForward} from '@mui/icons-material';
+import QuickScroll from "../../components/QuickScroll/QuickScroll.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
@@ -53,14 +54,17 @@ const Pokemon = () => {
         return null
     }
 
+    const sections = ["Data", "Base Stats", "Type Defenses", "Evolution Data", "Pokedex Entries", "Learnset"]
+
     return (
         <>
             <MetaData pageTitle={`${formatText(data.name)} | PokePedia`} />
-            <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+            <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2}}>
                 {data.id > 1 ? <ArrowBack onClick={() => handleNavigate(data.id - 1)}/> : <Box></Box>}
                 <Typography variant="h1" textAlign={"center"} sx={{marginTop: 3}}>{formatText(data.name)}</Typography>
                 {data.id < 1025 ? <ArrowForward onClick={() => handleNavigate(data.id + 1)}/> : <Box></Box>}
             </Box>
+            <QuickScroll items={sections} heading={"Content"} />
             <FormTabs forms={data.pokemon.map((pokemon) => (pokemon.name))} i={i} setI={setI} />
 
             <Grid container spacing={4} sx={{paddingTop: 4}}>

@@ -27,7 +27,7 @@ const PokedexEntries: FC<IPokedexEntriesProps> = ({gen, dexEntries, dexNumbers, 
     const formattedDexEntries = categorizedDexEntries(gen, dexEntries, dexNumbers)
 
     return (
-        <Grid size={12}>
+        <Grid size={12} id={"Pokedex Entries"}>
             <Typography variant="h2" sx={{marginBottom: 2}}>Pokedex Entries</Typography>
             <EntriesContainer type1={type1} type2={type2}>
                 <Stack spacing={1}>

@@ -7,7 +7,7 @@ import {PokedexVersion} from "../enums.ts";
 import {usePokedexDetails} from "../../../services/api/hooks/usePokedexData.ts";
 import {useEffect, useState} from "react";
 import {Box} from "@mui/material";
-import QuickScroll from "./QuickScroll/QuickScroll.tsx";
+import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
 import Filters from "./Filters/Filters.tsx";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
 import {VersionToHeaderText} from "./utils.ts";
@@ -41,7 +41,7 @@ const Pokedex = () => {
         <>
             <MetaData pageTitle={`${dex ? VersionToHeaderText[dex] ?? "National" : ""} | PokePedia`} />
             <Header dex={dex as string !== "national" ? dex : undefined} />
-            <QuickScroll dexes={data.map((item) => item.dex)} />
+            <QuickScroll items={data.map((item) => item.dex)} heading={"Jump to:"}/>
             <Filters
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
