@@ -9,7 +9,7 @@ interface IMovesProps {
 }
 
 export const useMovesDetails = ({ moveIdOrName }: IMovesProps) => {
-    const [data, setData] = useState<MoveSnapshot[]>([]);
+    const [data, setData] = useState<MoveSnapshot[][]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
