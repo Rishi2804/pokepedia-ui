@@ -98,3 +98,13 @@ export interface IPokemonSnapshot {
     type1: keyof typeof PokemonType;
     type2: keyof typeof PokemonType | null;
 }
+
+export interface IMoveSnapshot {
+    name: string;
+    type: keyof typeof PokemonType;
+    moveClass: keyof typeof MoveClass;
+    power: number;
+    accuracy: number;
+    pp: number;
+    gen: number;
+}

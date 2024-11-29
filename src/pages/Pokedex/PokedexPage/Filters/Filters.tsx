@@ -10,6 +10,7 @@ import * as React from "react";
 import {PokemonType} from "../../../../global/enums.ts";
 
 interface IFilterProps {
+    searchBoxText?: string;
     searchTerm: string;
     setSearchTerm: (searchTerm: string) => void;
     handleKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -17,7 +18,7 @@ interface IFilterProps {
     setTypeFilters: (types: PokemonType[]) => void;
 }
 
-const Filters: FC<IFilterProps> = ({searchTerm, setSearchTerm, handleKeyDown, typeFilters, setTypeFilters}) => {
+const Filters: FC<IFilterProps> = ({searchBoxText, searchTerm, setSearchTerm, handleKeyDown, typeFilters, setTypeFilters}) => {
 
     const handleChange = (event: SelectChangeEvent<typeof typeFilters>) => {
         const {
@@ -31,7 +32,7 @@ const Filters: FC<IFilterProps> = ({searchTerm, setSearchTerm, handleKeyDown, ty
     return (
         <Box sx={{flexDirection: 'row', display: 'flex', gap: 2}}>
             <TextField
-                label="Search Pokémon"
+                label={searchBoxText ?? "Search Pokémon"}
                 variant="outlined"
                 fullWidth
                 value={searchTerm}
@@ -42,8 +43,6 @@ const Filters: FC<IFilterProps> = ({searchTerm, setSearchTerm, handleKeyDown, ty
             <FormControl sx={{m: 1, width: '40%'}}>
                 <InputLabel id="demo-multiple-chip-label">Types</InputLabel>
                 <Select
-                    labelId="demo-multiple-chip-label"
-                    id="demo-multiple-chip"
                     multiple
                     value={typeFilters}
                     onChange={handleChange}

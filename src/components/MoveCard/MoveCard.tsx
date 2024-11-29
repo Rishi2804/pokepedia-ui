@@ -1,4 +1,4 @@
-import {PokemonMoveSnapshot} from "../../global/types.ts";
+import {MoveSnapshot, PokemonMoveSnapshot} from "../../global/types.ts";
 import {FC} from "react";
 import {Card, SectionContainer} from "./styles.ts";
 import {Box, Typography} from "@mui/material";
@@ -6,14 +6,18 @@ import TypeIcon from "../TypeIcon/TypeIcon.tsx";
 import MoveClassIcon from "../MoveClassIcon/MoveClassIcon.tsx";
 
 interface IMoveCardProps {
-    move: PokemonMoveSnapshot
+    move: PokemonMoveSnapshot | MoveSnapshot
+}
+
+function isPokemonMoveSnapshot(move: PokemonMoveSnapshot | MoveSnapshot): move is PokemonMoveSnapshot {
+    return (move as PokemonMoveSnapshot).levelLearned !== undefined;
 }
 
 const MoveCard: FC<IMoveCardProps> = ({ move }) => {
     return (
         <Card type1={move.type} type2={null}>
             <Box sx={{display: 'flex', gap: 4, alignItems: "center"}}>
-                {!!move.levelLearned && <SectionContainer>
+                {isPokemonMoveSnapshot(move) && !!move.levelLearned && <SectionContainer>
                     <Typography variant="h5" color="white">Level</Typography>
                     <Typography variant="h5" color="white">{move.levelLearned}</Typography>
                 </SectionContainer>}

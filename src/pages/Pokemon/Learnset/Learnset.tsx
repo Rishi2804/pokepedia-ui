@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import {VersionGroup} from "../../../global/enums.ts";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import MoveList from "./MoveList.tsx";
+import MoveList from "../../../components/MoveList/MoveList.tsx";
 
 interface ILearnsetProps {
     learnset: Moveset[];
@@ -45,7 +45,11 @@ const Learnset: FC<ILearnsetProps> = ({learnset}) => {
                 learnset.find(set => set.versionGroup === currentVG)?.learnMethodSets.map((set, index) => {
                     return (
                         <Box key={index} sx={{width: '100%'}}>
-                            <MoveList moves={set.moves} title={set.method}/>
+                            <MoveList
+                                moves={set.moves}
+                                title={
+                                    <Typography variant="h3">{set.method}</Typography>
+                                }/>
                         </Box>
                     )
                 })

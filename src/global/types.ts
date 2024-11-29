@@ -86,6 +86,16 @@ export interface SpeciesDetails {
     pokemon: PokemonDetails[];
 }
 
+export interface MoveSnapshot {
+    name: string;
+    type: PokemonType;
+    moveClass: MoveClass;
+    power: number;
+    accuracy: number;
+    pp: number;
+    gen: number;
+}
+
 export interface TypeDefences {
     x0: PokemonType[],
     x1_4: PokemonType[],

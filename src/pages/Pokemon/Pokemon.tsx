@@ -106,6 +106,7 @@ const Pokemon = () => {
                         learnset={data.pokemon[i].movesets}
                     />
                 }
+                {/* TODO: Pokemon Images */}
             </Grid>
         </>
     )

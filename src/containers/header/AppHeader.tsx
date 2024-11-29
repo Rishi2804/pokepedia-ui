@@ -9,7 +9,7 @@ const AppHeader: React.FC = () => {
 
     const pagePaths: { [key: string]: string } = {
         'Pokedex': '/pokedex',
-        'Moves': '/',
+        'Moves': '/attackdex',
         'Abilities': '/',
         'Team Builder': '/',
     };
