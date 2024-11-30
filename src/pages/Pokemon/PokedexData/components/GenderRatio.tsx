@@ -17,7 +17,7 @@ const GenderRatio: FC<IGenderRatioProps> = ({genderRatio}) => {
         <InfoSection>
             <Typography>Gender</Typography>
             {
-                genderRatio > 0 ? (
+                genderRatio >= 0 ? (
                     <Stack sx={{alignItems: "center"}}>
                         <Box sx={{height: 20, width: '100%', display: 'flex', borderRadius: 3, overflow: 'hidden'}}>
                             <Box sx={{width: `${maleRatio}%`, backgroundColor: MALE}}/>
