@@ -46,7 +46,13 @@ const Move = () => {
                     accuracy={data.moveAccuracy}
                     pp={data.movePP}
                 />
-                <MoveEffects effect={data.effect}/>
+                <MoveEffects
+                    effect={data.effect}
+                    pastMoveValues={data.pastMoveValues}
+                    currPower={data.movePower}
+                    currAccuracy={data.moveAccuracy}
+                    currPP={data.movePP}
+                />
                 <MoveDescriptions type={data.type} entries={data.descriptions}/>
             </Grid>
         </>
