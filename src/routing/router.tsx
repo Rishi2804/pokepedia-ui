@@ -5,6 +5,7 @@ import Layout from "../containers/layout/Layout.tsx";
 import Pokedex from "../pages/Pokedex/PokedexPage/Pokedex.tsx";
 import Pokemon from "../pages/Pokemon/Pokemon.tsx";
 import MoveHome from "../pages/Moves/MoveHome/MoveHome.tsx";
+import Move from "../pages/Moves/MovePage/Move.tsx";
 
 export const router = createBrowserRouter([{
         element: <Layout/>,
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([{
             {
                 path: "/attackdex",
                 element: <MoveHome />
+            },
+            {
+                path: "/move/:id",
+                element: <Move />
             }
         ]
 }])

@@ -108,3 +108,25 @@ export interface IMoveSnapshot {
     pp: number;
     gen: number;
 }
+
+export interface IMoveDetails {
+    id: number;
+    name: string;
+    type: keyof typeof PokemonType;
+    gen: number;
+    moveClass: keyof typeof MoveClass;
+    movePower: number | null;
+    moveAccuracy: number | null;
+    movePP: number | null;
+    pastMoveValues: {
+        movePower: number | null;
+        moveAccuracy: number | null;
+        movePP: number | null;
+        versionGroups: (keyof typeof VersionGroup)[];
+    }[];
+    effect: string;
+    descriptions: {
+        versionGroups: (keyof typeof VersionGroup)[];
+        description: string;
+    }[];
+}

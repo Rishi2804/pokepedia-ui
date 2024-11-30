@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import {makeGetRequest} from "../api.servies.ts";
 import {ENDPOINTS} from "../constants.ts";
-import {prepareForUI} from "../transformers/moveSnapTransformer.ts";
-import {MoveSnapshot} from "../../../global/types.ts";
+import {prepareForUI} from "../transformers/moveTransformer.ts";
+import {MoveDetails} from "../../../global/types.ts";
 
 interface IMovesProps {
     moveIdOrName: string | number;
 }
 
-export const useMovesDetails = ({ moveIdOrName }: IMovesProps) => {
-    const [data, setData] = useState<MoveSnapshot[][]>([]);
+export const useMoveDetails = ({ moveIdOrName }: IMovesProps) => {
+    const [data, setData] = useState<MoveDetails | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +25,7 @@ export const useMovesDetails = ({ moveIdOrName }: IMovesProps) => {
             setError(null); // Reset error before making a new request
 
             try {
-                const response = await makeGetRequest(`${ENDPOINTS.GET_MOVE}/`);
+                const response = await makeGetRequest(`${ENDPOINTS.GET_MOVE}/${moveIdOrName}`);
 
                 if (response.ok) {
                     setData(prepareForUI(response.data));  // Set the Pokémon data if successful

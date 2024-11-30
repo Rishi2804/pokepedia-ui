@@ -96,6 +96,28 @@ export interface MoveSnapshot {
     gen: number;
 }
 
+export interface MoveDetails {
+    id: number;
+    name: string;
+    type: PokemonType;
+    gen: number;
+    moveClass: MoveClass;
+    movePower: number | null;
+    moveAccuracy: number | null;
+    movePP: number | null;
+    pastMoveValues: {
+        movePower: number | null;
+        moveAccuracy: number | null;
+        movePP: number | null;
+        versionGroups: VersionGroup[];
+    }[];
+    effect: string;
+    descriptions: {
+        versionGroups: VersionGroup[];
+        description: string;
+    }[];
+}
+
 export interface TypeDefences {
     x0: PokemonType[],
     x1_4: PokemonType[],
