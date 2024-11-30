@@ -30,6 +30,11 @@ const BaseStats: FC<IBaseStatsProps> = ({hp, atk, def, spatk, spdef, speed, bst,
                 <InfoSection bst={bst}/>
             </Stack>
             <Divider flexItem />
+            <Stack>
+                <Typography variant="caption">The ranges shown on the right are for a level 50 Pokémon.</Typography>
+                <Typography variant="caption">Max values are based on a good nature, 252 EVs, 31 IVs.</Typography>
+                <Typography variant="caption">Min values are based on a bad nature, 0 EVs, 0 IVs.</Typography>
+            </Stack>
         </Grid>
     )
 }
