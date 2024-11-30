@@ -5,6 +5,7 @@ import {formatText} from "../../../global/utils.ts";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
 import {Grid2 as Grid, Typography} from "@mui/material";
 import MoveData from "./components/MoveData/MoveData.tsx";
+import MoveEffects from "./components/MoveEffects/MoveEffects.tsx";
 
 
 const Move = () => {
@@ -44,6 +45,7 @@ const Move = () => {
                     accuracy={data.moveAccuracy}
                     pp={data.movePP}
                 />
+                <MoveEffects effect={data.effect}/>
             </Grid>
         </>
     );
