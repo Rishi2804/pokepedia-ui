@@ -15,6 +15,7 @@ import PokedexEntries from "./PokedexEntries/PokedexEntries.tsx";
 import Learnset from "./Learnset/Learnset.tsx";
 import {ArrowBack, ArrowForward} from '@mui/icons-material';
 import QuickScroll from "../../components/QuickScroll/QuickScroll.tsx";
+import PokemonImages from "./PokemonImages/PokemonImages.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
@@ -54,7 +55,7 @@ const Pokemon = () => {
         return null
     }
 
-    const sections = ["Data", "Base Stats", "Type Defenses", "Evolution Data", "Pokedex Entries", "Learnset"]
+    const sections = ["Data", "Base Stats", "Type Defenses", "Evolution Data", "Pokedex Entries", "Learnset", "Images"]
 
     return (
         <>
@@ -106,7 +107,7 @@ const Pokemon = () => {
                         learnset={data.pokemon[i].movesets}
                     />
                 }
-                {/* TODO: Pokemon Images */}
+                <PokemonImages id={data.pokemon[i].id} />
             </Grid>
         </>
     )

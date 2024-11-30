@@ -1,4 +1,5 @@
 import {FC, useEffect, useState} from "react";
+import {femaleImgs, specialImgs} from "./constants.ts";
 
 interface IPokemonImgProps {
     id: number
@@ -17,7 +18,7 @@ const PokemonImg: FC<IPokemonImgProps> = ({id, shiny, female}) => {
             homeImgBuild += "/shiny"
             artworkImg += "/shiny"
         }
-        if (female) {
+        if (female && femaleImgs.includes(id)) {
             homeImgBuild += "/female"
             artworkImg += "/female"
         }
@@ -29,7 +30,6 @@ const PokemonImg: FC<IPokemonImgProps> = ({id, shiny, female}) => {
     }, [id, shiny, female])
 
     function getImg() {
-        const specialImgs = [10158, 10159, 10061, 10181, 10182, 10183, 10187, 10192]
         if (specialImgs.includes(id)) {
             return new URL(officialImg, import.meta.url).href
         }
