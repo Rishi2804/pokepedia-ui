@@ -1,8 +1,8 @@
 import {styled} from "@mui/system";
 import {Box, Typography} from "@mui/material";
 import {TypeToCardBorder, TypeToCardColor} from "../../../global/utils.ts";
-import {Game, PokemonType} from "../../../global/enums.ts";
-import {gameToColorMap, gameToTextColor, genToColorMap, regionToColorMap} from "./constants.ts";
+import {PokemonType} from "../../../global/enums.ts";
+import {genToColorMap, regionToColorMap} from "./constants.ts";
 
 interface ContainerProps {
     type1: PokemonType;
@@ -49,38 +49,6 @@ export const UpperCardText = styled(Typography)({
     fontWeight: 500,
 })
 
-
-export const EntryBox = styled(Box)(({theme}) => ({
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: 13,
-    display: 'flex',
-}))
-
-export const TextBox = styled(Box)(({theme}) => ({
-    display: 'flex',
-    width: '100%',
-    alignItems: 'center',
-    paddingLeft: 5,
-    border: `1px solid ${theme.palette.primaryBorder}`,
-    borderTopRightRadius: 13,
-    borderBottomRightRadius: 13,
-}))
-
-interface GameBoxProps {
-    game: Game
-}
-
-export const GameBox = styled(Box)<GameBoxProps>(({game}) => ({
-    width: '12%',
-    backgroundColor: gameToColorMap[game],
-    color: gameToTextColor[game],
-    padding: 8,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderTopLeftRadius: 13,
-    borderBottomLeftRadius: 13,
-}))
 
 export const EmptyBox = styled(Box)(({theme}) => ({
     backgroundColor: theme.palette.background.paper,

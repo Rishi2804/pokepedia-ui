@@ -6,13 +6,11 @@ import {PokemonType} from "../../../global/enums.ts";
 import {
     EmptyBox,
     EntriesContainer,
-    EntryBox,
-    GameBox,
     GenEntriesContainer,
-    TextBox,
     UpperCardContainer,
     UpperCardText
 } from "./styles.ts";
+import GameTextEntry from "../../../components/GameTextEntry/GameTextEntry.tsx";
 
 interface IPokedexEntriesProps {
     gen: number
@@ -54,14 +52,7 @@ const PokedexEntries: FC<IPokedexEntriesProps> = ({gen, dexEntries, dexNumbers, 
                                         <Stack spacing={0.5}>
                                             {
                                                 group.entries.length ? group.entries.map((entry, index) => (
-                                                    <EntryBox key={index}>
-                                                        <GameBox game={entry.game}>
-                                                            <Typography variant="body2">{entry.game}</Typography>
-                                                        </GameBox>
-                                                        <TextBox>
-                                                            <Typography>{entry.entry}</Typography>
-                                                        </TextBox>
-                                                    </EntryBox>
+                                                    <GameTextEntry games={[entry.game]} entry={entry.entry} key={index}/>
                                                 )) :
                                                     (
                                                         <EmptyBox>
