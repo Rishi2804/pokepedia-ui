@@ -42,6 +42,7 @@ interface IEvolution {
 }
 
 interface IPokemonMove {
+    id: number;
     name: string;
     type: keyof typeof PokemonType;
     moveClass: keyof typeof MoveClass;
@@ -100,6 +101,7 @@ export interface IPokemonSnapshot {
 }
 
 export interface IMoveSnapshot {
+    id: number;
     name: string;
     type: keyof typeof PokemonType;
     moveClass: keyof typeof MoveClass;

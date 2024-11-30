@@ -4,6 +4,7 @@ import {Card, SectionContainer} from "./styles.ts";
 import {Box, Typography} from "@mui/material";
 import TypeIcon from "../TypeIcon/TypeIcon.tsx";
 import MoveClassIcon from "../MoveClassIcon/MoveClassIcon.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface IMoveCardProps {
     move: PokemonMoveSnapshot | MoveSnapshot
@@ -14,8 +15,14 @@ function isPokemonMoveSnapshot(move: PokemonMoveSnapshot | MoveSnapshot): move i
 }
 
 const MoveCard: FC<IMoveCardProps> = ({ move }) => {
+    const naviagate = useNavigate()
+
+    const handleNavigate = () => {
+        naviagate(`/move/${move.id}`)
+    }
+
     return (
-        <Card type1={move.type} type2={null}>
+        <Card type1={move.type} type2={null} onClick={handleNavigate}>
             <Box sx={{display: 'flex', gap: 4, alignItems: "center"}}>
                 {isPokemonMoveSnapshot(move) && !!move.levelLearned && <SectionContainer>
                     <Typography variant="h5" color="white">Level</Typography>

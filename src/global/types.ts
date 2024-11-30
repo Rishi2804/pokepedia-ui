@@ -38,6 +38,7 @@ interface Evolution {
 }
 
 export interface PokemonMoveSnapshot {
+    id: number;
     name: string;
     type: PokemonType;
     moveClass: MoveClass;
@@ -87,6 +88,7 @@ export interface SpeciesDetails {
 }
 
 export interface MoveSnapshot {
+    id: number;
     name: string;
     type: PokemonType;
     moveClass: MoveClass;
