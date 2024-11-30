@@ -52,7 +52,7 @@ const PokedexEntries: FC<IPokedexEntriesProps> = ({gen, dexEntries, dexNumbers, 
                                         <Stack spacing={0.5}>
                                             {
                                                 group.entries.length ? group.entries.map((entry, index) => (
-                                                    <GameTextEntry games={[entry.game]} entry={entry.entry} key={index}/>
+                                                    <GameTextEntry games={entry.games} entry={entry.entry} key={index}/>
                                                 )) :
                                                     (
                                                         <EmptyBox>

@@ -72,6 +72,26 @@ export function categorizedDexEntries(gen: number, dexEntries: IDexEntry[], dexN
     return categories.map((category) => {
         const revelvantDexEntries = dexEntries.filter((entry) => category.games.includes(entry.game))
 
+        const groupedEntries: { games: Game[]; entry: string }[] = [];
+        let currentGroup: { games: Game[]; entry: string } | null = null;
+
+        revelvantDexEntries.forEach((entry, index) => {
+            if (currentGroup === null || currentGroup.entry !== entry.entry) {
+                if (currentGroup !== null) {
+                    groupedEntries.push(currentGroup);
+                }
+                currentGroup = { games: [entry.game], entry: entry.entry };
+            } else {
+                currentGroup.games.push(entry.game);
+            }
+
+            if (index === revelvantDexEntries.length - 1) {
+                groupedEntries.push(currentGroup);
+            }
+        });
+
+
+
         let relevantDexNums = category.dexes.map((dex) => {
             const num = dexNumbers.find((entry) => entry.dexName === dex)
             if (num) {
@@ -112,6 +132,6 @@ export function categorizedDexEntries(gen: number, dexEntries: IDexEntry[], dexN
             }
         }
 
-        return {entries: revelvantDexEntries, numbers: relevantDexNums}
+        return {entries: groupedEntries, numbers: relevantDexNums}
     })
 }
