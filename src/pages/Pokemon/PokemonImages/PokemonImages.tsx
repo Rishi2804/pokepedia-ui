@@ -49,20 +49,20 @@ const PokemonImages: FC<IPokemonImagesProps> = ({id}) => {
     return (
         <>
         <Grid size={12}><Typography variant="h2" id="Images">Images</Typography></Grid>
-            <Grid size={{xs: 6, sm: 3}}/>
-            <Grid size={{xs: 6, sm: 3}}>
+            <Grid size={{xs: 0, sm: 3}}/>
+            <Grid size={{xs: 5, sm: 3}}>
                 <ImgContainer>
                     <PokemonImg id={id} />
                     <Typography variant="body2" textAlign="center">Regular</Typography>
                 </ImgContainer>
             </Grid>
-            <Grid size={{xs: 6, sm: 3}}>
+            <Grid size={{xs: 5, sm: 3}}>
                 <ImgContainer>
                     <PokemonImg id={id} shiny />
                     <Typography variant="body2" textAlign="center">Shiny</Typography>
                 </ImgContainer>
             </Grid>
-            <Grid size={{xs: 6, sm: 3}} />
+            <Grid size={{xs: 0, sm: 3}} />
         </>
     )
 };
