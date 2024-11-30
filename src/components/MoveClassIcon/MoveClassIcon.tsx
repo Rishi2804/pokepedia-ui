@@ -24,7 +24,7 @@ const MoveClassIcon: FC<IMoveClassIconProps> = ({mClass, size}) => {
 
     return (
         <>
-            {MoveClassSVG && <MoveClassSVG width={size ?? 50} height={size ?? 50}/>}
+            {MoveClassSVG && <MoveClassSVG width={size ?? 40} height={size ?? 40}/>}
         </>
     )
 

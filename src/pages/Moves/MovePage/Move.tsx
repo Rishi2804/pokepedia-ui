@@ -1,6 +1,10 @@
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import {useMoveDetails} from "../../../services/api/hooks/useMoveData.ts";
 import {useEffect} from "react";
+import {formatText} from "../../../global/utils.ts";
+import MetaData from "../../../components/MetaData/MetaData.tsx";
+import {Grid2 as Grid, Typography} from "@mui/material";
+import MoveData from "./components/MoveData/MoveData.tsx";
 
 
 const Move = () => {
@@ -24,10 +28,24 @@ const Move = () => {
         }
     }, [id, data, navigate]);
 
-    return (
-        <div>
+    if (!data) {
+        return null;
+    }
 
-        </div>
+    return (
+        <>
+            <MetaData pageTitle={`${formatText(data.name)} | PokePedia`} />
+            <Typography variant="h1" textAlign={"center"} sx={{marginTop: 3}}>{data.name}</Typography>
+            <Grid container spacing={4} sx={{paddingTop: 4}}>
+                <MoveData
+                    type={data.type}
+                    category={data.moveClass}
+                    power={data.movePower}
+                    accuracy={data.moveAccuracy}
+                    pp={data.movePP}
+                />
+            </Grid>
+        </>
     );
 };
 

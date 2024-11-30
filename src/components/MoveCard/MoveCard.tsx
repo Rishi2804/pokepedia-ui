@@ -33,15 +33,15 @@ const MoveCard: FC<IMoveCardProps> = ({ move }) => {
             <Box sx={{display: 'flex', gap: 6}}>
                 <SectionContainer>
                     <Typography variant="h5" color="white">Power</Typography>
-                    <Typography variant="h5" color="white">{move.power ?? "--"}</Typography>
+                    <Typography variant="h5" color="white">{move.power ? move.power : "--"}</Typography>
                 </SectionContainer>
                 <SectionContainer>
                     <Typography variant="h5" color="white">Accuracy</Typography>
-                    <Typography variant="h5" color="white">{move.accuracy ?? "--"}</Typography>
+                    <Typography variant="h5" color="white">{move.accuracy ? move.accuracy : "--"}</Typography>
                 </SectionContainer>
                 <SectionContainer>
                     <Typography variant="h5" color="white">PP</Typography>
-                    <Typography variant="h5" color="white">{move.pp ?? "--"}</Typography>
+                    <Typography variant="h5" color="white">{move.pp ? move.pp : "--"}</Typography>
                 </SectionContainer>
                 <SectionContainer sx={{gap: 1}}>
                     <TypeIcon type={move.type} variant="circular" size={25} />
