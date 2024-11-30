@@ -3,7 +3,7 @@ import {MoveClass, PokemonType} from "../../../../../global/enums.ts";
 import {Divider, Grid2 as Grid, Stack, Typography} from "@mui/material";
 import MType from "./components/MType.tsx";
 import MClass from "./components/MClass.tsx";
-import {InfoSection} from "../../styles.tsx";
+import MAttribute from "./components/MAttribute.tsx";
 
 interface IMoveDataProps {
     type: PokemonType;
@@ -20,16 +20,9 @@ const MoveData: FC<IMoveDataProps> = ({type, category, power, accuracy, pp}) => 
                 <Typography variant="h2" sx={{marginBottom: 2}}>Data</Typography>
                 <MType type={type} />
                 <MClass mclass={category} />
-                <InfoSection>
-                    <Typography>Power</Typography>
-                    <Typography>{power ? power : "--"}</Typography>
-                </InfoSection><InfoSection>
-                    <Typography>Accuracy</Typography>
-                    <Typography>{accuracy ? accuracy : "--"}</Typography>
-                </InfoSection><InfoSection>
-                    <Typography>PP</Typography>
-                    <Typography>{pp ? pp : "--"}</Typography>
-                </InfoSection>
+                <MAttribute title={"Power"} value={power} />
+                <MAttribute title={"Accuracy"} value={accuracy} />
+                <MAttribute title={"PP"} value={pp} />
             </Stack>
             <Divider flexItem/>
         </Grid>
