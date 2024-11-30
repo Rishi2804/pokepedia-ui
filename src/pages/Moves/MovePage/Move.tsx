@@ -6,6 +6,7 @@ import MetaData from "../../../components/MetaData/MetaData.tsx";
 import {Grid2 as Grid, Typography} from "@mui/material";
 import MoveData from "./components/MoveData/MoveData.tsx";
 import MoveEffects from "./components/MoveEffects/MoveEffects.tsx";
+import MoveDescriptions from "./components/MoveDescriptions/MoveDescriptions.tsx";
 
 
 const Move = () => {
@@ -46,6 +47,7 @@ const Move = () => {
                     pp={data.movePP}
                 />
                 <MoveEffects effect={data.effect}/>
+                <MoveDescriptions type={data.type} entries={data.descriptions}/>
             </Grid>
         </>
     );
