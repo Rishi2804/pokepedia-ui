@@ -1,4 +1,4 @@
-import {Box, Paper} from "@mui/material";
+import {Box, Paper, Typography} from "@mui/material";
 import { styled } from "@mui/system";
 import {PokemonType} from "../../global/enums.ts";
 import {TypeToCardBorder, TypeToCardColor} from "../../global/utils.ts";
@@ -34,4 +34,17 @@ export const TypeIconContainer = styled(Box)(() => ({
     gap: 1,
     paddingBottom: 5,
     paddingTop: 3
+}))
+
+export const NameText = styled(Typography)(() => ({
+    color: "#fff",
+    textAlign: 'center',
+    whiteSpace: "nowrap",
+    overflow: "scroll",
+    maxWidth: "100%",
+    '&::-webkit-scrollbar': {
+        display: 'none', // Webkit browsers (Chrome, Safari, etc.)
+    },
+    '-ms-overflow-style': 'none', // Internet Explorer 10+
+    'scrollbar-width': 'none', // Firefox
 }))
