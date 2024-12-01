@@ -1,9 +1,12 @@
 import {Box, Divider, Grid2 as Grid, Stack, Typography} from "@mui/material";
 import {FC} from "react";
-import {Game, VersionGroup} from "../../../../../global/enums.ts";
+import {Game, PokemonType, VersionGroup} from "../../../../../global/enums.ts";
 import {gameToColorMap} from "../../../../Pokemon/PokedexEntries/constants.ts";
+import {getZMovePower, typeToZCrystal, typeToZMove} from "./utils.ts";
 
 interface IMoveEffectsProps {
+    id: number;
+    type: PokemonType;
     effect: string;
     pastMoveValues: {
         movePower: number | null;
@@ -14,9 +17,10 @@ interface IMoveEffectsProps {
     currPower: number | null;
     currAccuracy: number | null;
     currPP: number | null;
+    gen: number;
 }
 
-const MoveEffects: FC<IMoveEffectsProps> = ({effect, pastMoveValues, currPower, currAccuracy, currPP}) => {
+const MoveEffects: FC<IMoveEffectsProps> = ({id, type, effect, pastMoveValues, currPower, currAccuracy, currPP, gen}) => {
     const filteredHistory = pastMoveValues.filter(values =>
         (!(currPower === values.movePower && currAccuracy === values.moveAccuracy && currPP === values.movePP)))
 
@@ -27,7 +31,7 @@ const MoveEffects: FC<IMoveEffectsProps> = ({effect, pastMoveValues, currPower, 
             {!!filteredHistory.length && <>
                 <Typography variant="h3">History</Typography>
                 <Typography variant="subtitle1">Past values of move</Typography>
-                <Stack spacing={1} divider={<Divider flexItem/>}>
+                <Stack spacing={1} divider={<Divider flexItem/>} sx={{marginBottom: 2}}>
                     <Grid container>
                         <Grid size={6}>Version Groups</Grid>
                         <Grid size={2}>Power</Grid>
@@ -78,6 +82,10 @@ const MoveEffects: FC<IMoveEffectsProps> = ({effect, pastMoveValues, currPower, 
                     }
                 </Stack>
             </>}
+            {gen <= 7 && !!currPower && (<>
+                <Typography variant="h3">Z Move Effects</Typography>
+                <Typography>{`When a Pokemon is holding ${typeToZCrystal[type]}, the move turns into ${typeToZMove[type]} with base power ${getZMovePower(id, currPower)}`}</Typography>
+            </>)}
         </Grid>
     );
 };
