@@ -18,6 +18,16 @@ export function prepareForUI(move: IMoveDetails): MoveDetails {
                 versionGroups: description.versionGroups.map(key => VersionGroup[key]),
                 description: description.description
             }
+        }),
+        pokemon: move.pokemon.map(mon => {
+            return {
+                dexNumber: mon.speciesId,
+                speciesId: mon.speciesId,
+                pokemonId: mon.id,
+                name: mon.name,
+                type1: PokemonType[mon.type1],
+                type2: mon.type2 ? PokemonType[mon.type2] : null,
+            }
         })
     }
 }

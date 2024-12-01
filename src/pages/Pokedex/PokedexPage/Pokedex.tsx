@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 import {PokedexRegion, PokemonType} from "../../../global/enums.ts";
 import Header from "./Header/Header.tsx";
-import PokemonList from "./PokemonList/PokemonList.tsx";
+import PokemonList from "../../../components/PokemonList/PokemonList.tsx";
 import {VersionToRegion} from "../utils.ts";
 import {PokedexVersion} from "../enums.ts";
 import {usePokedexDetails} from "../../../services/api/hooks/usePokedexData.ts";

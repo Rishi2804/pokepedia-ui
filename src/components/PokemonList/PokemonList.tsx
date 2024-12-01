@@ -1,12 +1,12 @@
-import React from "react";
+import React, {ReactNode} from "react";
 import {Grid2 as Grid, Typography} from "@mui/material";
-import PokemonCard from "../../../../components/PokemonCard/PokemonCard.tsx";
-import {PokemonSnapshot} from "../../../../global/types.ts";
-import {PokemonType} from "../../../../global/enums.ts";
+import PokemonCard from "../PokemonCard/PokemonCard.tsx";
+import {PokemonSnapshot} from "../../global/types.ts";
+import {PokemonType} from "../../global/enums.ts";
 
 interface IPokemonListProps {
     data: PokemonSnapshot[],
-    header?: string,
+    header?: ReactNode,
     searchTerm?: string,
     typeFilters?: PokemonType[]
 }
@@ -18,7 +18,7 @@ const PokemonList: React.FC<IPokemonListProps> = ({data, header, searchTerm, typ
             <Typography variant="h2" sx={{paddingBottom: header ? 1.5 : 0}}>
                 {header}
             </Typography>
-            <Grid container spacing={2} sx={{paddingBottom: 6}}>
+            <Grid container spacing={2} sx={{paddingBottom: 6, width: '100%'}}>
                 {
                     data?.map((pokemon, index) => {
                         if (searchTerm) {

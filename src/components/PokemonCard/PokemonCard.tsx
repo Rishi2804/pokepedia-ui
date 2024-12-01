@@ -24,7 +24,7 @@ const PokemonCard: FC<IPokemonCardProps> = ({data}) => {
             <Typography sx={{paddingLeft: 1, color: "#fff"}}>{data.dexNumber}</Typography>
             <PokemonImg id={data.pokemonId} />
             <Box sx={{alignItems: "center", display: "flex", flexDirection: "column"}}>
-                <Typography variant={"h5"} sx={{color: "#fff"}}>{data.name}</Typography>
+                <Typography variant={"h5"} sx={{color: "#fff", textAlign: 'center'}}>{data.name}</Typography>
                 <TypeIconContainer>
                     <TypeIcon type={data.type1 as PokemonType} variant={"circular"} size={30}/>
                     {data.type2 ? <TypeIcon type={data.type2 as PokemonType} variant={"circular"} size={30}/> : <></>}

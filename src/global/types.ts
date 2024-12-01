@@ -118,6 +118,7 @@ export interface MoveDetails {
         versionGroups: VersionGroup[];
         description: string;
     }[];
+    pokemon: PokemonSnapshot[];
 }
 
 export interface TypeDefences {

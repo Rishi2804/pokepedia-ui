@@ -7,6 +7,7 @@ import {Grid2 as Grid, Typography} from "@mui/material";
 import MoveData from "./components/MoveData/MoveData.tsx";
 import MoveEffects from "./components/MoveEffects/MoveEffects.tsx";
 import MoveDescriptions from "./components/MoveDescriptions/MoveDescriptions.tsx";
+import PokemonList from "../../../components/PokemonList/PokemonList.tsx";
 
 
 const Move = () => {
@@ -57,6 +58,7 @@ const Move = () => {
                     gen={data.gen}
                 />
                 <MoveDescriptions type={data.type} entries={data.descriptions}/>
+                <PokemonList data={data.pokemon} header={"Pokemon Learnable By"} />
             </Grid>
         </>
     );

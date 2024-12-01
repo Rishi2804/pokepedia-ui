@@ -111,6 +111,14 @@ export interface IMoveSnapshot {
     gen: number;
 }
 
+interface MovePokemonSnapshot {
+    id: number;
+    speciesId: number;
+    name: string;
+    type1: keyof typeof PokemonType;
+    type2: keyof typeof PokemonType | null;
+}
+
 export interface IMoveDetails {
     id: number;
     name: string;
@@ -131,4 +139,5 @@ export interface IMoveDetails {
         versionGroups: (keyof typeof VersionGroup)[];
         description: string;
     }[];
+    pokemon: MovePokemonSnapshot[]
 }
