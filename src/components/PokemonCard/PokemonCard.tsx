@@ -13,10 +13,10 @@ interface IPokemonCardProps {
 }
 
 const PokemonCard: FC<IPokemonCardProps> = ({data}) => {
-    const naviagate = useNavigate()
+    const navigate = useNavigate()
 
     const handleNavigate = () => {
-        naviagate(`/pokemon/${data.pokemonId}`)
+        navigate(`/pokemon/${data.pokemonId}`)
     }
 
     return (
