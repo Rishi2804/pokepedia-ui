@@ -10,13 +10,18 @@ import Loading from "../../../containers/loading/Loading.tsx";
 
 const Ability = () => {
     const { id } = useParams();
-    const { data, loading } = useAbilityDetails({abilityIdOrName: id ?? 0})
+    const { data, loading, error } = useAbilityDetails({abilityIdOrName: id ?? 0})
 
     if (loading) {
         return (
             <Loading />
         )
     }
+
+    if (error) {
+        throw new Error(error)
+    }
+
 
     if (!data) return null
 

@@ -31,6 +31,8 @@ const Pokedex = () => {
 
     const { data, loading } = usePokedexDetails({pokedexes: dexes});
 
+
+
     if (loading) {
         return (
             <Loading />

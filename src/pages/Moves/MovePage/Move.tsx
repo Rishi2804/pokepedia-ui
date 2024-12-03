@@ -13,12 +13,16 @@ import Loading from "../../../containers/loading/Loading.tsx";
 
 const Move = () => {
     const { id } = useParams();
-    const { data, loading } = useMoveDetails({moveIdOrName: id ?? 0})
+    const { data, loading, error } = useMoveDetails({moveIdOrName: id ?? 0})
 
     if (loading) {
         return (
             <Loading />
         )
+    }
+
+    if (error) {
+        throw new Error(error)
     }
 
     if (!data) {

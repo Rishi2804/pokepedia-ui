@@ -11,7 +11,7 @@ import Loading from "../../../containers/loading/Loading.tsx";
 
 const AbilityHome = () => {
     const [searchTerm, setSearchTerm] = useState<string>("")
-    const { data, loading } = useAbilitiesDetails();
+    const { data, loading, error } = useAbilitiesDetails();
     const navigate = useNavigate();
 
     const handleNavigate = (ability: string) => {
@@ -23,6 +23,11 @@ const AbilityHome = () => {
             <Loading />
         )
     }
+
+    if (error) {
+        throw new Error(error)
+    }
+
 
     return (
         <>

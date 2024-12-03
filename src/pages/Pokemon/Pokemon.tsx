@@ -21,7 +21,7 @@ import Loading from "../../containers/loading/Loading.tsx";
 const Pokemon = () => {
     const { id } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
-    const { data, loading } = useSpeciesDetails({speciesIdOrName: id ?? 0})
+    const { data, loading, error } = useSpeciesDetails({speciesIdOrName: id ?? 0})
     const [i, setI] = useState<number>(0)
     const navigate = useNavigate()
 
@@ -57,6 +57,11 @@ const Pokemon = () => {
             <Loading />
         )
     }
+
+    if (error) {
+        throw new Error(error)
+    }
+
 
     if (!data) {
         return null
