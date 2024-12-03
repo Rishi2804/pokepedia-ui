@@ -87,6 +87,11 @@ export interface SpeciesDetails {
     pokemon: PokemonDetails[];
 }
 
+interface GroupedDescription {
+    versionGroups: VersionGroup[];
+    description: string;
+}
+
 export interface MoveSnapshot {
     id: number;
     name: string;
@@ -114,14 +119,24 @@ export interface MoveDetails {
         versionGroups: VersionGroup[];
     }[];
     effect: string;
-    descriptions: {
-        versionGroups: VersionGroup[];
-        description: string;
-    }[];
+    descriptions: GroupedDescription[];
     pokemonLearnable: {
         method: LearnMethod;
         pokemon: PokemonSnapshot[]
     }[];
+}
+
+export interface AbilitySnapshot {
+    name: string;
+    gen: number;
+}
+
+export interface AbilityDetails {
+    name: string;
+    gen: number;
+    effect: string;
+    descriptions: GroupedDescription[];
+    pokemon: PokemonSnapshot[]
 }
 
 export interface TypeDefences {

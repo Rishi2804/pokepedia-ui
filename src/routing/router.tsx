@@ -6,6 +6,7 @@ import Pokedex from "../pages/Pokedex/PokedexPage/Pokedex.tsx";
 import Pokemon from "../pages/Pokemon/Pokemon.tsx";
 import MoveHome from "../pages/Moves/MoveHome/MoveHome.tsx";
 import Move from "../pages/Moves/MovePage/Move.tsx";
+import AbilityHome from "../pages/Abilities/AbilityHome/AbilityHome.tsx";
 
 export const router = createBrowserRouter([{
         element: <Layout/>,
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([{
             {
                 path: "/move/:id",
                 element: <Move />
+            },
+            {
+                path: "/ability",
+                element: <AbilityHome />
             }
         ]
 }])

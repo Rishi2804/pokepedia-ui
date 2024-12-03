@@ -111,6 +111,11 @@ export interface IMoveSnapshot {
     gen: number;
 }
 
+interface IGroupedDescription {
+    versionGroups: (keyof typeof VersionGroup)[];
+    description: string;
+}
+
 interface IMovePokemonSnapshot {
     id: number;
     speciesId: number;
@@ -135,12 +140,22 @@ export interface IMoveDetails {
         versionGroups: (keyof typeof VersionGroup)[];
     }[];
     effect: string;
-    descriptions: {
-        versionGroups: (keyof typeof VersionGroup)[];
-        description: string;
-    }[];
+    descriptions: IGroupedDescription[];
     pokemon: {
         method: keyof typeof LearnMethod;
         pokemon: IMovePokemonSnapshot[]
     }[];
+}
+
+export interface IAbilitySnapshot {
+    name: string;
+    gen: number;
+}
+
+export interface IAbilityDetails {
+    name: string;
+    gen: number;
+    effect: string;
+    descriptions: IGroupedDescription[];
+    pokemon: IPokemonSnapshot[]
 }

@@ -14,13 +14,6 @@ const MoveHome = () => {
 
     const { data } = useMovesDetails();
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            setSearchTerm(event.currentTarget.value);
-        }
-    };
-
     return (
         <>
             <MetaData pageTitle={`Attackdex | PokePedia`} />
@@ -30,7 +23,6 @@ const MoveHome = () => {
                 searchBoxText={"Search Moves"}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
-                handleKeyDown={handleKeyDown}
                 typeFilters={typefilters}
                 setTypeFilters={settypefilters}
             />

@@ -30,13 +30,6 @@ const Pokedex = () => {
 
     const { data } = usePokedexDetails({pokedexes: dexes});
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            setSearchTerm(event.currentTarget.value);
-        }
-    };
-
     return (
         <>
             <MetaData pageTitle={`${dex ? VersionToHeaderText[dex] ?? "National" : ""} | PokePedia`} />
@@ -45,7 +38,6 @@ const Pokedex = () => {
             <Filters
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
-                handleKeyDown={handleKeyDown}
                 typeFilters={typefilters}
                 setTypeFilters={settypefilters}
             />
