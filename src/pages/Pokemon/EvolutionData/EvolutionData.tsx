@@ -14,32 +14,34 @@ interface IEvolutionDataProps {
 const EvolutionData: FC<IEvolutionDataProps> = ({lines})  => {
     const navigate = useNavigate()
 
-    if (!lines.length) return null
 
     const roots = getEvolutionTree(lines)
-    if (!roots.length) return null
 
     return (
         <Grid sx={{width: "100%"}} id={"Evolution Data"}>
             <Typography variant="h2">Evolution Data</Typography>
             <LinesContainer>
                 {
-                    roots.map((root, index) => {
-                        const handleClick = () => {
-                            navigate(`/pokemon/${root.pokemonId}`)
-                            window.scroll(0, 0)
-                        }
+                    roots.length ? (
+                        roots.map((root, index) => {
+                            const handleClick = () => {
+                                navigate(`/pokemon/${root.pokemonId}`)
+                                window.scroll(0, 0)
+                            }
 
-                        return (
-                            <Stack direction="row" alignItems="center" justifyContent={"center"} key={index}>
-                                <PokemonBox onClick={handleClick}>
-                                    <PokemonImg id={root.pokemonId} />
-                                    <Typography variant="h4" textAlign="center">{root.pokemonName}</Typography>
-                                </PokemonBox>
-                                <EvolutionStep edges={root.edges} />
-                            </Stack>
-                        )
-                    })
+                            return (
+                                <Stack direction="row" alignItems="center" justifyContent={"center"} key={index}>
+                                    <PokemonBox onClick={handleClick}>
+                                        <PokemonImg id={root.pokemonId} />
+                                        <Typography variant="h4" textAlign="center">{root.pokemonName}</Typography>
+                                    </PokemonBox>
+                                    <EvolutionStep edges={root.edges} />
+                                </Stack>
+                            )
+                        })
+                    ) : (
+                        <Typography sx={{marginTop: 2}}>Pokemon doesn't evolve</Typography>
+                    )
                 }
             </LinesContainer>
         </Grid>
