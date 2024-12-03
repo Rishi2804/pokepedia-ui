@@ -3,7 +3,7 @@ import MetaData from "../../../components/MetaData/MetaData.tsx";
 import {Box, Grid2 as Grid, Typography} from "@mui/material";
 import {AbilityContainer, AbilityText} from "./styles.ts";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
-import Filters from "../../Pokedex/PokedexPage/Filters/Filters.tsx";
+import Filters from "../../../components/Filters/Filters.tsx";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {navName} from "../../../global/utils.ts";

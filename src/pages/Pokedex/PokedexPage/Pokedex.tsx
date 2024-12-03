@@ -8,7 +8,7 @@ import {usePokedexDetails} from "../../../services/api/hooks/usePokedexData.ts";
 import {useEffect, useState} from "react";
 import {Box} from "@mui/material";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
-import Filters from "./Filters/Filters.tsx";
+import Filters from "../../../components/Filters/Filters.tsx";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
 import {VersionToHeaderText} from "./utils.ts";
 

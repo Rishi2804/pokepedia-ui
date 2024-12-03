@@ -6,7 +6,7 @@ import Select from "@mui/material/Select";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Chip from "@mui/material/Chip";
 import MenuItem from "@mui/material/MenuItem";
-import {PokemonType} from "../../../../global/enums.ts";
+import {PokemonType} from "../../global/enums.ts";
 
 interface IFilterProps {
     searchBoxText?: string;

@@ -1,6 +1,6 @@
 import {useMovesDetails} from "../../../services/api/hooks/useMovesData.ts";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
-import Filters from "../../Pokedex/PokedexPage/Filters/Filters.tsx";
+import Filters from "../../../components/Filters/Filters.tsx";
 import {Box, Typography} from "@mui/material";
 import {useState} from "react";
 import {PokemonType} from "../../../global/enums.ts";
