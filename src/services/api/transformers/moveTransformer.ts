@@ -1,5 +1,5 @@
 import {IMoveDetails} from "../types.ts";
-import {MoveClass, PokemonType, VersionGroup} from "../../../global/enums.ts";
+import {LearnMethod, MoveClass, PokemonType, VersionGroup} from "../../../global/enums.ts";
 import {MoveDetails} from "../../../global/types.ts";
 
 export function prepareForUI(move: IMoveDetails): MoveDetails {
@@ -19,14 +19,19 @@ export function prepareForUI(move: IMoveDetails): MoveDetails {
                 description: description.description
             }
         }),
-        pokemon: move.pokemon.map(mon => {
+        pokemonLearnable: move.pokemon.map(list => {
             return {
-                dexNumber: mon.speciesId,
-                speciesId: mon.speciesId,
-                pokemonId: mon.id,
-                name: mon.name,
-                type1: PokemonType[mon.type1],
-                type2: mon.type2 ? PokemonType[mon.type2] : null,
+                method: LearnMethod[list.method],
+                pokemon: list.pokemon.map(mon => {
+                    return {
+                        dexNumber: mon.speciesId,
+                        speciesId: mon.speciesId,
+                        pokemonId: mon.id,
+                        name: mon.name,
+                        type1: PokemonType[mon.type1],
+                        type2: mon.type2 ? PokemonType[mon.type2] : null,
+                    }
+                })
             }
         })
     }

@@ -118,7 +118,10 @@ export interface MoveDetails {
         versionGroups: VersionGroup[];
         description: string;
     }[];
-    pokemon: PokemonSnapshot[];
+    pokemonLearnable: {
+        method: LearnMethod;
+        pokemon: PokemonSnapshot[]
+    }[];
 }
 
 export interface TypeDefences {

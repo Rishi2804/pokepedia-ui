@@ -3,7 +3,7 @@ import {useMoveDetails} from "../../../services/api/hooks/useMoveData.ts";
 import {useEffect} from "react";
 import {formatText} from "../../../global/utils.ts";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
-import {Grid2 as Grid, Typography} from "@mui/material";
+import {Box, Grid2 as Grid, Typography} from "@mui/material";
 import MoveData from "./components/MoveData/MoveData.tsx";
 import MoveEffects from "./components/MoveEffects/MoveEffects.tsx";
 import MoveDescriptions from "./components/MoveDescriptions/MoveDescriptions.tsx";
@@ -58,7 +58,18 @@ const Move = () => {
                     gen={data.gen}
                 />
                 <MoveDescriptions type={data.type} entries={data.descriptions}/>
-                <PokemonList data={data.pokemon} header={"Pokemon Learnable By"} />
+                <Box sx={{width: '100%'}}>
+                <Typography variant="h2">Pokemon that learn Move</Typography>
+                <Typography variant="subtitle1" sx={{marginBottom: 2}}>Generalized across all versions</Typography>
+                {
+                    data.pokemonLearnable.map((list, index) => (
+                        <PokemonList data={list.pokemon}
+                                     header={<Typography variant="h3">{`Learnable By ${list.method}`}</Typography> }
+                                     key={index}
+                        />
+                    ))
+                }
+                </Box>
             </Grid>
         </>
     );
