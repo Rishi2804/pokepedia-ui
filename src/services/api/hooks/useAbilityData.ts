@@ -8,7 +8,7 @@ interface IMovesProps {
     abilityIdOrName: string | number;
 }
 
-export const useMoveDetails = ({ abilityIdOrName }: IMovesProps) => {
+export const useAbilityDetails = ({ abilityIdOrName }: IMovesProps) => {
     const [data, setData] = useState<AbilityDetails | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);

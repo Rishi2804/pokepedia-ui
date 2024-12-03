@@ -5,10 +5,17 @@ import {AbilityContainer, AbilityText} from "./styles.ts";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
 import Filters from "../../Pokedex/PokedexPage/Filters/Filters.tsx";
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {navName} from "../../../global/utils.ts";
 
 const AbilityHome = () => {
     const [searchTerm, setSearchTerm] = useState<string>("")
     const { data } = useAbilitiesDetails();
+    const navigate = useNavigate();
+
+    const handleNavigate = (ability: string) => {
+        navigate(`/ability/${navName(ability)}`)
+    }
 
     return (
         <>
@@ -31,7 +38,7 @@ const AbilityHome = () => {
                                     return (
                                         <Grid size={3}>
                                             <AbilityContainer>
-                                                <AbilityText key={index}>{ability.name}</AbilityText>
+                                                <AbilityText onClick={() => handleNavigate(ability.name)} key={index}>{ability.name}</AbilityText>
                                             </AbilityContainer>
                                         </Grid>
                                     )
