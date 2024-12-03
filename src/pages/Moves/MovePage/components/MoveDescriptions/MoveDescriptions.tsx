@@ -15,7 +15,7 @@ interface IMoveDescriptionsProps {
 const MoveDescriptions: FC<IMoveDescriptionsProps> = ({type, entries}) => {
     return (
         <Grid size={{xs: 12}}>
-            <Typography variant="h2" sx={{marginBottom: 2}}>Descriptions</Typography>
+            <Typography variant="h2" sx={{marginBottom: 2}} id={"Descriptions"}>Descriptions</Typography>
             <EntriesContainer type={type}>
                 <Stack spacing={2}>
                 {

@@ -8,6 +8,7 @@ import MoveData from "./components/MoveData/MoveData.tsx";
 import MoveEffects from "./components/MoveEffects/MoveEffects.tsx";
 import MoveDescriptions from "./components/MoveDescriptions/MoveDescriptions.tsx";
 import PokemonList from "../../../components/PokemonList/PokemonList.tsx";
+import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
 
 
 const Move = () => {
@@ -35,10 +36,13 @@ const Move = () => {
         return null;
     }
 
+    const sections = ["Data", "Effects", "Descriptions", ...data.pokemonLearnable.map(list => `Learnable By ${list.method}`)]
+
     return (
         <>
             <MetaData pageTitle={`${formatText(data.name)} | PokePedia`} />
             <Typography variant="h1" textAlign={"center"} sx={{marginTop: 3}}>{data.name}</Typography>
+            <QuickScroll items={sections} heading={"Content:"} />
             <Grid container spacing={4} sx={{paddingTop: 4}}>
                 <MoveData
                     type={data.type}
@@ -64,7 +68,9 @@ const Move = () => {
                 {
                     data.pokemonLearnable.map((list, index) => (
                         <PokemonList data={list.pokemon}
-                                     header={<Typography variant="h3">{`Learnable By ${list.method}`}</Typography> }
+                                     header={<Typography variant="h3" id={`Learnable By ${list.method}`}>
+                                         {`Learnable By ${list.method}`}
+                                            </Typography> }
                                      key={index}
                         />
                     ))

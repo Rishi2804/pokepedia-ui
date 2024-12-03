@@ -17,7 +17,7 @@ const MoveData: FC<IMoveDataProps> = ({type, category, power, accuracy, pp}) => 
     return (
         <Grid size={{xs: 12, sm: 4}}>
             <Stack divider={<Divider orientation={"horizontal"} flexItem/>  }>
-                <Typography variant="h2" sx={{marginBottom: 2}}>Data</Typography>
+                <Typography variant="h2" sx={{marginBottom: 2}} id={"Data"}>Data</Typography>
                 <MType type={type} />
                 <MClass mclass={category} />
                 <MAttribute title={"Power"} value={power} />

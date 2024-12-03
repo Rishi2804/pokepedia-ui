@@ -26,7 +26,7 @@ const MoveEffects: FC<IMoveEffectsProps> = ({id, type, effect, pastMoveValues, c
 
     return (
         <Grid size={{xs: 12, sm: 8}}>
-            <Typography variant="h2" sx={{marginBottom: 1}}>Effects</Typography>
+            <Typography variant="h2" sx={{marginBottom: 1}} id={"Effects"}>Effects</Typography>
             <Typography sx={{marginBottom: 2}}>{effect ?? "No effect currently listed"}</Typography>
             {!!filteredHistory.length && <>
                 <Typography variant="h3">History</Typography>
