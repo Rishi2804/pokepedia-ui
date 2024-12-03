@@ -2,6 +2,10 @@ import {PokemonType} from "./enums.ts";
 import {TypeDefences} from "./types.ts";
 
 export function formatText(name: string): string {
+    if (name === 'jangmo-o' || name === 'hakamo-o' || name === 'kommo-o') {
+        return name.charAt(0).toUpperCase() + name.slice(1)
+    }
+
     return name.split('-')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
