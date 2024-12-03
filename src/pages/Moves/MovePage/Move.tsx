@@ -13,24 +13,7 @@ import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
 
 const Move = () => {
     const { id } = useParams();
-    const [searchParams, setSearchParams] = useSearchParams();
     const { data } = useMoveDetails({moveIdOrName: id ?? 0})
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (id && !isNaN(Number(id))) {
-            setSearchParams({ id: id }, {replace: true});
-        } else {
-            setSearchParams({}, {replace: true});
-        }
-    }, [id, searchParams]);
-
-    useEffect(() => {
-        if (id && !isNaN(Number(id)) && data) {
-            const moveName = data.name.toLowerCase().replace(" ", "-");
-            navigate(`/move/${moveName}`, { replace: true });
-        }
-    }, [id, data, navigate]);
 
     if (!data) {
         return null;

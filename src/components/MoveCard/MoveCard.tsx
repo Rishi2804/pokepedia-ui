@@ -5,6 +5,7 @@ import {Box, Typography} from "@mui/material";
 import TypeIcon from "../TypeIcon/TypeIcon.tsx";
 import MoveClassIcon from "../MoveClassIcon/MoveClassIcon.tsx";
 import {useNavigate} from "react-router-dom";
+import {navName} from "../../global/utils.ts";
 
 interface IMoveCardProps {
     move: PokemonMoveSnapshot | MoveSnapshot
@@ -18,7 +19,7 @@ const MoveCard: FC<IMoveCardProps> = ({ move }) => {
     const naviagate = useNavigate()
 
     const handleNavigate = () => {
-        naviagate(`/move/${move.id}`)
+        naviagate(`/move/${navName(move.name)}`)
     }
 
     return (
