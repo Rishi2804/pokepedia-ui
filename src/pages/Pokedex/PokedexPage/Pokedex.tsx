@@ -11,6 +11,7 @@ import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
 import Filters from "../../../components/Filters/Filters.tsx";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
 import {VersionToHeaderText} from "./utils.ts";
+import Loading from "../../../containers/loading/Loading.tsx";
 
 const Pokedex = () => {
     const { pokedexVersion: dex } =  useParams<{ pokedexVersion: PokedexVersion }>()
@@ -28,7 +29,13 @@ const Pokedex = () => {
         }
     }, [])
 
-    const { data } = usePokedexDetails({pokedexes: dexes});
+    const { data, loading } = usePokedexDetails({pokedexes: dexes});
+
+    if (loading) {
+        return (
+            <Loading />
+        )
+    }
 
     return (
         <>

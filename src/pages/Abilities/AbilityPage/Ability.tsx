@@ -6,10 +6,17 @@ import AbilityEffects from "./components/AbilityEffects/AbilityEffects.tsx";
 import AbilityDescriptions from "./components/AbilityDescriptions/AbilityDescriptions.tsx";
 import PokemonList from "../../../components/PokemonList/PokemonList.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
+import Loading from "../../../containers/loading/Loading.tsx";
 
 const Ability = () => {
     const { id } = useParams();
-    const { data } = useAbilityDetails({abilityIdOrName: id ?? 0})
+    const { data, loading } = useAbilityDetails({abilityIdOrName: id ?? 0})
+
+    if (loading) {
+        return (
+            <Loading />
+        )
+    }
 
     if (!data) return null
 

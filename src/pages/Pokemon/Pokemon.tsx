@@ -16,11 +16,12 @@ import Learnset from "./components/Learnset/Learnset.tsx";
 import {ArrowBack, ArrowForward} from '@mui/icons-material';
 import QuickScroll from "../../components/QuickScroll/QuickScroll.tsx";
 import PokemonImages from "./components/PokemonImages/PokemonImages.tsx";
+import Loading from "../../containers/loading/Loading.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
-    const { data } = useSpeciesDetails({speciesIdOrName: id ?? 0})
+    const { data, loading } = useSpeciesDetails({speciesIdOrName: id ?? 0})
     const [i, setI] = useState<number>(0)
     const navigate = useNavigate()
 
@@ -49,6 +50,12 @@ const Pokemon = () => {
 
     const handleNavigate = (id: number) => {
         navigate(`/pokemon/${id}`);
+    }
+
+    if (loading) {
+        return (
+            <Loading />
+        )
     }
 
     if (!data) {

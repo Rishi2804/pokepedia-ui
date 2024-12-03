@@ -8,11 +8,18 @@ import MoveEffects from "./components/MoveEffects/MoveEffects.tsx";
 import MoveDescriptions from "./components/MoveDescriptions/MoveDescriptions.tsx";
 import PokemonList from "../../../components/PokemonList/PokemonList.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
+import Loading from "../../../containers/loading/Loading.tsx";
 
 
 const Move = () => {
     const { id } = useParams();
-    const { data } = useMoveDetails({moveIdOrName: id ?? 0})
+    const { data, loading } = useMoveDetails({moveIdOrName: id ?? 0})
+
+    if (loading) {
+        return (
+            <Loading />
+        )
+    }
 
     if (!data) {
         return null;

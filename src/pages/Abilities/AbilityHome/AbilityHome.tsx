@@ -7,14 +7,21 @@ import Filters from "../../../components/Filters/Filters.tsx";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {navName} from "../../../global/utils.ts";
+import Loading from "../../../containers/loading/Loading.tsx";
 
 const AbilityHome = () => {
     const [searchTerm, setSearchTerm] = useState<string>("")
-    const { data } = useAbilitiesDetails();
+    const { data, loading } = useAbilitiesDetails();
     const navigate = useNavigate();
 
     const handleNavigate = (ability: string) => {
         navigate(`/ability/${navName(ability)}`)
+    }
+
+    if (loading) {
+        return (
+            <Loading />
+        )
     }
 
     return (
