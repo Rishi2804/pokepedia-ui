@@ -23,7 +23,7 @@ const Move = () => {
     return (
         <>
             <MetaData pageTitle={`${formatText(data.name)} | PokePedia`} />
-            <Typography variant="h1" textAlign={"center"} sx={{marginTop: 3}}>{data.name}</Typography>
+            <Typography variant="h1" textAlign={"center"} sx={{marginTop: 3, marginBottom: 3}}>{data.name}</Typography>
             <QuickScroll items={sections} heading={"Content:"} />
             <Grid container spacing={4} sx={{paddingTop: 4}}>
                 <MoveData
