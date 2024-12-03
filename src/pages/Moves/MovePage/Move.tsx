@@ -1,6 +1,5 @@
-import {useNavigate, useParams, useSearchParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {useMoveDetails} from "../../../services/api/hooks/useMoveData.ts";
-import {useEffect} from "react";
 import {formatText} from "../../../global/utils.ts";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
 import {Box, Grid2 as Grid, Typography} from "@mui/material";
