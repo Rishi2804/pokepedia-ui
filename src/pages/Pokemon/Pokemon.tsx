@@ -6,16 +6,16 @@ import {useEffect, useState} from "react";
 import PokemonImg from "../../components/PokemonImg/PokemonImg.tsx";
 import {formatText} from "../../global/utils.ts";
 import MetaData from "../../components/MetaData/MetaData.tsx";
-import FormTabs from "./FormTabs/FormTabs.tsx";
-import PokedexData from "./PokedexData/PokedexData.tsx";
-import BaseStats from "./BaseStats/BaseStats.tsx";
-import TypeDefenses from "./TypeDefenses/TypeDefenses.tsx";
-import EvolutionData from "./EvolutionData/EvolutionData.tsx";
-import PokedexEntries from "./PokedexEntries/PokedexEntries.tsx";
-import Learnset from "./Learnset/Learnset.tsx";
+import FormTabs from "./components/FormTabs/FormTabs.tsx";
+import PokedexData from "./components/PokedexData/PokedexData.tsx";
+import BaseStats from "./components/BaseStats/BaseStats.tsx";
+import TypeDefenses from "./components/TypeDefenses/TypeDefenses.tsx";
+import EvolutionData from "./components/EvolutionData/EvolutionData.tsx";
+import PokedexEntries from "./components/PokedexEntries/PokedexEntries.tsx";
+import Learnset from "./components/Learnset/Learnset.tsx";
 import {ArrowBack, ArrowForward} from '@mui/icons-material';
 import QuickScroll from "../../components/QuickScroll/QuickScroll.tsx";
-import PokemonImages from "./PokemonImages/PokemonImages.tsx";
+import PokemonImages from "./components/PokemonImages/PokemonImages.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();

@@ -1,4 +1,4 @@
-import {PokemonType} from "../../../global/enums.ts";
+import {PokemonType} from "../../../../global/enums.ts";
 import {FC} from "react";
 import {Divider, Grid2 as Grid, Stack, Typography} from "@mui/material";
 import GenderRatio from "./components/GenderRatio.tsx";

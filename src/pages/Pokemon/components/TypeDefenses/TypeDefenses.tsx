@@ -1,6 +1,6 @@
 import {FC} from "react";
-import {PokemonType} from "../../../global/enums.ts";
-import {getTypeDefenses} from "../../../global/utils.ts";
+import {PokemonType} from "../../../../global/enums.ts";
+import {getTypeDefenses} from "../../../../global/utils.ts";
 import {Grid2 as Grid, Stack, Typography} from "@mui/material";
 import DefenseRow from "./DefenseRow.tsx";
 

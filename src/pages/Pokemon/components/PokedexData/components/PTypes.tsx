@@ -1,8 +1,8 @@
 import {FC} from "react";
 import {Stack, Typography} from "@mui/material";
 import {InfoSection} from "../styles.tsx";
-import TypeIcon from "../../../../components/TypeIcon/TypeIcon.tsx";
-import {PokemonType} from "../../../../global/enums.ts";
+import TypeIcon from "../../../../../components/TypeIcon/TypeIcon.tsx";
+import {PokemonType} from "../../../../../global/enums.ts";
 
 interface IPTypesProps {
     type1: PokemonType;

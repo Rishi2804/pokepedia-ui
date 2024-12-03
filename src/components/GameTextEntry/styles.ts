@@ -1,7 +1,7 @@
 import {styled} from "@mui/system";
 import {Box} from "@mui/material";
 import {Game} from "../../global/enums.ts";
-import {gameToColorMap, gameToTextColor} from "../../pages/Pokemon/PokedexEntries/constants.ts";
+import {gameToColorMap, gameToTextColor} from "../../pages/Pokemon/components/PokedexEntries/constants.ts";
 
 export const EntryBox = styled(Box)(({theme}) => ({
     backgroundColor: theme.palette.background.paper,

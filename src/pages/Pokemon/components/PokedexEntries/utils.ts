@@ -1,7 +1,7 @@
-import {Game, PokedexRegion} from "../../../global/enums.ts";
+import {Game, PokedexRegion} from "../../../../global/enums.ts";
 import {IDexEntry, IDexNum} from "./types.ts";
 import {DexToRegionMapping} from "./constants.ts";
-import {formatText} from "../../../global/utils.ts";
+import {formatText} from "../../../../global/utils.ts";
 
 export function categorizedDexEntries(gen: number, dexEntries: IDexEntry[], dexNumbers: IDexNum[]) {
     const categories = []

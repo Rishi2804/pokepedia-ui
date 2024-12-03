@@ -2,7 +2,7 @@ import {FC} from "react";
 import {EvolutionLine} from "./types.ts";
 import {Grid2 as Grid, Stack, Typography} from "@mui/material";
 import {getEvolutionTree} from "./utils.ts";
-import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
+import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import {LinesContainer, PokemonBox} from "./styles.ts";
 import EvolutionStep from "./EvolutionStep.tsx";
 import {useNavigate} from "react-router-dom";

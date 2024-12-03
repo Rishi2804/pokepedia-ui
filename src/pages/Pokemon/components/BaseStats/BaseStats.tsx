@@ -1,6 +1,6 @@
 import {FC} from "react";
 import {Divider, Grid2 as Grid, Stack, Typography} from "@mui/material";
-import {PokemonType} from "../../../global/enums.ts";
+import {PokemonType} from "../../../../global/enums.ts";
 import StatSection from "./components/StatSection.tsx";
 import InfoSection from "./components/InfoSection.tsx";
 

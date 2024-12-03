@@ -1,7 +1,7 @@
 import {styled} from "@mui/system";
 import {Box, Stack} from "@mui/material";
-import {PokemonType} from "../../../../global/enums.ts";
-import {TypeToCardBorder, TypeToCardColor} from "../../../../global/utils.ts";
+import {PokemonType} from "../../../../../global/enums.ts";
+import {TypeToCardBorder, TypeToCardColor} from "../../../../../global/utils.ts";
 
 interface StatRowProps {
     children?: React.ReactNode;

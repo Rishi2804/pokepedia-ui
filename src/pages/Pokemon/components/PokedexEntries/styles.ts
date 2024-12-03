@@ -1,7 +1,7 @@
 import {styled} from "@mui/system";
 import {Box, Typography} from "@mui/material";
-import {TypeToCardBorder, TypeToCardColor} from "../../../global/utils.ts";
-import {PokemonType} from "../../../global/enums.ts";
+import {TypeToCardBorder, TypeToCardColor} from "../../../../global/utils.ts";
+import {PokemonType} from "../../../../global/enums.ts";
 import {genToColorMap, regionToColorMap} from "./constants.ts";
 
 interface ContainerProps {

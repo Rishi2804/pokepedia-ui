@@ -1,7 +1,7 @@
 import {Box, Divider, Grid2 as Grid, Stack, Typography} from "@mui/material";
 import {FC} from "react";
 import {Game, PokemonType, VersionGroup} from "../../../../../global/enums.ts";
-import {gameToColorMap} from "../../../../Pokemon/PokedexEntries/constants.ts";
+import {gameToColorMap} from "../../../../Pokemon/components/PokedexEntries/constants.ts";
 import {getZMovePower, typeToZCrystal, typeToZMove} from "./utils.ts";
 
 interface IMoveEffectsProps {

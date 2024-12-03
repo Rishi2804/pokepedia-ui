@@ -1,7 +1,7 @@
 import {FC} from "react";
 import {Box, Typography} from "@mui/material";
 import {StatBar, StatRow} from "./styles.tsx";
-import {PokemonType} from "../../../../global/enums.ts";
+import {PokemonType} from "../../../../../global/enums.ts";
 
 interface IDexNumberProps {
     stat: number;

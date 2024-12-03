@@ -3,7 +3,7 @@ import {TreeEdge} from "./types.ts";
 import {FC} from "react";
 import {PokemonBox, StepBox} from "./styles.ts";
 import EastIcon from '@mui/icons-material/East';
-import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
+import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import {useNavigate} from "react-router-dom";
 
 interface IEvolutionStepProps {

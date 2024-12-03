@@ -2,7 +2,7 @@ import {FC} from "react";
 import {Stack, Typography} from "@mui/material";
 import {AbilityText, InfoSection} from "../styles.tsx";
 import {useNavigate} from "react-router-dom";
-import {navName} from "../../../../global/utils.ts";
+import {navName} from "../../../../../global/utils.ts";
 
 interface IAbilitiesProps {
     abilities: {

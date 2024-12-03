@@ -1,12 +1,12 @@
 import {Box, Grid2 as Grid, SelectChangeEvent, Typography} from "@mui/material";
-import {Moveset} from "../../../global/types.ts";
+import {Moveset} from "../../../../global/types.ts";
 import {FC, useEffect, useState} from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import {VersionGroup} from "../../../global/enums.ts";
+import {VersionGroup} from "../../../../global/enums.ts";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import MoveList from "../../../components/MoveList/MoveList.tsx";
+import MoveList from "../../../../components/MoveList/MoveList.tsx";
 
 interface ILearnsetProps {
     learnset: Moveset[];

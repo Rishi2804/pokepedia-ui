@@ -1,7 +1,7 @@
 import {FC} from "react";
-import {femaleImgs} from "../../../components/PokemonImg/constants.ts";
+import {femaleImgs} from "../../../../components/PokemonImg/constants.ts";
 import {Box, Grid2 as Grid, Typography} from "@mui/material";
-import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
+import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import {styled} from "@mui/system";
 
 interface IPokemonImagesProps {

@@ -2,7 +2,7 @@ import {Box, Grid2 as Grid, Stack, Typography} from "@mui/material";
 import {FC} from "react";
 import {IDexEntry, IDexNum} from "./types.ts";
 import {categorizedDexEntries} from "./utils.ts";
-import {PokemonType} from "../../../global/enums.ts";
+import {PokemonType} from "../../../../global/enums.ts";
 import {
     EmptyBox,
     EntriesContainer,
@@ -10,7 +10,7 @@ import {
     UpperCardContainer,
     UpperCardText
 } from "./styles.ts";
-import GameTextEntry from "../../../components/GameTextEntry/GameTextEntry.tsx";
+import GameTextEntry from "../../../../components/GameTextEntry/GameTextEntry.tsx";
 
 interface IPokedexEntriesProps {
     gen: number
