@@ -1,21 +1,52 @@
-import {FC} from "react";
+import {FC, useEffect, useState} from "react";
 import {PokemonType} from "../../../../global/enums.ts";
-import {getTypeDefenses} from "../../../../global/utils.ts";
-import {Grid2 as Grid, Stack, Typography} from "@mui/material";
+import {abilityImmunities, getTypeDefenses} from "../../../../global/utils.ts";
+import {Box, Grid2 as Grid, Stack, Typography} from "@mui/material";
 import DefenseRow from "./DefenseRow.tsx";
+import {TypeDefences} from "../../../../global/types.ts";
+import FormTabs from "../FormTabs/FormTabs.tsx";
 
 interface IDexNumberProps {
     type1: PokemonType;
     type2: PokemonType | null;
+    abilities: {
+        id: number;
+        name: string;
+    }[];
 }
 
-const TypeDefenses: FC<IDexNumberProps> = ({type1, type2}) => {
-    const defences = getTypeDefenses(type1, type2)
+const TypeDefenses: FC<IDexNumberProps> = ({type1, type2, abilities}) => {
+    const [list, setList] = useState([{id: 0, name: "Regular"}]);
+    const [i, setI] = useState<number>(0)
+    const [defences, setDefences] = useState<TypeDefences>(getTypeDefenses(type1, type2, list[i].id))
+
+    useEffect(() => {
+        const filteredList = abilities.filter(ability => {
+            return Object.keys(abilityImmunities).includes(String(ability.id));
+        });
+        if (filteredList.length < abilities.length) {
+            filteredList.unshift({id: 0, name: "Regular"});
+        }
+        setI(0);
+        setList(filteredList);
+    }, [abilities]);
+
+    useEffect(() => {
+        setDefences(getTypeDefenses(type1, type2, list[i].id))
+    }, [i, list]);
 
     return (
         <Grid size={{xs: 12, sm: 5}} id={"Type Defenses"}>
-            <Typography variant="h2" marginBottom={2}>Type Defenses</Typography>
-            <Stack spacing={1}>
+            <Typography variant="h2">Type Defenses</Typography>
+            <Box sx={{marginTop: 2}}>
+                <FormTabs
+                    condensed
+                    forms={list.map(ability => ability.name)}
+                    i={i}
+                    setI={setI}
+                />
+            </Box>
+            <Stack spacing={1} sx={{marginTop: 2}}>
                 <DefenseRow mult={"2"} types={defences.x2}/>
                 <DefenseRow mult={"4"} types={defences.x4}/>
                 <DefenseRow mult={"0"} types={defences.x0}/>

@@ -238,7 +238,20 @@ const typeMap: Record<PokemonType, TypeInfo> = {
     },
 };
 
-export function getTypeDefenses(type1: PokemonType, type2: PokemonType | null) {
+export const abilityImmunities: Record<number, PokemonType | null> = {
+    87: PokemonType.WATER, // Dry Skin
+    18: PokemonType.FIRE, // Flash Fire
+    26: PokemonType.GROUND, // Levitate
+    31: PokemonType.ELECTRIC, // Lightning Rod
+    78: PokemonType.ELECTRIC, // Motor Drive
+    157: PokemonType.GRASS, // Sap Sipper
+    114: PokemonType.WATER, // Storm Drain
+    10: PokemonType.ELECTRIC, // Volt Absorb
+    11: PokemonType.WATER, // Water Absorb
+    25: null, // Wonder Guard
+}
+
+export function getTypeDefenses(type1: PokemonType, type2: PokemonType | null, abilityId?: number) {
     const res: TypeDefences = {
         x0: [],
         x1_4: [],
@@ -246,10 +259,39 @@ export function getTypeDefenses(type1: PokemonType, type2: PokemonType | null) {
         x2: [],
         x4: []
     }
+
+    const handleabilityImmunity = () => {
+        // immunities provided by ability
+        if (abilityId && abilityImmunities[abilityId]) {
+            const immunityType = abilityImmunities[abilityId];
+
+            // Remove the immunityType from each of the arrays in `res`
+            res.x0 = res.x0.filter(type => type !== immunityType);
+            res.x1_4 = res.x1_4.filter(type => type !== immunityType);
+            res.x1_2 = res.x1_2.filter(type => type !== immunityType);
+            res.x2 = res.x2.filter(type => type !== immunityType);
+            res.x4 = res.x4.filter(type => type !== immunityType);
+
+            res.x0.push(immunityType)
+        }
+
+        if (abilityId === 25) { // Wonder Guard
+            const newX0: PokemonType[] = []
+            for (const type of Object.values(PokemonType)) {
+                if (res.x2.includes(type) || res.x4.includes(type)) continue;
+                newX0.push(type)
+            }
+            res.x1_2 = []
+            res.x1_4 = []
+            res.x0 = newX0;
+        }
+    }
+
     if (!type2) {
         res.x0 = typeMap[type1].immune_to
         res.x1_2 = typeMap[type1].resistant_to
         res.x2 = typeMap[type1].weak_against
+        handleabilityImmunity()
         return res
     }
 
@@ -277,7 +319,6 @@ export function getTypeDefenses(type1: PokemonType, type2: PokemonType | null) {
             res.x1_2.push(type)
         }
     }
-
+    handleabilityImmunity()
     return res
-
 }

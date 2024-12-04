@@ -5,9 +5,10 @@ interface IFormTabsProps {
     forms: string[];
     i: number;
     setI: (i: number) => void;
+    condensed?: boolean;
 }
 
-const FormTabs: FC<IFormTabsProps> = ({forms, i, setI}) => {
+const FormTabs: FC<IFormTabsProps> = ({forms, i, setI, condensed}) => {
     if (forms.length <= 1) return null;
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -15,7 +16,7 @@ const FormTabs: FC<IFormTabsProps> = ({forms, i, setI}) => {
     }
 
     return (
-        <StyledTabs value={i} onChange={handleChange}>
+        <StyledTabs value={i} onChange={handleChange} condensed={condensed}>
             {
                 forms.map((pokemon) => (
                     <StyledTab label={pokemon} key={pokemon}/>
