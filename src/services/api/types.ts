@@ -100,6 +100,11 @@ export interface IPokemonSnapshot {
     type2: keyof typeof PokemonType | null;
 }
 
+export interface IPokedexDetails {
+    name: string;
+    pokemon: IPokemonSnapshot[];
+}
+
 export interface IMoveSnapshot {
     id: number;
     name: string;

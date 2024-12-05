@@ -9,6 +9,11 @@ export interface PokemonSnapshot {
     type2: PokemonType | null;
 }
 
+export interface PokedexDetails {
+    name: string;
+    pokemon: PokemonSnapshot[];
+}
+
 interface PokemonAbility {
     abilityId: number;
     abilityName: string;
@@ -145,4 +150,24 @@ export interface TypeDefences {
     x1_2: PokemonType[],
     x2: PokemonType[],
     x4: PokemonType[]
+}
+
+export interface PokemonTeamMember {
+    id: number;
+    name: string;
+    shiny?: boolean;
+    female?: boolean;
+    ability: string;
+    moves?: {
+        name: string;
+        type: PokemonType;
+        moveClass: MoveClass;
+    }[];
+}
+
+export interface PokemonTeam {
+    id: number;
+    name: string;
+    version: VersionGroup;
+    pokemon: PokemonTeamMember[];
 }
