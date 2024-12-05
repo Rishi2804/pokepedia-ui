@@ -25,13 +25,18 @@ export const usePokedexDetails = ({ pokedex }: IPokedexProps) => {
             setLoading(true);
             setError(null);
 
-            const response = await makeGetRequest(`${ENDPOINTS.GET_POKEMON}/${pokedex}`);
-
-            if (response.ok) {
-                setData(prepareForUI(response.data))
+            try {
+                const response = await makeGetRequest(`${ENDPOINTS.GET_POKEMON}/${pokedex}`);
+                if (response.ok) {
+                    setData(prepareForUI(response.data))
+                } else {
+                    setError('An unknown error occurred');
+                }
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'An unknown error occurred');
+            } finally {
+                setLoading(false);
             }
-
-            setLoading(false);
         };
 
         fetch();

@@ -17,14 +17,16 @@ const Pokedex = () => {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [typefilters, settypefilters] = useState<PokemonType[]>([])
 
-    const { data, loading } = usePokedexDetails({pokedex: dex ?? 'national'});
-
-
+    const { data, loading, error } = usePokedexDetails({pokedex: dex ?? 'national'});
 
     if (loading) {
         return (
             <Loading />
         )
+    }
+
+    if (error) {
+        throw new Error("No such Pokedex exists");
     }
 
     return (
