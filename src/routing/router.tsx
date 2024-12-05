@@ -9,6 +9,8 @@ import Move from "../pages/Moves/MovePage/Move.tsx";
 import AbilityHome from "../pages/Abilities/AbilityHome/AbilityHome.tsx";
 import Ability from "../pages/Abilities/AbilityPage/Ability.tsx";
 import ErrorPage from "../containers/error/ErrorPage.tsx";
+import TeamsHome from "../pages/TeamBuilder/TeamsHome/TeamsHome.tsx";
+import TeamSelection from "../pages/TeamBuilder/TeamPage/TeamSelection.tsx";
 
 export const router = createBrowserRouter([{
         element: <Layout/>,
@@ -52,6 +54,16 @@ export const router = createBrowserRouter([{
                 path: "/ability/:id",
                 errorElement: <ErrorPage />,
                 element: <Ability />
+            },
+            {
+                path: "/team-builder",
+                errorElement: <ErrorPage />,
+                element: <TeamsHome />
+            },
+            {
+                path: "/team-builder/new/:versionGroup",
+                errorElement: <ErrorPage />,
+                element: <TeamSelection />
             }
         ]
 }])

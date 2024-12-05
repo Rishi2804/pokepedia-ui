@@ -11,7 +11,7 @@ const AppHeader: React.FC = () => {
         'Pokedex': '/pokedex',
         'Moves': '/attackdex',
         'Abilities': '/ability',
-        'Team Builder': '/',
+        'Team Builder': '/team-builder',
     };
 
     const handleNavigation = (page: string) => {
