@@ -12,4 +12,6 @@ export const ENDPOINTS = {
     GET_MOVE: `${API_POKEMON_ROOT_URL}/move`,
 
     GET_ABILITY: `${API_POKEMON_ROOT_URL}/ability`,
+
+    GET_TEAM_CANDIDATES: `${API_POKEMON_ROOT_URL}/team-building`,
 }

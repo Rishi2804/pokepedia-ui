@@ -152,13 +152,37 @@ export interface TypeDefences {
     x4: PokemonType[]
 }
 
+export interface TeamCandidate {
+    id: number;
+    name: string;
+    type1: PokemonType;
+    type2: PokemonType | null;
+    gen: number;
+    abilities: {
+        id: number;
+        name: string;
+    }[];
+    moves: {
+        id: number;
+        name: string;
+        type: PokemonType;
+        moveClass: MoveClass;
+    }[];
+}
+
 export interface PokemonTeamMember {
     id: number;
     name: string;
     shiny?: boolean;
     female?: boolean;
-    ability: string;
-    moves?: {
+    type1: PokemonType;
+    type2: PokemonType | null;
+    ability: {
+        id: number;
+        name: string;
+    };
+    moves: {
+        id: number;
         name: string;
         type: PokemonType;
         moveClass: MoveClass;

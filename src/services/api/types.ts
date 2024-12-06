@@ -164,3 +164,21 @@ export interface IAbilityDetails {
     descriptions: IGroupedDescription[];
     pokemon: IPokemonSnapshot[]
 }
+
+export interface ITeamCandidate {
+    id: number;
+    name: string;
+    type1: keyof typeof PokemonType;
+    type2: keyof typeof PokemonType;
+    gen: number;
+    abilities: {
+        id: number;
+        name: string;
+    }[];
+    moves: {
+        id: number;
+        name: string;
+        type: keyof typeof PokemonType;
+        moveClass: keyof typeof MoveClass;
+    }[];
+}
