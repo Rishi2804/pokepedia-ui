@@ -182,3 +182,8 @@ export interface ITeamCandidate {
         moveClass: keyof typeof MoveClass;
     }[];
 }
+
+export interface ICandidatesList {
+    listName: string;
+    pokemon: ITeamCandidate[];
+}

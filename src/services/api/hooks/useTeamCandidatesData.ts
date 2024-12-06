@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import { makeGetRequest } from "../api.servies.ts";
 import { ENDPOINTS } from "../constants.ts";
 import { prepareForUI } from "../transformers/teamCandidatesTransformer.ts";
-import {TeamCandidate} from "../../../global/types.ts";
+import {CandidatesList} from "../../../global/types.ts";
 
 interface IPokedexProps {
     versionString: string;
 }
 
 export const useTeamCandidatesDetails = ({ versionString }: IPokedexProps) => {
-    const [data, setData] = useState<TeamCandidate[]>([]);
+    const [data, setData] = useState<CandidatesList[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 

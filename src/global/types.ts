@@ -170,6 +170,11 @@ export interface TeamCandidate {
     }[];
 }
 
+export interface CandidatesList {
+    listName: string;
+    pokemon: TeamCandidate[]
+}
+
 export interface PokemonTeamMember {
     id: number;
     name: string;
