@@ -9,8 +9,17 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import MoveAutoComplete from "./MoveAutoComplete.tsx";
 import TypeIcon from "../../../../components/TypeIcon/TypeIcon.tsx";
+import ActionButtons from "./ActionButtons.tsx";
+import {FC} from "react";
 
-const TeamView = () => {
+interface TeamViewProps {
+    editMode: boolean;
+    setEditMode: (mode: boolean) => void;
+    advancedOptions: boolean;
+    setAdvancedOptions: (mode: boolean) => void;
+}
+
+const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, setAdvancedOptions}) => {
     const { currentSelection, currentTeam, removePokemon, editPokemon } = useTeamStore();
 
     const toggleShiny = (index: number, mon: PokemonTeamMember, shiny: boolean) => {
@@ -39,6 +48,10 @@ const TeamView = () => {
         })
     }
 
+    const handleRemove = (index: number) => {
+        if (editMode) removePokemon(index)
+    }
+
     return (
         <Paper sx={{padding: 4, marginBottom: 3}}>
             <Grid container spacing={0.5}>
@@ -50,7 +63,7 @@ const TeamView = () => {
 
                             return (
                                 <Grid size={{xs: 2}} key={i}>
-                                    <Card type1={pokemon.type1} type2={pokemon.type2} member onClick={() => removePokemon(i)} sx={{marginBottom: 1}}>
+                                    <Card type1={pokemon.type1} type2={pokemon.type2} member onClick={() => handleRemove(i)} sx={{marginBottom: 1}}>
                                         <PokemonImg id={pokemon.id} shiny={pokemon.shiny}/>
                                     </Card>
                                     <MemberInfo type1={pokemon.type1} type2={pokemon.type2}>
@@ -63,35 +76,43 @@ const TeamView = () => {
                                             selected={pokemon.shiny}
                                             onChange={() => toggleShiny(i, pokemon, !pokemon.shiny)}
                                             value="shiny"
+                                            disabled={!editMode}
                                         >
                                             <AutoAwesomeIcon sx={{width: 20, height: 20}}/>
                                         </ShinyButton>
-                                        <FormControl fullWidth>
-                                            <StaticLabel>Ability</StaticLabel>
-                                            <Select
-                                                variant="outlined"
-                                                value={pokemon.ability.id}
-                                                onChange={(event) => handleAbilityChange(event, i, pokemon)}
-                                                input={<AbilityInput />}
-                                            >
-                                                {
-                                                    selection.abilities.map((ability) => (
-                                                        <MenuItem value={ability.id} key={ability.id}>{ability.name}</MenuItem>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </FormControl>
                                         {
-                                            [...Array(4)].map((_, mI) => {
-                                                return (
-                                                    <MoveAutoComplete
-                                                        movesList={selection.moves}
-                                                        label={`Move ${mI+1}`}
-                                                        currentMove={pokemon.moves[mI]}
-                                                        updateMove={(move: TeamMove | null) => handleMoveChange(i, pokemon, mI, move)}
-                                                    />
-                                                )
-                                            })
+                                            advancedOptions &&
+                                            <>
+                                            <FormControl fullWidth>
+                                                <StaticLabel>Ability</StaticLabel>
+                                                <Select
+                                                    variant="outlined"
+                                                    value={pokemon.ability.id}
+                                                    onChange={(event) => handleAbilityChange(event, i, pokemon)}
+                                                    input={<AbilityInput />}
+                                                    disabled={!editMode}
+                                                >
+                                                    {
+                                                        selection.abilities.map((ability) => (
+                                                            <MenuItem value={ability.id} key={ability.id}>{ability.name}</MenuItem>
+                                                        ))
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                            {
+                                                [...Array(4)].map((_, mI) => {
+                                                    return (
+                                                        <MoveAutoComplete
+                                                            editMode={editMode}
+                                                            movesList={selection.moves}
+                                                            label={`Move ${mI+1}`}
+                                                            currentMove={pokemon.moves[mI]}
+                                                            updateMove={(move: TeamMove | null) => handleMoveChange(i, pokemon, mI, move)}
+                                                        />
+                                                    )
+                                                })
+                                            }
+                                            </>
                                         }
                                     </MemberInfo>
                                 </Grid>
@@ -111,6 +132,12 @@ const TeamView = () => {
                     })
                 }
             </Grid>
+            <ActionButtons
+                editMode={editMode}
+                setEditMode={setEditMode}
+                advancedOptions={advancedOptions}
+                setAdvancedOptions={setAdvancedOptions}
+            />
         </Paper>
     );
 };

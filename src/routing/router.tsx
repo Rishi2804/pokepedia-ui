@@ -63,7 +63,7 @@ export const router = createBrowserRouter([{
             {
                 path: "/team-builder/new/:versionGroup",
                 errorElement: <ErrorPage />,
-                element: <TeamSelection />
+                element: <TeamSelection isEditMode isCreateFlow />
             }
         ]
 }])

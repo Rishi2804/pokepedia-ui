@@ -4,13 +4,14 @@ import {MoveInput, MoveListBox, MoveOption, StaticLabel} from "../styles.ts";
 import {TeamMove} from "../../../../global/types.ts";
 
 interface MoveAutoCompleteProps {
+    editMode: boolean;
     movesList: TeamMove[];
     label: string
     currentMove: TeamMove | null;
     updateMove: (move: TeamMove | null) => void;
 }
 
-const MoveAutoComplete: FC<MoveAutoCompleteProps> = ({movesList, label, currentMove, updateMove}) => {
+const MoveAutoComplete: FC<MoveAutoCompleteProps> = ({movesList, label, currentMove, updateMove, editMode}) => {
 
     const {
         getRootProps,
@@ -25,7 +26,8 @@ const MoveAutoComplete: FC<MoveAutoCompleteProps> = ({movesList, label, currentM
         options: movesList,
         getOptionLabel: (option) => option.name,
         value: currentMove,
-        onChange: (_, value) => updateMove(value)
+        onChange: (_, value) => updateMove(value),
+        disabled: !editMode
     })
 
     return (

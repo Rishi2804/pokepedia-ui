@@ -52,6 +52,10 @@ export const ShinyButton = styled(ToggleButton)(() => ({
     alignItems: 'center',
     color: '#fff',
     borderWidth: 0,
+    '&:disabled': {
+        color: '#fff',
+        borderWidth: 0,
+    },
     '&.Mui-selected': {
         backgroundColor: "#EA6D24",
         color: '#fff',
@@ -119,7 +123,10 @@ export const AbilityInput = styled(InputBase)(({theme}) => ({
     },
     '& .MuiSvgIcon-root': {
         color: COLORS.WHITE,
-    }
+    },
+    '&.Mui-disabled .MuiInputBase-input': {
+        '-webkit-text-fill-color': COLORS.WHITE,
+    },
 }))
 
 export const MoveInput = styled('input')<{ type?: PokemonType }>(({ type }) => ({
@@ -152,6 +159,7 @@ export const MoveListBox = styled('ul')({
 
 export const MoveOption = styled('li')<{ type: PokemonType }>(({ type }) => ({
     backgroundColor: TypeToCardColor[type],
+    padding: 7,
     '&.Mui-focused': {
         backgroundColor: darken(TypeToCardColor[type], 0.1),
         color: 'white',

@@ -7,14 +7,21 @@ import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
 import TeamView from "./components/TeamView.tsx";
 import {useTeamStore} from "../../../store/teamStore.ts";
 import {PokemonTeamMember, TeamCandidate} from "../../../global/types.ts";
-import {useState} from "react";
+import {FC, useState} from "react";
 import Filters from "../../../components/Filters/Filters.tsx";
 
-const TeamSelection = () => {
+interface TeamSelectionProps {
+    isCreateFlow?: boolean;
+    isEditMode?: boolean;
+}
+
+const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
     const { versionGroup } = useParams();
     const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? ''});
     const { currentTeam, addPokemon } = useTeamStore();
     const [searchTerm, setSearchTerm] = useState<string>("")
+    const [editMode, setEditMode] = useState<boolean>(!!isEditMode)
+    const [advancedOptions, setAdvancedOptions] = useState<boolean>(false)
 
     if (loading && !data.length) {
         return (<Loading />);
@@ -42,8 +49,8 @@ const TeamSelection = () => {
     return (
         <>
                 <Typography variant="h1" sx={{textAlign: "center", padding: 2}}>{currentTeam.name}</Typography>
-                <TeamView />
-                <Paper sx={{ px: 4, py: 2 }}>
+                <TeamView editMode={editMode} setEditMode={setEditMode} advancedOptions={advancedOptions} setAdvancedOptions={setAdvancedOptions}/>
+                <Paper sx={{ px: 4, py: 2, display: editMode ? 'block' : 'none' }}>
                     <Filters searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                 {
                     data.map((list, index) => {
