@@ -7,11 +7,14 @@ import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
 import TeamView from "./components/TeamView.tsx";
 import {useTeamStore} from "../../../store/teamStore.ts";
 import {PokemonTeamMember, TeamCandidate} from "../../../global/types.ts";
+import {useState} from "react";
+import Filters from "../../../components/Filters/Filters.tsx";
 
 const TeamSelection = () => {
     const { versionGroup } = useParams();
     const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? ''});
     const { currentTeam, addPokemon } = useTeamStore();
+    const [searchTerm, setSearchTerm] = useState<string>("")
 
     if (loading && !data.length) {
         return (<Loading />);
@@ -41,6 +44,7 @@ const TeamSelection = () => {
                 <Typography variant="h1" sx={{textAlign: "center", padding: 2}}>{currentTeam.name}</Typography>
                 <TeamView />
                 <Paper sx={{ px: 4, py: 2 }}>
+                    <Filters searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                 {
                     data.map((list, index) => {
                         return (
@@ -49,6 +53,12 @@ const TeamSelection = () => {
                                 <Grid container spacing={1}>
                                 {
                                     list.pokemon.map(mon => {
+                                        if (searchTerm) {
+                                            const regex = new RegExp(searchTerm, "i");
+                                            if (!regex.test(mon.name)) {
+                                                return null;
+                                            }
+                                        }
                                         return (
                                             <Grid size={{xs: 1, sm: (12 / 15)}} key={mon.id}>
                                                 <Card type1={mon.type1} type2={mon.type2} onClick={() => handleAdd(mon)}>

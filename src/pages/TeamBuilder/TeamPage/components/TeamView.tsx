@@ -1,4 +1,4 @@
-import {Grid2 as Grid, Paper, SelectChangeEvent, Typography} from "@mui/material";
+import {Box, Grid2 as Grid, Paper, SelectChangeEvent, Typography} from "@mui/material";
 import {Card, ShinyButton, MemberInfo, AbilityInput, StaticLabel} from "../styles.ts";
 import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import {useTeamStore} from "../../../../store/teamStore.ts";
@@ -8,6 +8,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import MoveAutoComplete from "./MoveAutoComplete.tsx";
+import TypeIcon from "../../../../components/TypeIcon/TypeIcon.tsx";
 
 const TeamView = () => {
     const { currentSelection, currentTeam, removePokemon, editPokemon } = useTeamStore();
@@ -54,12 +55,16 @@ const TeamView = () => {
                                     </Card>
                                     <MemberInfo type1={pokemon.type1} type2={pokemon.type2}>
                                         <Typography variant="h4" color={"#fff"}>{pokemon.name}</Typography>
+                                        <Box sx={{display: 'flex', gap: 1}}>
+                                            <TypeIcon type={pokemon.type1} size={30} variant={"circular"}/>
+                                            {pokemon.type2 && <TypeIcon type={pokemon.type2} size={30} variant={"circular"}/>}
+                                        </Box>
                                         <ShinyButton
                                             selected={pokemon.shiny}
                                             onChange={() => toggleShiny(i, pokemon, !pokemon.shiny)}
                                             value="shiny"
                                         >
-                                            <AutoAwesomeIcon />
+                                            <AutoAwesomeIcon sx={{width: 20, height: 20}}/>
                                         </ShinyButton>
                                         <FormControl fullWidth>
                                             <StaticLabel>Ability</StaticLabel>

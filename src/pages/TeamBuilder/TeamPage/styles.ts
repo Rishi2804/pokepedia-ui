@@ -33,7 +33,8 @@ export const MemberInfo = styled(Paper)<CardProps>(({ type1, type2 }) => ({
     borderRadius: 5,
     borderStyle: "solid",
     display: "flex",
-    padding: 2,
+    paddingTop: 2,
+    paddingBottom: 12,
     paddingRight: 5,
     paddingLeft: 5,
     flexDirection: "column",
@@ -50,6 +51,7 @@ export const ShinyButton = styled(ToggleButton)(() => ({
     justifyContent: 'center',
     alignItems: 'center',
     color: '#fff',
+    borderWidth: 0,
     '&.Mui-selected': {
         backgroundColor: "#EA6D24",
         color: '#fff',
@@ -134,7 +136,7 @@ export const MoveInput = styled('input')<{ type?: PokemonType }>(({ type }) => (
 }))
 
 export const MoveListBox = styled('ul')({
-    zIndex: 1,
+    zIndex: 2,
     overflow: 'scroll',
     width: 170,
     position: 'absolute',
