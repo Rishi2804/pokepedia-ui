@@ -1,5 +1,5 @@
 import {Box, Grid2 as Grid, Paper, SelectChangeEvent, Typography} from "@mui/material";
-import {Card, ShinyButton, MemberInfo, AbilityInput, StaticLabel} from "../styles.ts";
+import {Card, ShinyButton, MemberInfo, AbilityInput, StaticLabel, GenderButton} from "../styles.ts";
 import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import {useTeamStore} from "../../../../store/teamStore.ts";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
@@ -11,6 +11,9 @@ import MoveAutoComplete from "./MoveAutoComplete.tsx";
 import TypeIcon from "../../../../components/TypeIcon/TypeIcon.tsx";
 import ActionButtons from "./ActionButtons.tsx";
 import {FC} from "react";
+import MaleIcon from '@mui/icons-material/Male';
+import FemaleIcon from '@mui/icons-material/Female';
+import GenderlessIcon from '@mui/icons-material/Transgender';
 
 interface TeamViewProps {
     editMode: boolean;
@@ -24,6 +27,10 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
 
     const toggleShiny = (index: number, mon: PokemonTeamMember, shiny: boolean) => {
         editPokemon(index, {...mon, shiny})
+    }
+
+    const toggleGender = (index: number, mon: PokemonTeamMember)=> {
+        editPokemon(index, {...mon, gender: mon.gender === 'male' ? 'female' : 'male'})
     }
 
     const handleAbilityChange = (event: SelectChangeEvent<number>, index: number, mon: PokemonTeamMember) => {
@@ -64,22 +71,35 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
                             return (
                                 <Grid size={{xs: 2}} key={i}>
                                     <Card type1={pokemon.type1} type2={pokemon.type2} member onClick={() => handleRemove(i)} sx={{marginBottom: 1}}>
-                                        <PokemonImg id={pokemon.id} shiny={pokemon.shiny}/>
+                                        <PokemonImg id={pokemon.id} shiny={pokemon.shiny} female={pokemon.gender === 'female'}/>
                                     </Card>
                                     <MemberInfo type1={pokemon.type1} type2={pokemon.type2}>
                                         <Typography variant="h4" color={"#fff"}>{pokemon.name}</Typography>
                                         <Box sx={{display: 'flex', gap: 1}}>
-                                            <TypeIcon type={pokemon.type1} size={30} variant={"circular"}/>
-                                            {pokemon.type2 && <TypeIcon type={pokemon.type2} size={30} variant={"circular"}/>}
+                                            <TypeIcon type={pokemon.type1} size={32} variant={"circular"}/>
+                                            {pokemon.type2 && <TypeIcon type={pokemon.type2} size={32} variant={"circular"}/>}
                                         </Box>
-                                        <ShinyButton
-                                            selected={pokemon.shiny}
-                                            onChange={() => toggleShiny(i, pokemon, !pokemon.shiny)}
-                                            value="shiny"
-                                            disabled={!editMode}
-                                        >
-                                            <AutoAwesomeIcon sx={{width: 20, height: 20}}/>
-                                        </ShinyButton>
+                                        <Box sx={{display: 'flex', gap: 1}}>
+                                            <GenderButton
+                                                gender={pokemon.gender}
+                                                onChange={() => toggleGender(i, pokemon)}
+                                                value="gender"
+                                                disabled={pokemon.genderLock || !editMode}
+                                            >
+                                                {
+                                                    pokemon.gender === 'male' ? (<MaleIcon />) :
+                                                        pokemon.gender === 'female' ? (<FemaleIcon />) :(<GenderlessIcon />)
+                                                }
+                                            </GenderButton>
+                                            <ShinyButton
+                                                selected={pokemon.shiny}
+                                                onChange={() => toggleShiny(i, pokemon, !pokemon.shiny)}
+                                                value="shiny"
+                                                disabled={!editMode}
+                                            >
+                                                <AutoAwesomeIcon sx={{width: 20, height: 20}}/>
+                                            </ShinyButton>
+                                        </Box>
                                         {
                                             advancedOptions &&
                                             <>

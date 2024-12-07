@@ -22,7 +22,7 @@ const VersionGroupDialog = () => {
         } else if (versionGroup === "Brilliant Diamond/Shining Pearl") {
             navigate(`/team-builder/new/brilliant-diamond-and-shining-pearl`)
         } else {
-            const string = versionGroup.toLowerCase().replace(/[ /]/g, "-")
+            const string = versionGroup.toLowerCase().replace(/[ /]/g, "-").replace(':', '')
             navigate(`/team-builder/new/${string}`);
         }
     }

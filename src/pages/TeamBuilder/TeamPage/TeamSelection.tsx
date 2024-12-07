@@ -15,7 +15,7 @@ interface TeamSelectionProps {
     isEditMode?: boolean;
 }
 
-const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
+const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
     const { versionGroup } = useParams();
     const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? ''});
     const { currentTeam, addPokemon } = useTeamStore();
@@ -37,7 +37,8 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
             id: mon.id,
             name: mon.name,
             shiny: false,
-            female: false,
+            gender: mon.genderRate < 0 ? 'genderless' : mon.genderRate > 4 ? 'female' : 'male',
+            genderLock: (mon.genderRate === -1 || mon.genderRate === 0 || mon.genderRate === 8),
             type1: mon.type1,
             type2: mon.type2,
             ability: mon.abilities[0],

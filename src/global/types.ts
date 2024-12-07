@@ -165,6 +165,7 @@ export interface TeamCandidate {
     type1: PokemonType;
     type2: PokemonType | null;
     gen: number;
+    genderRate: number;
     abilities: {
         id: number;
         name: string;
@@ -181,7 +182,8 @@ export interface PokemonTeamMember {
     id: number;
     name: string;
     shiny: boolean;
-    female: boolean;
+    gender: 'male' | 'female' | 'genderless';
+    genderLock: boolean;
     type1: PokemonType;
     type2: PokemonType | null;
     ability: {

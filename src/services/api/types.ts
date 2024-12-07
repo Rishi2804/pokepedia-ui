@@ -171,6 +171,7 @@ export interface ITeamCandidate {
     type1: keyof typeof PokemonType;
     type2: keyof typeof PokemonType;
     gen: number;
+    genderRate: number;
     abilities: {
         id: number;
         name: string;

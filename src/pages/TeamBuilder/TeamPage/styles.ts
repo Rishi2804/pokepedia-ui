@@ -79,11 +79,16 @@ export const GenderButton = styled(ToggleButton)<GenderButtonProps>(({gender}) =
     justifyContent: 'center',
     alignItems: 'center',
     color: '#fff',
+    borderWidth: 0,
     backgroundColor: gender === 'male'
         ? COLORS.MALE
         : gender === 'female'
             ? COLORS.FEMALE
             : COLORS.GENDERLESS,
+    '&:disabled': {
+        color: '#fff',
+        borderWidth: 0,
+    },
     '&:hover': {
         color: '#fff',
         backgroundColor: gender === 'male'
