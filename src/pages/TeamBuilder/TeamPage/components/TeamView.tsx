@@ -3,10 +3,11 @@ import {Card, ShinyButton, MemberInfo, AbilityInput, StaticLabel} from "../style
 import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import {useTeamStore} from "../../../../store/teamStore.ts";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import {PokemonTeamMember} from "../../../../global/types.ts";
+import {PokemonTeamMember, TeamMove} from "../../../../global/types.ts";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import MoveAutoComplete from "./MoveAutoComplete.tsx";
 
 const TeamView = () => {
     const { currentSelection, currentTeam, removePokemon, editPokemon } = useTeamStore();
@@ -24,6 +25,18 @@ const TeamView = () => {
             })
         }
     };
+
+    const handleMoveChange = (monI: number, mon: PokemonTeamMember, moveI: number, move: TeamMove | null) => {
+        let updatedMoves = [...mon.moves];
+        updatedMoves[moveI] = move;
+        const nonNullMoves = updatedMoves.filter(move => move !== null); // Filter out non-null values
+        const nullMoves = updatedMoves.filter(move => move === null);
+        updatedMoves = [...nonNullMoves, ...nullMoves];
+        editPokemon(monI, {
+            ...mon,
+            moves: updatedMoves
+        })
+    }
 
     return (
         <Paper sx={{padding: 4, marginBottom: 3}}>
@@ -63,6 +76,18 @@ const TeamView = () => {
                                                 }
                                             </Select>
                                         </FormControl>
+                                        {
+                                            [...Array(4)].map((_, mI) => {
+                                                return (
+                                                    <MoveAutoComplete
+                                                        movesList={selection.moves}
+                                                        label={`Move ${mI+1}`}
+                                                        currentMove={pokemon.moves[mI]}
+                                                        updateMove={(move: TeamMove | null) => handleMoveChange(i, pokemon, mI, move)}
+                                                    />
+                                                )
+                                            })
+                                        }
                                     </MemberInfo>
                                 </Grid>
                             )

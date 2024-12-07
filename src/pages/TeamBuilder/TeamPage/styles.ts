@@ -1,6 +1,6 @@
 import {PokemonType} from "../../../global/enums.ts";
 import {styled} from "@mui/system";
-import {Box, InputBase, Paper, ToggleButton, Typography} from "@mui/material";
+import {darken, InputBase, Paper, ToggleButton} from "@mui/material";
 import {TypeToCardBorder, TypeToCardColor} from "../../../global/utils.ts";
 import {COLORS} from "../../../theme/styles/colors.ts";
 import InputLabel from "@mui/material/InputLabel";
@@ -98,6 +98,7 @@ export const GenderButton = styled(ToggleButton)<GenderButtonProps>(({gender}) =
 
 export const StaticLabel = styled(InputLabel)({
     color: COLORS.WHITE,
+    fontSize: '18px',
     '&.Mui-focused': {
         color: COLORS.WHITE,
     },
@@ -112,18 +113,50 @@ export const AbilityInput = styled(InputBase)(({theme}) => ({
         fontSize: '18px',
         fontWeight: 600,
         color: COLORS.WHITE,
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
     },
     '& .MuiSvgIcon-root': {
         color: COLORS.WHITE,
     }
 }))
-//
-// export const MoveInput = styled('input')({
-//     backgroundColor: 'transparent',
-//     border: `1px solid ${COLORS.WHITE}`,
-//     color: COLORS.WHITE,
-// })
-//
-// export const MoveListBox = styled('ul')({
-//     // zIndex: 1,
-// })
+
+export const MoveInput = styled('input')<{ type?: PokemonType }>(({ type }) => ({
+    backgroundColor: type ? TypeToCardColor[type] : 'transparent',
+    border: `${type ? "3px" : "1px"} solid ${type ? TypeToCardBorder[type] : COLORS.WHITE}`,
+    color: COLORS.WHITE,
+    borderRadius: 3,
+    width: '100%',
+    height: 39,
+    fontSize: '18px',
+    fontWeight: 600,
+    padding: 15,
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
+}))
+
+export const MoveListBox = styled('ul')({
+    zIndex: 1,
+    overflow: 'scroll',
+    width: 170,
+    position: 'absolute',
+    listStyle: 'none',
+    textAlign: 'left',
+    margin: 0,
+    padding: 0,
+    fontSize: '18px',
+    fontWeight: 600,
+    color: COLORS.WHITE,
+    maxHeight: 200
+})
+
+export const MoveOption = styled('li')<{ type: PokemonType }>(({ type }) => ({
+    backgroundColor: TypeToCardColor[type],
+    '&.Mui-focused': {
+        backgroundColor: darken(TypeToCardColor[type], 0.1),
+        color: 'white',
+        cursor: 'pointer',
+    },
+    '&:active': {
+        backgroundColor: darken(TypeToCardColor[type], 0.3),
+        color: 'white',
+    },
+}))

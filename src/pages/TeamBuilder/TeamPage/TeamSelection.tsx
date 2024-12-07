@@ -31,7 +31,7 @@ const TeamSelection = () => {
             type1: mon.type1,
             type2: mon.type2,
             ability: mon.abilities[0],
-            moves: []
+            moves: [null, null, null, null]
         }
         addPokemon(mon, newMember);
     }

@@ -152,6 +152,13 @@ export interface TypeDefences {
     x4: PokemonType[]
 }
 
+export interface TeamMove {
+    id: number;
+    name: string;
+    type: PokemonType;
+    moveClass: MoveClass;
+}
+
 export interface TeamCandidate {
     id: number;
     name: string;
@@ -162,12 +169,7 @@ export interface TeamCandidate {
         id: number;
         name: string;
     }[];
-    moves: {
-        id: number;
-        name: string;
-        type: PokemonType;
-        moveClass: MoveClass;
-    }[];
+    moves: TeamMove[];
 }
 
 export interface CandidatesList {
@@ -186,12 +188,7 @@ export interface PokemonTeamMember {
         id: number;
         name: string;
     };
-    moves: {
-        id: number;
-        name: string;
-        type: PokemonType;
-        moveClass: MoveClass;
-    }[];
+    moves: (TeamMove | null)[];
 }
 
 export interface PokemonTeam {
