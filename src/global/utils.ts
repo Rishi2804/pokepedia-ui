@@ -12,7 +12,7 @@ export function formatText(name: string): string {
 }
 
 export function navName(name: string): string {
-    return name.toLowerCase().replace(" ", "-");
+    return name.toLowerCase().replace(/ /g, "-");
 }
 
 export const TypeToColor: Record<PokemonType, string> = {

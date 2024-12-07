@@ -12,4 +12,7 @@ export enum COLORS {
     DARK_GRAY = "#212121",
     MEDIUM_GRAY = "#757575",
     SYSTEM_GRAY = "#242424",
+    MALE = "#3355FF",
+    FEMALE = "#FF77DD",
+    GENDERLESS = "#808080",
 }

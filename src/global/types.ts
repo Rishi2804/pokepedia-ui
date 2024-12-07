@@ -178,8 +178,8 @@ export interface CandidatesList {
 export interface PokemonTeamMember {
     id: number;
     name: string;
-    shiny?: boolean;
-    female?: boolean;
+    shiny: boolean;
+    female: boolean;
     type1: PokemonType;
     type2: PokemonType | null;
     ability: {
@@ -197,6 +197,5 @@ export interface PokemonTeamMember {
 export interface PokemonTeam {
     id: number;
     name: string;
-    version: VersionGroup;
     pokemon: PokemonTeamMember[];
 }
