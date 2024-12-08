@@ -1,6 +1,6 @@
 import {PokemonType} from "../../../global/enums.ts";
 import {styled} from "@mui/system";
-import {Button, darken, InputBase, Paper, ToggleButton} from "@mui/material";
+import {Box, Button, darken, InputBase, Paper, ToggleButton} from "@mui/material";
 import {TypeToCardBorder, TypeToCardColor} from "../../../global/utils.ts";
 import {COLORS} from "../../../theme/styles/colors.ts";
 import InputLabel from "@mui/material/InputLabel";
@@ -43,6 +43,13 @@ export const MemberInfo = styled(Paper)<CardProps>(({ type1, type2 }) => ({
     textAlign: "center",
     gap: 3
 }));
+
+export const GridContainer = styled(Box)({
+    width: '50%',
+    display: "flex",
+    padding: 1,
+    flexDirection: "column",
+});
 
 export const ShinyButton = styled(ToggleButton)(() => ({
     width: 30,

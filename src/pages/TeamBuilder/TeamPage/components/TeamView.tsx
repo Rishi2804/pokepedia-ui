@@ -10,12 +10,13 @@ import MenuItem from "@mui/material/MenuItem";
 import MoveAutoComplete from "./MoveAutoComplete.tsx";
 import TypeIcon from "../../../../components/TypeIcon/TypeIcon.tsx";
 import ActionButtons from "./ActionButtons.tsx";
-import {FC} from "react";
+import {FC, useState} from "react";
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import GenderlessIcon from '@mui/icons-material/Transgender';
 import TeraTypeMenu from "./TeraTypeDropdown/TeraTypeMenu.tsx";
 import {PokemonType} from "../../../../global/enums.ts";
+import TypeDefensesTable from "./CoverageCharts/TypeDefensesTable.tsx";
 
 interface TeamViewProps {
     editMode: boolean;
@@ -26,6 +27,7 @@ interface TeamViewProps {
 
 const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, setAdvancedOptions}) => {
     const { currentSelection, currentTeam, removePokemon, editPokemon } = useTeamStore();
+    const [showAnalysis, setShowAnalysis] = useState<boolean>(false)
 
     const toggleShiny = (index: number, mon: PokemonTeamMember, shiny: boolean) => {
         editPokemon(index, {...mon, shiny})
@@ -179,7 +181,16 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
                 setEditMode={setEditMode}
                 advancedOptions={advancedOptions}
                 setAdvancedOptions={setAdvancedOptions}
+                showAnalysis={showAnalysis}
+                setShowAnalysis={setShowAnalysis}
             />
+            {
+                showAnalysis && (
+                    <>
+                        <TypeDefensesTable />
+                    </>
+                )
+            }
         </Paper>
     );
 };
