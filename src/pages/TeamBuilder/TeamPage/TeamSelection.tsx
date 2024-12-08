@@ -2,7 +2,7 @@ import {useTeamCandidatesDetails} from "../../../services/api/hooks/useTeamCandi
 import {useParams} from "react-router-dom";
 import Loading from "../../../containers/loading/Loading.tsx";
 import {Box, Grid2 as Grid, Paper, Typography} from "@mui/material";
-import {Card} from "./styles.ts";
+import {Card, TeamNameInput} from "./styles.ts";
 import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
 import TeamView from "./components/TeamView.tsx";
 import {useTeamStore} from "../../../store/teamStore.ts";
@@ -20,6 +20,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
     const { versionGroup } = useParams();
     const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? ''});
     const { currentTeam, addPokemon } = useTeamStore();
+    const [teamName, setTeamName] = useState<string>(currentTeam.name)
     const [searchTerm, setSearchTerm] = useState<string>("")
     const [typeFilters, setTypeFilters] = useState<PokemonType[]>([])
     const [genFilters, setGenFilters] = useState<number[]>([])
@@ -52,7 +53,16 @@ const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
 
     return (
         <>
-                <Typography variant="h1" sx={{textAlign: "center", padding: 2}}>{currentTeam.name}</Typography>
+                <TeamNameInput
+                    variant="standard"
+                    placeholder="Enter Team Name"
+                    value={teamName}
+                    error={!teamName.length}
+                    onChange={(e) => setTeamName(e.target.value)}
+                    slotProps={{
+                        input: {disableUnderline: !!teamName.length}
+                    }}
+                />
                 <TeamView editMode={editMode} setEditMode={setEditMode} advancedOptions={advancedOptions} setAdvancedOptions={setAdvancedOptions}/>
                 <Paper sx={{ px: 4, py: 2, display: editMode ? 'block' : 'none' }}>
                     <Filters

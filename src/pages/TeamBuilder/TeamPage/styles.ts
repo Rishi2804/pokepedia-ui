@@ -1,6 +1,6 @@
 import {PokemonType} from "../../../global/enums.ts";
 import {styled} from "@mui/system";
-import {Box, Button, darken, InputBase, Paper, ToggleButton} from "@mui/material";
+import {Box, Button, darken, InputBase, Paper, TextField, ToggleButton} from "@mui/material";
 import {TypeToCardBorder, TypeToCardColor} from "../../../global/utils.ts";
 import {COLORS} from "../../../theme/styles/colors.ts";
 import InputLabel from "@mui/material/InputLabel";
@@ -10,6 +10,18 @@ interface CardProps {
     type2: PokemonType | null,
     member?: boolean
 }
+
+export const TeamNameInput = styled(TextField)({
+    padding: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '& .MuiInputBase-input': {
+        fontSize: '40px',
+        fontWeight: 600,
+        textAlign: 'center',
+    },
+})
 
 export const Card = styled(Paper)<CardProps>(({ type1, type2, member }) => ({
     borderColor: type2 ? TypeToCardBorder[type2] : type1 ? TypeToCardBorder[type1] : "#67A090",
