@@ -186,6 +186,7 @@ export interface PokemonTeamMember {
     genderLock: boolean;
     type1: PokemonType;
     type2: PokemonType | null;
+    teraType?: PokemonType;
     ability: {
         id: number;
         name: string;

@@ -1,6 +1,6 @@
 import {PokemonType} from "../../../global/enums.ts";
 import {styled} from "@mui/system";
-import {darken, InputBase, Paper, ToggleButton} from "@mui/material";
+import {Button, darken, InputBase, Paper, ToggleButton} from "@mui/material";
 import {TypeToCardBorder, TypeToCardColor} from "../../../global/utils.ts";
 import {COLORS} from "../../../theme/styles/colors.ts";
 import InputLabel from "@mui/material/InputLabel";
@@ -106,6 +106,17 @@ export const GenderButton = styled(ToggleButton)<GenderButtonProps>(({gender}) =
                 : COLORS.GENDERLESS
     }
 }))
+
+export const TeraButton = styled(Button)({
+    minWidth: 0,
+    width: 30,
+    height: 30,
+    borderRadius: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: '#fff',
+    padding: 0,
+})
 
 export const StaticLabel = styled(InputLabel)({
     color: COLORS.WHITE,

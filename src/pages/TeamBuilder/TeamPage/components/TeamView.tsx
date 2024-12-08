@@ -1,5 +1,5 @@
 import {Box, Grid2 as Grid, Paper, SelectChangeEvent, Typography} from "@mui/material";
-import {Card, ShinyButton, MemberInfo, AbilityInput, StaticLabel, GenderButton} from "../styles.ts";
+import {AbilityInput, Card, GenderButton, MemberInfo, ShinyButton, StaticLabel} from "../styles.ts";
 import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import {useTeamStore} from "../../../../store/teamStore.ts";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
@@ -14,6 +14,8 @@ import {FC} from "react";
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import GenderlessIcon from '@mui/icons-material/Transgender';
+import TeraTypeMenu from "./TeraTypeDropdown/TeraTypeMenu.tsx";
+import {PokemonType} from "../../../../global/enums.ts";
 
 interface TeamViewProps {
     editMode: boolean;
@@ -44,6 +46,7 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
     };
 
     const handleMoveChange = (monI: number, mon: PokemonTeamMember, moveI: number, move: TeamMove | null) => {
+        if (move?.id === 851) move.type = mon.teraType ?? PokemonType.NORMAL
         let updatedMoves = [...mon.moves];
         updatedMoves[moveI] = move;
         const nonNullMoves = updatedMoves.filter(move => move !== null); // Filter out non-null values
@@ -51,6 +54,24 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
         updatedMoves = [...nonNullMoves, ...nullMoves];
         editPokemon(monI, {
             ...mon,
+            moves: updatedMoves
+        })
+    }
+
+    const handleTeraTypeChange = (index: number, mon: PokemonTeamMember, tera?: PokemonType)=> {
+        const updatedMoves = mon.moves.map(move => {
+            if (move?.id === 851) {
+                return {
+                    ...move,
+                    type: tera ?? PokemonType.NORMAL
+                }
+            }
+            return move
+        })
+
+        editPokemon(index, {
+            ...mon,
+            teraType: tera,
             moves: updatedMoves
         })
     }
@@ -70,10 +91,10 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
 
                             return (
                                 <Grid size={{xs: 2}} key={i}>
-                                    <Card type1={pokemon.type1} type2={pokemon.type2} member onClick={() => handleRemove(i)} sx={{marginBottom: 1}}>
+                                    <Card type1={pokemon.teraType ?? pokemon.type1} type2={pokemon.teraType ?? pokemon.type2} member onClick={() => handleRemove(i)} sx={{marginBottom: 1}}>
                                         <PokemonImg id={pokemon.id} shiny={pokemon.shiny} female={pokemon.gender === 'female'}/>
                                     </Card>
-                                    <MemberInfo type1={pokemon.type1} type2={pokemon.type2}>
+                                    <MemberInfo type1={pokemon.teraType ?? pokemon.type1} type2={pokemon.teraType ?? pokemon.type2}>
                                         <Typography variant="h4" color={"#fff"}>{pokemon.name}</Typography>
                                         <Box sx={{display: 'flex', gap: 1}}>
                                             <TypeIcon type={pokemon.type1} size={32} variant={"circular"}/>
@@ -99,6 +120,7 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
                                             >
                                                 <AutoAwesomeIcon sx={{width: 20, height: 20}}/>
                                             </ShinyButton>
+                                            <TeraTypeMenu teraType={pokemon.teraType} changeTeraType={(tera?: PokemonType) => handleTeraTypeChange(i, pokemon, tera)}/>
                                         </Box>
                                         {
                                             advancedOptions &&
