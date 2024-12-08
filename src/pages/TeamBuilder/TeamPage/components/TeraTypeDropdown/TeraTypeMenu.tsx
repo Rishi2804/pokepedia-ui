@@ -24,15 +24,13 @@ const TeraTypeMenu: FC<TeraTypeMenuProps> = ({teraType, changeTeraType}) => {
     };
 
     return (
-        <div>
+        <>
             <TeraButton
-                value="tera"
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
-                {teraType ? <TypeIcon type={teraType} size={30} variant="circular" /> : <TeraIcon width={2500} height={2500} color={'#fff'}/>}
+                {teraType ?
+                    <TypeIcon type={teraType} size={30} variant="circular" /> :
+                    <TeraIcon width={30} height={30} color={'#fff'}/>}
             </TeraButton>
             <Popover
                 anchorEl={anchorEl}
@@ -40,10 +38,6 @@ const TeraTypeMenu: FC<TeraTypeMenuProps> = ({teraType, changeTeraType}) => {
                 onClose={() => handleClose()}
                 anchorOrigin={{
                     vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
                     horizontal: 'center',
                 }}
                 slotProps={{
@@ -74,7 +68,7 @@ const TeraTypeMenu: FC<TeraTypeMenuProps> = ({teraType, changeTeraType}) => {
                     })
                 }
             </Popover>
-        </div>
+        </>
     );
 }
 
