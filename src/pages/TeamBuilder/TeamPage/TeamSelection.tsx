@@ -9,6 +9,7 @@ import {useTeamStore} from "../../../store/teamStore.ts";
 import {PokemonTeamMember, TeamCandidate} from "../../../global/types.ts";
 import {FC, useState} from "react";
 import Filters from "../../../components/Filters/Filters.tsx";
+import {PokemonType} from "../../../global/enums.ts";
 
 interface TeamSelectionProps {
     isCreateFlow?: boolean;
@@ -20,6 +21,8 @@ const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
     const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? ''});
     const { currentTeam, addPokemon } = useTeamStore();
     const [searchTerm, setSearchTerm] = useState<string>("")
+    const [typeFilters, setTypeFilters] = useState<PokemonType[]>([])
+    const [genFilters, setGenFilters] = useState<number[]>([])
     const [editMode, setEditMode] = useState<boolean>(!!isEditMode)
     const [advancedOptions, setAdvancedOptions] = useState<boolean>(false)
 
@@ -52,7 +55,14 @@ const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
                 <Typography variant="h1" sx={{textAlign: "center", padding: 2}}>{currentTeam.name}</Typography>
                 <TeamView editMode={editMode} setEditMode={setEditMode} advancedOptions={advancedOptions} setAdvancedOptions={setAdvancedOptions}/>
                 <Paper sx={{ px: 4, py: 2, display: editMode ? 'block' : 'none' }}>
-                    <Filters searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                    <Filters
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        typeFilters={typeFilters}
+                        setTypeFilters={setTypeFilters}
+                        genFilters={genFilters}
+                        setGenFilters={setGenFilters}
+                    />
                 {
                     data.map((list, index) => {
                         return (
@@ -67,6 +77,19 @@ const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
                                                 return null;
                                             }
                                         }
+
+                                        if (typeFilters && typeFilters.length > 0) {
+                                            if (!(typeFilters.includes(mon.type1) || (mon.type2 && typeFilters.includes(mon.type2)))) {
+                                                return null;
+                                            }
+                                        }
+
+                                        if (genFilters && genFilters.length > 0) {
+                                            if (!genFilters.includes(mon.gen)) {
+                                                return null;
+                                            }
+                                        }
+
                                         return (
                                             <Grid size={{xs: 1, sm: (12 / 15)}} key={mon.id}>
                                                 <Card type1={mon.type1} type2={mon.type2} onClick={() => handleAdd(mon)}>

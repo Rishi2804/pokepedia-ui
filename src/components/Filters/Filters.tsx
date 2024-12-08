@@ -14,16 +14,27 @@ interface IFilterProps {
     setSearchTerm: (searchTerm: string) => void;
     typeFilters?: PokemonType[];
     setTypeFilters?: (types: PokemonType[]) => void;
+    genFilters?: number[];
+    setGenFilters?: (types: number[]) => void;
 }
 
-const Filters: FC<IFilterProps> = ({searchBoxText, searchTerm, setSearchTerm, typeFilters, setTypeFilters}) => {
+const Filters: FC<IFilterProps> = ({searchBoxText, searchTerm, setSearchTerm, typeFilters, setTypeFilters, genFilters, setGenFilters}) => {
 
-    const handleChange = (event: SelectChangeEvent<typeof typeFilters>) => {
+    const handleTypeChange = (event: SelectChangeEvent<typeof typeFilters>) => {
         const {
             target: { value },
         } = event;
         setTypeFilters?.(
             typeof value === 'string' ? value.split(',') as PokemonType[] : value as PokemonType[],
+        );
+    };
+
+    const handleGenChange = (event: SelectChangeEvent<string | number[]>) => {
+        const { value } = event.target;
+        setGenFilters?.(
+            Array.isArray(value)
+                ? value.map((v) => (typeof v === 'string' ? Number(v) : v)) // Convert string values to numbers
+                : [Number(value)] // Convert single string value to a number and wrap it in an array
         );
     };
 
@@ -44,7 +55,7 @@ const Filters: FC<IFilterProps> = ({searchBoxText, searchTerm, setSearchTerm, ty
                         <Select
                             multiple
                             value={typeFilters}
-                            onChange={handleChange}
+                            onChange={handleTypeChange}
                             input={<OutlinedInput id="select-multiple-chip" label="Chip"/>}
                             renderValue={(selected) => (
                                 <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
@@ -60,6 +71,35 @@ const Filters: FC<IFilterProps> = ({searchBoxText, searchTerm, setSearchTerm, ty
                                     value={type}
                                 >
                                     {type}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                )
+            }
+            {
+                genFilters && setGenFilters && (
+                    <FormControl sx={{m: 1, width: '20%'}}>
+                        <InputLabel>Gen</InputLabel>
+                        <Select
+                            multiple
+                            value={genFilters}
+                            onChange={handleGenChange}
+                            input={<OutlinedInput label="Chip"/>}
+                            renderValue={(selected) => (
+                                <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
+                                    {selected.map((value) => (
+                                        <Chip key={value} label={value}/>
+                                    ))}
+                                </Box>
+                            )}
+                        >
+                            {[...Array(9)].map((_, i) => (
+                                <MenuItem
+                                    key={i}
+                                    value={i+1}
+                                >
+                                    {`Gen ${i+1}`}
                                 </MenuItem>
                             ))}
                         </Select>
