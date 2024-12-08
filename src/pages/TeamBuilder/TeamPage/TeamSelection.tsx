@@ -19,8 +19,7 @@ interface TeamSelectionProps {
 const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
     const { versionGroup } = useParams();
     const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? ''});
-    const { currentTeam, addPokemon } = useTeamStore();
-    const [teamName, setTeamName] = useState<string>(currentTeam.name)
+    const { currentTeam, addPokemon, changeTeamName } = useTeamStore();
     const [searchTerm, setSearchTerm] = useState<string>("")
     const [typeFilters, setTypeFilters] = useState<PokemonType[]>([])
     const [genFilters, setGenFilters] = useState<number[]>([])
@@ -56,11 +55,11 @@ const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
                 <TeamNameInput
                     variant="standard"
                     placeholder="Enter Team Name"
-                    value={teamName}
-                    error={!teamName.length}
-                    onChange={(e) => setTeamName(e.target.value)}
+                    value={currentTeam.name}
+                    error={!currentTeam.name.length}
+                    onChange={(e) => changeTeamName(e.target.value)}
                     slotProps={{
-                        input: {disableUnderline: !!teamName.length}
+                        input: {disableUnderline: !!currentTeam.name.length}
                     }}
                 />
                 <TeamView editMode={editMode} setEditMode={setEditMode} advancedOptions={advancedOptions} setAdvancedOptions={setAdvancedOptions}/>
