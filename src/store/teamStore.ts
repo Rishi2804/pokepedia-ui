@@ -1,46 +1,53 @@
 import {create} from 'zustand';
-import {PokemonTeam, PokemonTeamMember, TeamCandidate} from "../global/types.ts";
+import {PokemonTeam, PokemonTeamMember} from "../global/types.ts";
+import {VersionGroup} from "../global/enums.ts";
 
 interface TeamStore {
-    currentTeam: PokemonTeam;
-    currentSelection: TeamCandidate[],
+    currentTeam: PokemonTeam | null;
     teams: PokemonTeam[];
     changeTeamName: (name: string) => void;
-    addPokemon: (select: TeamCandidate, mon: PokemonTeamMember) => void;
+    addPokemon: (mon: PokemonTeamMember) => void;
     removePokemon: (index: number) => void;
     editPokemon: (index: number, mon: PokemonTeamMember) => void;
     setCurrentTeam: (team: PokemonTeam) => void;
     validateCurrentTeam: () => boolean;
+    createNewTeam: (versionGroup: VersionGroup | null) => void;
+    startEditingTeam: (id: number) => void;
+    saveEditingTeam: () => void;
 }
 
 export const useTeamStore = create<TeamStore>((set, getState) => ({
-    currentTeam: {
-        id: 0,
-        name: "My Team",
-        pokemon: []
-    },
-    currentSelection: [],
+    currentTeam: null,
     teams: [],
 
-    changeTeamName: (name: string) => set((state) => ({ currentTeam: {...state.currentTeam, name: name}})),
+    changeTeamName: (name: string) => set((state) => {
+        if (!state.currentTeam) return state
+        return ({currentTeam: {...state.currentTeam, name: name}});
+    }),
 
-    addPokemon: (select: TeamCandidate, mon: PokemonTeamMember) => set((state) => ({
-        currentSelection: [...state.currentSelection, select],
-        currentTeam: {
-            ...state.currentTeam,
-            pokemon: [...state.currentTeam.pokemon, mon]
-        }
-    })),
+    addPokemon: (mon: PokemonTeamMember) => set((state) => {
+        if (!state.currentTeam) return state;
+        return ({
+            currentTeam: {
+                ...state.currentTeam,
+                pokemon: [...state.currentTeam.pokemon, mon]
+            }
+        });
+    }),
 
-    removePokemon: (index: number) => set((state) => ({
-        currentSelection: state.currentSelection.filter((_, i) => i !== index),
-        currentTeam: {
-            ...state.currentTeam,
-            pokemon: state.currentTeam.pokemon.filter((_, i) => i !== index),
-        }
-    })),
+    removePokemon: (index: number) => set((state) => {
+        if (!state.currentTeam) return state;
+        return ({
+            currentTeam: {
+                ...state.currentTeam,
+                pokemon: state.currentTeam.pokemon.filter((_, i) => i !== index),
+            }
+        });
+    }),
 
     editPokemon: (index: number, mon: PokemonTeamMember) => set((state) => {
+        if (!state.currentTeam) return state;
+
         const updatedPokemon = [...state.currentTeam.pokemon];
         updatedPokemon[index] = mon;
 
@@ -58,4 +65,37 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
         const currentTeam = getState().currentTeam;
         return currentTeam ? currentTeam.pokemon.length > 0 : false;
     },
+
+    createNewTeam: (versionGroup: VersionGroup | null) => set({
+        currentTeam: {
+            id: getState().teams.length > 0 ? getState().teams[getState().teams.length-1].id + 1 : 0,
+            name: `My ${versionGroup} Team`,
+            versionGroup: versionGroup,
+            pokemon: []
+        }
+    }),
+
+    startEditingTeam: (id: number) => set((state) => {
+        const selectedTeam = state.teams.find((team) => team.id === id);
+        if (!selectedTeam) return state;
+        return {
+            currentTeam: {...selectedTeam}
+        }
+    }),
+
+    saveEditingTeam: () => set((state) => {
+        if (!state.currentTeam || !state.validateCurrentTeam()) return state;
+        const index = state.teams.findIndex((team) => team.id === state.currentTeam?.id);
+        if (!index) return {
+            teams: [...state.teams, state.currentTeam],
+            currentTeam: null
+        }
+        const updatedTeams = [...state.teams];
+        updatedTeams[index] = state.currentTeam
+        return {
+            teams: updatedTeams,
+            currentTeam: null,
+        }
+    })
+
 }));

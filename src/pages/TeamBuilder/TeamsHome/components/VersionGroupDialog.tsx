@@ -3,9 +3,11 @@ import {useState} from "react";
 import {VersionGroup} from "../../../../global/enums.ts";
 import {styled} from "@mui/system";
 import {useNavigate} from "react-router-dom";
+import {useTeamStore} from "../../../../store/teamStore.ts";
 
 
 const VersionGroupDialog = () => {
+    const { createNewTeam } = useTeamStore()
     const [open, setOpen] = useState<boolean>(false)
     const navigate = useNavigate();
     const handleClickOpen = () => {
@@ -18,10 +20,13 @@ const VersionGroupDialog = () => {
 
     const handleNavigate = (versionGroup: string) => {
         if (versionGroup === "Home") {
+            createNewTeam(null);
             navigate(`/team-builder/new/national`)
         } else if (versionGroup === "Brilliant Diamond/Shining Pearl") {
+            createNewTeam(VersionGroup.BRILLIANT_DIAMOND_AND_SHINING_PEARL);
             navigate(`/team-builder/new/brilliant-diamond-and-shining-pearl`)
         } else {
+            createNewTeam(versionGroup as VersionGroup)
             const string = versionGroup.toLowerCase().replace(/[ /]/g, "-").replace(':', '')
             navigate(`/team-builder/new/${string}`);
         }

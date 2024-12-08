@@ -34,6 +34,10 @@ const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
         throw new Error(error)
     }
 
+    if (!currentTeam) {
+        throw new Error("Team not found")
+    }
+
     const handleAdd = (mon: TeamCandidate) => {
         if (currentTeam.pokemon.length === 6) return
         const newMember: PokemonTeamMember = {
@@ -45,9 +49,11 @@ const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
             type1: mon.type1,
             type2: mon.type2,
             ability: mon.abilities[0],
-            moves: [null, null, null, null]
+            moves: [null, null, null, null],
+            abilityCandidates: [...mon.abilities],
+            moveCandidates: [...mon.moves]
         }
-        addPokemon(mon, newMember);
+        addPokemon(newMember);
     }
 
     return (

@@ -1,5 +1,10 @@
 import {Game, LearnMethod, MoveClass, PokedexRegion, PokemonType, VersionGroup} from "./enums.ts";
 
+interface IDNamePair {
+    id: number;
+    name: string;
+}
+
 export interface PokemonSnapshot {
     dexNumber: number;
     speciesId: number;
@@ -187,15 +192,15 @@ export interface PokemonTeamMember {
     type1: PokemonType;
     type2: PokemonType | null;
     teraType?: PokemonType;
-    ability: {
-        id: number;
-        name: string;
-    };
+    ability: IDNamePair;
     moves: (TeamMove | null)[];
+    moveCandidates: TeamMove[];
+    abilityCandidates: IDNamePair[];
 }
 
 export interface PokemonTeam {
     id: number;
     name: string;
+    versionGroup: VersionGroup | null;
     pokemon: PokemonTeamMember[];
 }

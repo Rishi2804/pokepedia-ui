@@ -26,8 +26,10 @@ interface TeamViewProps {
 }
 
 const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, setAdvancedOptions}) => {
-    const { currentSelection, currentTeam, removePokemon, editPokemon } = useTeamStore();
+    const { currentTeam, removePokemon, editPokemon } = useTeamStore();
     const [showAnalysis, setShowAnalysis] = useState<boolean>(false)
+
+    if (!currentTeam) throw new Error("No Team found")
 
     const toggleShiny = (index: number, mon: PokemonTeamMember, shiny: boolean) => {
         editPokemon(index, {...mon, shiny})
@@ -38,7 +40,7 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
     }
 
     const handleAbilityChange = (event: SelectChangeEvent<number>, index: number, mon: PokemonTeamMember) => {
-        const newAbility = currentSelection[index].abilities.find(ability => ability.id === event.target.value);
+        const newAbility = mon.abilityCandidates.find(ability => ability.id === event.target.value);
         if (newAbility) {
             editPokemon(index, {
                 ...mon,
@@ -51,7 +53,7 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
         if (move?.id === 851) move.type = mon.teraType ?? PokemonType.NORMAL
         let updatedMoves = [...mon.moves];
         updatedMoves[moveI] = move;
-        const nonNullMoves = updatedMoves.filter(move => move !== null); // Filter out non-null values
+        const nonNullMoves = updatedMoves.filter(move => move !== null);
         const nullMoves = updatedMoves.filter(move => move === null);
         updatedMoves = [...nonNullMoves, ...nullMoves];
         editPokemon(monI, {
@@ -87,9 +89,8 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
             <Grid container spacing={0.5}>
                 {
                     [...Array(6)].map((_, i) => {
-                        if (currentSelection.length >= i + 1) {
+                        if (currentTeam.pokemon.length >= i + 1) {
                             const pokemon = currentTeam.pokemon[i];
-                            const selection = currentSelection[i];
 
                             return (
                                 <Grid size={{xs: 2}} key={i}>
@@ -137,7 +138,7 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
                                                     disabled={!editMode}
                                                 >
                                                     {
-                                                        selection.abilities.map((ability) => (
+                                                        pokemon.abilityCandidates.map((ability) => (
                                                             <MenuItem value={ability.id} key={ability.id}>{ability.name}</MenuItem>
                                                         ))
                                                     }
@@ -148,7 +149,7 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
                                                     return (
                                                         <MoveAutoComplete
                                                             editMode={editMode}
-                                                            movesList={selection.moves}
+                                                            movesList={pokemon.moveCandidates}
                                                             label={`Move ${mI+1}`}
                                                             currentMove={pokemon.moves[mI]}
                                                             updateMove={(move: TeamMove | null) => handleMoveChange(i, pokemon, mI, move)}
