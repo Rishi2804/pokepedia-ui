@@ -11,7 +11,7 @@ interface CardProps {
     member?: boolean
 }
 
-export const TeamNameInput = styled(TextField)({
+export const TeamNameInput = styled(TextField)(({ theme }) => ({
     padding: 10,
     display: 'flex',
     justifyContent: 'center',
@@ -20,8 +20,11 @@ export const TeamNameInput = styled(TextField)({
         fontSize: '40px',
         fontWeight: 600,
         textAlign: 'center',
-    },
-})
+        '&.Mui-disabled': {
+            '-webkit-text-fill-color': theme.palette.primaryBorder,
+        }
+    }
+}))
 
 export const Card = styled(Paper)<CardProps>(({ type1, type2, member }) => ({
     borderColor: type2 ? TypeToCardBorder[type2] : type1 ? TypeToCardBorder[type1] : "#67A090",

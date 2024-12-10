@@ -76,6 +76,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
                     fullWidth
                     variant="standard"
                     placeholder="Enter Team Name"
+                    disabled={!editMode}
                     value={currentTeam.name}
                     error={!currentTeam.name.length}
                     onChange={(e) => changeTeamName(e.target.value)}

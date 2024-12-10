@@ -9,9 +9,10 @@ import {FC} from "react";
 interface TeraTypeMenuProps {
     teraType?: PokemonType
     changeTeraType: (tera?: PokemonType) => void;
+    disabled?: boolean;
 }
 
-const TeraTypeMenu: FC<TeraTypeMenuProps> = ({teraType, changeTeraType}) => {
+const TeraTypeMenu: FC<TeraTypeMenuProps> = ({teraType, changeTeraType, disabled}) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -27,6 +28,7 @@ const TeraTypeMenu: FC<TeraTypeMenuProps> = ({teraType, changeTeraType}) => {
         <>
             <TeraButton
                 onClick={handleClick}
+                disabled={disabled}
             >
                 {teraType ?
                     <TypeIcon type={teraType} size={30} variant="circular" /> :

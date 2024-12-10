@@ -7,9 +7,12 @@ import {GridContainer} from "../../styles.ts";
 import RelationBox from "./RelationBox.tsx";
 import {getTypeDefenses} from "../../../../../global/utils.ts";
 import {COLORS} from "../../../../../theme/styles/colors.ts";
+import {VersionToGen} from "../../constants.ts";
 
 const TypeDefensesTable = () => {
     const { currentTeam } = useTeamStore();
+
+    if (!currentTeam) return null;
 
     const centerStyle = {
         display: 'flex',
@@ -74,7 +77,8 @@ const TypeDefensesTable = () => {
                     Object.values(PokemonType).map(type => {
                         const totalWeak = getTotalWeaknesses(type)
                         const totalResist = getTotalResist(type)
-
+                        if ((type === PokemonType.DARK || type === PokemonType.STEEL) && currentTeam.versionGroup && VersionToGen[currentTeam.versionGroup] < 2) return null;
+                        if (type === PokemonType.FAIRY && currentTeam.versionGroup && VersionToGen[currentTeam.versionGroup] < 6) return null;
                         return (
                             <>
                                 <Grid size={(12/9)} sx={centerStyle}>

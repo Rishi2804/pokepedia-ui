@@ -124,7 +124,7 @@ const TeamView: FC<TeamViewProps> = ({isCreateFlow, editMode, setEditMode, advan
                                             >
                                                 <AutoAwesomeIcon sx={{width: 20, height: 20}}/>
                                             </ShinyButton>
-                                            <TeraTypeMenu teraType={pokemon.teraType} changeTeraType={(tera?: PokemonType) => handleTeraTypeChange(i, pokemon, tera)}/>
+                                            <TeraTypeMenu teraType={pokemon.teraType} changeTeraType={(tera?: PokemonType) => handleTeraTypeChange(i, pokemon, tera)} disabled={!editMode}/>
                                         </Box>
                                         {
                                             advancedOptions &&
