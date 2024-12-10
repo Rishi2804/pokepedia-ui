@@ -2,6 +2,15 @@ import {create} from 'zustand';
 import {PokemonTeam, PokemonTeamMember} from "../global/types.ts";
 import {VersionGroup} from "../global/enums.ts";
 
+const loadTeamsFromLocalStorage = (): PokemonTeam[] => {
+    const teams = localStorage.getItem('teams');
+    return teams ? JSON.parse(teams) : [];
+};
+
+const saveTeamsToLocalStorage = (teams: PokemonTeam[]): void => {
+    localStorage.setItem('teams', JSON.stringify(teams));
+};
+
 interface TeamStore {
     currentTeam: PokemonTeam | null;
     teams: PokemonTeam[];
@@ -18,7 +27,7 @@ interface TeamStore {
 
 export const useTeamStore = create<TeamStore>((set, getState) => ({
     currentTeam: null,
-    teams: [],
+    teams: loadTeamsFromLocalStorage(),
 
     changeTeamName: (name: string) => set((state) => {
         if (!state.currentTeam) return state
@@ -87,12 +96,15 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
         if (!state.currentTeam || !state.validateCurrentTeam()) return state;
         const index = state.teams.findIndex((team) => team.id === state.currentTeam?.id);
         if (index < 0) {
+            const updatedTeams = [...state.teams, {...state.currentTeam}]
+            saveTeamsToLocalStorage(updatedTeams);
             return {
-                teams: [...state.teams, {...state.currentTeam}]
+                teams: updatedTeams
             }
         }
         const updatedTeams = [...state.teams];
         updatedTeams[index] = {...state.currentTeam}
+        saveTeamsToLocalStorage(updatedTeams);
         return {
             teams: updatedTeams
         }

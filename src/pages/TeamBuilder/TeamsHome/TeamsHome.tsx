@@ -19,13 +19,13 @@ const TeamsHome = () => {
             <Grid container spacing={2}>
                 {
                     teams.map((team, index) => (
-                        <Grid size={{xs: 6}} key={index}>
+                        <Grid size={{xs: 12, sm: 6}} key={index}>
                             <TeamContainer onClick={() => navigate(`/team-builder/${team.id}`)}>
                                 <Typography variant="h5" textAlign="center">{team.name}</Typography>
                                 <Grid container spacing={1} sx={{marginTop: 2}}>
                                     {
                                         [...Array(6)].map((_, i) => (
-                                            <Grid size={{xs: 2}}>
+                                            <Grid size={2}>
                                                 {(i < team.pokemon.length) ? (
                                                     <MemberContainer
                                                         type1={team.pokemon[i].teraType ?? team.pokemon[i].type1}
