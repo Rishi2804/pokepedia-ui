@@ -19,13 +19,14 @@ import {PokemonType} from "../../../../global/enums.ts";
 import TypeDefensesTable from "./CoverageCharts/TypeDefensesTable.tsx";
 
 interface TeamViewProps {
+    isCreateFlow?: boolean;
     editMode: boolean;
     setEditMode: (mode: boolean) => void;
     advancedOptions: boolean;
     setAdvancedOptions: (mode: boolean) => void;
 }
 
-const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, setAdvancedOptions}) => {
+const TeamView: FC<TeamViewProps> = ({isCreateFlow, editMode, setEditMode, advancedOptions, setAdvancedOptions}) => {
     const { currentTeam, removePokemon, editPokemon } = useTeamStore();
     const [showAnalysis, setShowAnalysis] = useState<boolean>(false)
 
@@ -178,6 +179,7 @@ const TeamView: FC<TeamViewProps> = ({editMode, setEditMode, advancedOptions, se
                 }
             </Grid>
             <ActionButtons
+                isCreateFlow={isCreateFlow}
                 editMode={editMode}
                 setEditMode={setEditMode}
                 advancedOptions={advancedOptions}

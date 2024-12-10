@@ -7,24 +7,38 @@ import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
 import TeamView from "./components/TeamView.tsx";
 import {useTeamStore} from "../../../store/teamStore.ts";
 import {PokemonTeamMember, TeamCandidate} from "../../../global/types.ts";
-import {FC, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import Filters from "../../../components/Filters/Filters.tsx";
 import {PokemonType} from "../../../global/enums.ts";
+import {versionGroupToStringMap} from "../utils.ts";
 
 interface TeamSelectionProps {
     isCreateFlow?: boolean;
     isEditMode?: boolean;
 }
 
-const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
-    const { versionGroup } = useParams();
-    const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? ''});
-    const { currentTeam, addPokemon, changeTeamName } = useTeamStore();
+const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
+    const { currentTeam, addPokemon, changeTeamName, startEditingTeam, createNewTeam, teams } = useTeamStore();
+    const { versionGroup, id } = useParams()
+    const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? versionGroupToStringMap.getByKey(currentTeam?.versionGroup) ?? 'national'});
     const [searchTerm, setSearchTerm] = useState<string>("")
     const [typeFilters, setTypeFilters] = useState<PokemonType[]>([])
     const [genFilters, setGenFilters] = useState<number[]>([])
     const [editMode, setEditMode] = useState<boolean>(!!isEditMode)
     const [advancedOptions, setAdvancedOptions] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (versionGroup) {
+            createNewTeam(versionGroupToStringMap.getByValue(versionGroup) ?? null)
+        } else if (id) {
+            startEditingTeam(Number(id))
+        }
+        console.log(currentTeam, teams)
+    }, [versionGroup, id]);
+
+    if (!isCreateFlow && !id) {
+        throw new Error("No team with that id")
+    }
 
     if (loading && !data.length) {
         return (<Loading />);
@@ -59,6 +73,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
     return (
         <>
                 <TeamNameInput
+                    fullWidth
                     variant="standard"
                     placeholder="Enter Team Name"
                     value={currentTeam.name}
@@ -68,7 +83,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isEditMode}) => {
                         input: {disableUnderline: !!currentTeam.name.length}
                     }}
                 />
-                <TeamView editMode={editMode} setEditMode={setEditMode} advancedOptions={advancedOptions} setAdvancedOptions={setAdvancedOptions}/>
+                <TeamView isCreateFlow={isCreateFlow} editMode={editMode} setEditMode={setEditMode} advancedOptions={advancedOptions} setAdvancedOptions={setAdvancedOptions}/>
                 <Paper sx={{ px: 4, py: 2, display: editMode ? 'block' : 'none' }}>
                     <Filters
                         searchTerm={searchTerm}

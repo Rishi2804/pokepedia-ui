@@ -63,12 +63,12 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
 
     validateCurrentTeam: () => {
         const currentTeam = getState().currentTeam;
-        return currentTeam ? currentTeam.pokemon.length > 0 : false;
+        return currentTeam ? (currentTeam.pokemon.length > 0 && currentTeam.name.length > 0) : false;
     },
 
     createNewTeam: (versionGroup: VersionGroup | null) => set({
         currentTeam: {
-            id: getState().teams.length > 0 ? getState().teams[getState().teams.length-1].id + 1 : 0,
+            id: getState().teams.length > 0 ? getState().teams[getState().teams.length-1].id + 1 : 1,
             name: `My ${versionGroup} Team`,
             versionGroup: versionGroup,
             pokemon: []
@@ -86,15 +86,15 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
     saveEditingTeam: () => set((state) => {
         if (!state.currentTeam || !state.validateCurrentTeam()) return state;
         const index = state.teams.findIndex((team) => team.id === state.currentTeam?.id);
-        if (!index) return {
-            teams: [...state.teams, state.currentTeam],
-            currentTeam: null
+        if (index < 0) {
+            return {
+                teams: [...state.teams, {...state.currentTeam}]
+            }
         }
         const updatedTeams = [...state.teams];
-        updatedTeams[index] = state.currentTeam
+        updatedTeams[index] = {...state.currentTeam}
         return {
-            teams: updatedTeams,
-            currentTeam: null,
+            teams: updatedTeams
         }
     })
 
