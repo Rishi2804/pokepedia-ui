@@ -1,28 +1,46 @@
 import {FC} from "react";
 import {Box, Typography} from "@mui/material";
 import {COLORS} from "../../../../../theme/styles/colors.ts";
+import StrengthIcon from '@mui/icons-material/Check';
+import WeaknessIcon from '@mui/icons-material/Close';
+import ImmunityIcon from '@mui/icons-material/DoNotDisturb';
+
 
 interface IRelationBoxProps {
     mult: '0' | '1' | '2' | '4' | '1/2' | '1/4';
+    coverage?: boolean;
 }
 
-const RelationBox: FC<IRelationBoxProps> = ({mult}) => {
+const RelationBox: FC<IRelationBoxProps> = ({mult, coverage}) => {
     const getColor = (mult: IRelationBoxProps['mult']) => {
         switch (mult) {
             case '0':
                 return '#808080';
             case '1/2':
-                return '#4E9A06';
+                return coverage ? '#A40001' : '#4E9A06';
             case '1/4':
                 return '#72D214';
             case '2':
-                return '#A40001';
+                return coverage ? '#4E9A06' : '#A40001';
             case '4':
                 return '#7C0000';
             default:
                 return 'transparent'
         }
     };
+
+    const getIcon = (mult: IRelationBoxProps['mult']) => {
+        switch (mult) {
+            case '0':
+                return <ImmunityIcon />;
+            case '1/2':
+                return <WeaknessIcon />;
+            case '2':
+                return <StrengthIcon />;
+            default:
+                return null
+        }
+    }
 
     return (
         <Box sx={{
@@ -36,7 +54,8 @@ const RelationBox: FC<IRelationBoxProps> = ({mult}) => {
             backgroundColor: getColor(mult),
             height: 40
         }}>
-            <Typography variant="h5" color={COLORS.WHITE}>{mult !== '1' && mult}</Typography>
+            {!coverage && <Typography variant="h5" color={COLORS.WHITE}>{mult !== '1' && mult}</Typography>}
+            {coverage && getIcon(mult)}
         </Box>
     );
 };

@@ -17,6 +17,7 @@ import GenderlessIcon from '@mui/icons-material/Transgender';
 import TeraTypeMenu from "./TeraTypeDropdown/TeraTypeMenu.tsx";
 import {PokemonType} from "../../../../global/enums.ts";
 import TypeDefensesTable from "./CoverageCharts/TypeDefensesTable.tsx";
+import TypeCoverageTable from "./CoverageCharts/TypeCoverageTable.tsx";
 
 interface TeamViewProps {
     isCreateFlow?: boolean;
@@ -191,6 +192,7 @@ const TeamView: FC<TeamViewProps> = ({isCreateFlow, editMode, setEditMode, advan
                 showAnalysis && (
                     <>
                         <TypeDefensesTable />
+                        {advancedOptions && <TypeCoverageTable />}
                     </>
                 )
             }

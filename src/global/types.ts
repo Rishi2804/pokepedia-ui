@@ -157,6 +157,12 @@ export interface TypeDefences {
     x4: PokemonType[]
 }
 
+export interface TypeCoverage {
+    x0: PokemonType[],
+    x1_2: PokemonType[],
+    x2: PokemonType[]
+}
+
 export interface TeamMove {
     id: number;
     name: string;

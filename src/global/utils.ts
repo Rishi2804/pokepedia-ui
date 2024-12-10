@@ -1,5 +1,5 @@
 import {PokemonType} from "./enums.ts";
-import {TypeDefences} from "./types.ts";
+import {TypeCoverage, TypeDefences} from "./types.ts";
 
 export function formatText(name: string): string {
     if (name === 'jangmo-o' || name === 'hakamo-o' || name === 'kommo-o') {
@@ -321,4 +321,12 @@ export function getTypeDefenses(type1: PokemonType, type2: PokemonType | null, a
     }
     handleabilityImmunity()
     return res
+}
+
+export function getTypeStrengths(type: PokemonType): TypeCoverage {
+    return {
+        x0: typeMap[type].no_effect_on,
+        x1_2: typeMap[type].weak_to,
+        x2: typeMap[type].strong_against,
+    }
 }
