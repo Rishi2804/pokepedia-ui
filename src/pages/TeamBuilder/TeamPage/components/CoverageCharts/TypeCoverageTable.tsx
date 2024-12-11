@@ -27,16 +27,28 @@ const TypeCoverageTable = () => {
         const movesCoverage = activeMoves.map(move => (getTypeStrengths(move.type)))
         const xs = new Set<PokemonType>()
         const xw = new Set<PokemonType>()
+        const xi = new Set<PokemonType>()
         movesCoverage.forEach(coverage => {
             coverage.x2.forEach(item => xs.add(item))
             coverage.x1_2.forEach(item => xw.add(item))
-            coverage.x0.forEach(item => xw.add(item))
+            coverage.x0.forEach(item => xi.add(item))
         })
         const typesToRemove = new Set<PokemonType>();
+        xi.forEach(type => {
+            const isValid = movesCoverage.every(coverage => coverage.x0.includes(type));
+
+            if (!isValid) {
+                typesToRemove.add(type);
+            }
+        });
+
+        typesToRemove.forEach(type => xi.delete(type));
+
+        typesToRemove.clear()
 
         xw.forEach(type => {
             const isValid = movesCoverage.every(coverage =>
-                coverage.x0.includes(type) || coverage.x1_2.includes(type)
+                coverage.x1_2.includes(type)
             );
 
             if (!isValid) {
@@ -44,10 +56,9 @@ const TypeCoverageTable = () => {
             }
         });
 
-        // Remove invalid types from xtw
         typesToRemove.forEach(type => xw.delete(type));
 
-        return {x2: [...xs], x1_2: [...xw], x0: []}
+        return {x2: [...xs], x1_2: [...xw], x0: [...xi]}
     })
 
     const getMult = (index: number, type: PokemonType) => {

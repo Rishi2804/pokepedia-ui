@@ -117,7 +117,7 @@ const typeMap: Record<PokemonType, TypeInfo> = {
         weak_against: [PokemonType.GROUND, PokemonType.PSYCHIC],
         strong_against: [PokemonType.GRASS, PokemonType.FAIRY],
         resistant_to: [PokemonType.FIGHTING, PokemonType.POISON, PokemonType.BUG, PokemonType.GRASS, PokemonType.FAIRY],
-        weak_to: [PokemonType.POISON, PokemonType.GROUND, PokemonType.GRASS, PokemonType.GHOST],
+        weak_to: [PokemonType.POISON, PokemonType.GROUND, PokemonType.ROCK, PokemonType.GHOST],
         immune_to: [],
         no_effect_on: [PokemonType.STEEL],
     },
