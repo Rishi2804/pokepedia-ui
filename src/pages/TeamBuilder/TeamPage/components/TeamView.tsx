@@ -18,6 +18,7 @@ import TeraTypeMenu from "./TeraTypeDropdown/TeraTypeMenu.tsx";
 import {PokemonType} from "../../../../global/enums.ts";
 import TypeDefensesTable from "./CoverageCharts/TypeDefensesTable.tsx";
 import TypeCoverageTable from "./CoverageCharts/TypeCoverageTable.tsx";
+import {NoAbilities} from "./constants.ts";
 
 interface TeamViewProps {
     isCreateFlow?: boolean;
@@ -130,7 +131,7 @@ const TeamView: FC<TeamViewProps> = ({isCreateFlow, editMode, setEditMode, advan
                                         {
                                             advancedOptions &&
                                             <>
-                                            <FormControl fullWidth>
+                                            <FormControl fullWidth sx={{display: NoAbilities.includes(currentTeam.versionGroup) ? 'none' : ''}}>
                                                 <StaticLabel>Ability</StaticLabel>
                                                 <Select
                                                     variant="outlined"
