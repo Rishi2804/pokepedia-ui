@@ -1,24 +1,12 @@
-import {darken, Grid2 as Grid, Paper, Typography} from "@mui/material";
 import {PokemonType} from "../../../../../global/enums.ts";
-import TypeIcon from "../../../../../components/TypeIcon/TypeIcon.tsx";
 import {useTeamStore} from "../../../../../store/teamStore.ts";
-import PokemonImg from "../../../../../components/PokemonImg/PokemonImg.tsx";
-import {GridContainer} from "../../styles.ts";
-import RelationBox from "./RelationBox.tsx";
 import {getTypeDefenses} from "../../../../../global/utils.ts";
-import {COLORS} from "../../../../../theme/styles/colors.ts";
-import {VersionToGen} from "../../constants.ts";
+import TypeTeamTable from "./TypeTeamTable.tsx";
 
 const TypeDefensesTable = () => {
-    const { currentTeam } = useTeamStore();
+    const {currentTeam} = useTeamStore();
 
     if (!currentTeam) return null;
-
-    const centerStyle = {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
 
     const coverages = currentTeam.pokemon.map(mon => {
         if (mon.teraType) return getTypeDefenses(mon.teraType, null, mon.ability.id)
@@ -49,60 +37,15 @@ const TypeDefensesTable = () => {
     }
 
     return (
-        <Paper sx={{padding: 3, marginY: 3}}>
-            <Typography variant="h2" >Defensive Coverage</Typography>
-            <Grid container spacing={1}>
-                <Grid size={(12/9)}></Grid>
-                {
-                    [...Array(6)].map((_, i) => {
-                        const pokemon = currentTeam.pokemon[i]
-                        return (
-                                <Grid size={(12/9)} sx={{display: 'flex', alignItems: 'center', flexDirection: 'column', textAlign: 'center'}}>
-                                    {
-                                        i < currentTeam.pokemon.length &&
-                                        (<>
-                                            <GridContainer>
-                                                <PokemonImg id={pokemon.id} shiny={pokemon.shiny} female={pokemon.gender === 'female'}/>
-                                            </GridContainer>
-                                            <Typography>{pokemon.name}</Typography>
-                                        </>)
-                                    }
-                                </Grid>
-                        )
-                    })
-                }
-                <Grid size={(12/9)} sx={centerStyle}>Total Weak</Grid>
-                <Grid size={(12/9)} sx={centerStyle}>Total Resist</Grid>
-                {
-                    Object.values(PokemonType).map(type => {
-                        const totalWeak = getTotalWeaknesses(type)
-                        const totalResist = getTotalResist(type)
-                        if ((type === PokemonType.DARK || type === PokemonType.STEEL) && currentTeam.versionGroup && VersionToGen[currentTeam.versionGroup] < 2) return null;
-                        if (type === PokemonType.FAIRY && currentTeam.versionGroup && VersionToGen[currentTeam.versionGroup] < 6) return null;
-                        return (
-                            <>
-                                <Grid size={(12/9)} sx={centerStyle}>
-                                    <TypeIcon type={type} variant="full"/>
-                                </Grid>
-                                {[...Array(6)].map((_, i) => {
-                                    return (
-                                        <Grid size={(12/9)} sx={centerStyle}>
-                                            <RelationBox mult={getMult(i, type)} />
-                                        </Grid>
-                                    )
-                                })}
-                                <Grid size={(12/9)} sx={{...centerStyle, borderRadius: 2, color: COLORS.WHITE, backgroundColor: totalWeak > 0 ? darken(COLORS.RED, 0.12 * totalWeak) : ''}}>
-                                    {totalWeak > 0 ? totalWeak : ""}
-                                </Grid>
-                                <Grid size={(12/9)} sx={{...centerStyle, borderRadius: 2, color: COLORS.WHITE, backgroundColor: totalResist > 0 ? darken(COLORS.GREEN, 0.1 * totalResist) : ''}}>
-                                    {totalResist > 0 ? totalResist : ""}
-                                </Grid>
-                            </>
-                        )
-                    })
-                }
-            </Grid>
-        </Paper>
+        <TypeTeamTable
+            title={"Defensive Coverage"}
+            badColTitle={"Total Weak"}
+            goodColTitle={"Total Resist"}
+            currentTeam={currentTeam}
+            getMult={getMult}
+            getBadNum={getTotalWeaknesses}
+            getGoodNum={getTotalResist}
+        />
     );
 };
 
