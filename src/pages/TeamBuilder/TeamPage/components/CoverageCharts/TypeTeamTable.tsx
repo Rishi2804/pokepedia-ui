@@ -7,7 +7,7 @@ import RelationBox from "./RelationBox.tsx";
 import {COLORS} from "../../../../../theme/styles/colors.ts";
 import {VersionToGen} from "../../constants.ts";
 import {PokemonTeam} from "../../../../../global/types.ts";
-import {FC} from "react";
+import {FC, Fragment} from "react";
 
 interface ITypeTeamTableProps {
     title: string;
@@ -54,13 +54,13 @@ const TypeTeamTable: FC<ITypeTeamTableProps> = ({title, badColTitle, goodColTitl
                 <Grid size={(12/9)} sx={centerStyle}>{badColTitle}</Grid>
                 <Grid size={(12/9)} sx={centerStyle}>{goodColTitle}</Grid>
                 {
-                    Object.values(PokemonType).map(type => {
+                    Object.values(PokemonType).map((type, i) => {
                         const totalBad = getBadNum(type)
                         const totalGood = getGoodNum(type)
                         if ((type === PokemonType.DARK || type === PokemonType.STEEL) && currentTeam.versionGroup && VersionToGen[currentTeam.versionGroup] < 2) return null;
                         if (type === PokemonType.FAIRY && currentTeam.versionGroup && VersionToGen[currentTeam.versionGroup] < 6) return null;
                         return (
-                            <>
+                            <Fragment key={i}>
                                 <Grid size={(12/9)} sx={centerStyle}>
                                     <TypeIcon type={type} variant="full"/>
                                 </Grid>
@@ -77,7 +77,7 @@ const TypeTeamTable: FC<ITypeTeamTableProps> = ({title, badColTitle, goodColTitl
                                 <Grid size={(12/9)} sx={{...centerStyle, borderRadius: 2, color: COLORS.WHITE, backgroundColor: totalGood > 0 ? darken(COLORS.GREEN, 0.1 * totalGood) : ''}}>
                                     {totalGood > 0 ? totalGood : ""}
                                 </Grid>
-                            </>
+                            </Fragment>
                         )
                     })
                 }

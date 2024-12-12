@@ -23,6 +23,7 @@ interface TeamStore {
     createNewTeam: (versionGroup: VersionGroup | null) => void;
     startEditingTeam: (id: number) => void;
     saveEditingTeam: () => void;
+    deleteTeam: (id: number) => void;
 }
 
 export const useTeamStore = create<TeamStore>((set, getState) => ({
@@ -107,6 +108,14 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
         saveTeamsToLocalStorage(updatedTeams);
         return {
             teams: updatedTeams
+        }
+    }),
+
+    deleteTeam: (id: number) => set((state) => {
+        const updatedTeams = state.teams.filter((team) => team.id !== id)
+        saveTeamsToLocalStorage(updatedTeams)
+        return {
+            teams: updatedTeams,
         }
     })
 
