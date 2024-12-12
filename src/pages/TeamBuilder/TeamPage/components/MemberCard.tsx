@@ -87,7 +87,7 @@ const MemberCard: FC<IMemberCardProps> = ({i, editMode, advancedOptions}) => {
             <Card type1={pokemon.teraType ?? pokemon.type1} type2={pokemon.teraType ?? pokemon.type2} member onClick={() => handleRemove(i)} sx={{marginBottom: 1}}>
                 <PokemonImg id={pokemon.id} shiny={pokemon.shiny} female={pokemon.gender === 'female'}/>
             </Card>
-            <MemberInfo type1={pokemon.teraType ?? pokemon.type1} type2={pokemon.teraType ?? pokemon.type2} onClick={() => handleRemove(i)}>
+            <MemberInfo type1={pokemon.teraType ?? pokemon.type1} type2={pokemon.teraType ?? pokemon.type2}>
                 <Typography variant="h4" color={"#fff"}>{pokemon.name}</Typography>
                 <Box sx={{display: 'flex', gap: 1}}>
                     <TypeIcon type={pokemon.type1} size={32} variant={"circular"}/>
