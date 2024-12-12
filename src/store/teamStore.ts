@@ -78,7 +78,7 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
     createNewTeam: (versionGroup: VersionGroup | null) => set({
         currentTeam: {
             id: getState().teams.length > 0 ? getState().teams[getState().teams.length-1].id + 1 : 1,
-            name: `My ${versionGroup} Team`,
+            name: `My ${versionGroup ?? "Home"} Team`,
             versionGroup: versionGroup,
             pokemon: []
         }
