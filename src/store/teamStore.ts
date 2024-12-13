@@ -14,6 +14,7 @@ const saveTeamsToLocalStorage = (teams: PokemonTeam[]): void => {
 interface TeamStore {
     currentTeam: PokemonTeam | null;
     teams: PokemonTeam[];
+    removedPokemonCache: Map<number, PokemonTeamMember>;
     changeTeamName: (name: string) => void;
     addPokemon: (mon: PokemonTeamMember) => void;
     removePokemon: (index: number) => void;
@@ -29,6 +30,7 @@ interface TeamStore {
 export const useTeamStore = create<TeamStore>((set, getState) => ({
     currentTeam: null,
     teams: loadTeamsFromLocalStorage(),
+    removedPokemonCache: new Map(),
 
     changeTeamName: (name: string) => set((state) => {
         if (!state.currentTeam) return state
@@ -40,14 +42,23 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
         return ({
             currentTeam: {
                 ...state.currentTeam,
-                pokemon: [...state.currentTeam.pokemon, mon]
+                pokemon: [...state.currentTeam.pokemon, state.removedPokemonCache.get(mon.id) ?? mon]
             }
         });
     }),
 
     removePokemon: (index: number) => set((state) => {
         if (!state.currentTeam) return state;
+
+        const pokemonToRemove = state.currentTeam.pokemon[index];
+
+        const newCache = new Map(state.removedPokemonCache);
+
+        if (pokemonToRemove) {
+            newCache.set(pokemonToRemove.id, pokemonToRemove);
+        }
         return ({
+            removedPokemonCache: newCache,
             currentTeam: {
                 ...state.currentTeam,
                 pokemon: state.currentTeam.pokemon.filter((_, i) => i !== index),
@@ -107,7 +118,8 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
         updatedTeams[index] = {...state.currentTeam}
         saveTeamsToLocalStorage(updatedTeams);
         return {
-            teams: updatedTeams
+            teams: updatedTeams,
+            removedPokemonCache: new Map()
         }
     }),
 

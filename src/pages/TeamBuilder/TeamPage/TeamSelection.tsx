@@ -20,7 +20,7 @@ interface TeamSelectionProps {
 }
 
 const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
-    const { currentTeam, addPokemon, changeTeamName, startEditingTeam, createNewTeam, teams } = useTeamStore();
+    const { currentTeam, addPokemon, changeTeamName, startEditingTeam, createNewTeam } = useTeamStore();
     const { versionGroup, id } = useParams()
     const navigate = useNavigate()
     const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? versionGroupToStringMap.getByKey(currentTeam?.versionGroup) ?? 'national'});
@@ -36,7 +36,6 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
         } else if (id) {
             startEditingTeam(Number(id))
         }
-        console.log(currentTeam, teams)
     }, [versionGroup, id]);
 
     if (!isCreateFlow && !id) {
