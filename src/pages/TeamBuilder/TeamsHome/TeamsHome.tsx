@@ -1,14 +1,13 @@
 import MetaData from "../../../components/MetaData/MetaData.tsx";
-import {Grid2 as Grid, Typography} from "@mui/material";
+import {Box, Grid2 as Grid, Typography} from "@mui/material";
 import VersionGroupDialog from "./components/VersionGroupDialog.tsx";
 import {useTeamStore} from "../../../store/teamStore.ts";
-import {useNavigate} from "react-router-dom";
 import {EmptyContainer, MemberContainer, TeamContainer} from "./styles.ts";
 import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
+import TeamOptions from "./components/TeamOptions.tsx";
 
 const TeamsHome = () => {
     const { teams } = useTeamStore()
-    const navigate = useNavigate();
 
     return (
         <>
@@ -20,8 +19,12 @@ const TeamsHome = () => {
                 {
                     teams.map((team, index) => (
                         <Grid size={{xs: 12, sm: 6}} key={index}>
-                            <TeamContainer onClick={() => navigate(`/team-builder/${team.id}`)}>
-                                <Typography variant="h5" textAlign="center">{team.name}</Typography>
+                            <TeamContainer>
+                                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    <Box />
+                                    <Typography variant="h5" textAlign="center">{team.name}</Typography>
+                                    <TeamOptions id={team.id}/>
+                                </Box>
                                 <Grid container spacing={1} sx={{marginTop: 2}}>
                                     {
                                         [...Array(6)].map((_, i) => (

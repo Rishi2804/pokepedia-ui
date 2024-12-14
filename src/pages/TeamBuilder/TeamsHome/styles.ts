@@ -3,23 +3,14 @@ import {Paper} from "@mui/material";
 import {PokemonType} from "../../../global/enums.ts";
 import {TypeToCardBorder, TypeToCardColor} from "../../../global/utils.ts";
 
-export const TeamContainer = styled(Paper)({
+export const TeamContainer = styled(Paper)(({ theme }) => ({
     padding: 20,
     borderRadius: 8,
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     overflow: 'hidden',
     textAlign: 'center',
-    transition: 'all 0.3s ease',
-
-    '&:hover': {
-        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-    },
-
-    '&:active': {
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        transform: 'scale(0.98)',
-    }
-});
+    border: `0.5px solid ${theme.palette.primaryBorder}`
+}));
 
 interface MemberContainerProps {
     type1: PokemonType
