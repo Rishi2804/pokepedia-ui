@@ -7,6 +7,7 @@ import {useNavigate} from "react-router-dom";
 import {COLORS} from "../../../../theme/styles/colors.ts";
 import {Menu, MenuItem, IconButton} from "@mui/material";
 import DeleteDialog from "../../components/DeleteDialog.tsx";
+import ViewDialog from "../../components/ViewDialog.tsx";
 
 interface ITeamOptionsProps {
     id: number;
@@ -52,10 +53,15 @@ const TeamOptions: FC<ITeamOptionsProps> = ({id}) => {
                     <EditIcon sx={{marginRight: 1}}/>
                     Edit
                 </MenuItem>
-                <MenuItem>
-                    <ViewIcon sx={{marginRight: 1}}/>
-                    View
-                </MenuItem>
+                <ViewDialog
+                    id={id}
+                    trigger={
+                        <MenuItem>
+                            <ViewIcon sx={{marginRight: 1}}/>
+                            View
+                        </MenuItem>
+                    }
+                />
                 <DeleteDialog
                     id={id}
                     trigger={

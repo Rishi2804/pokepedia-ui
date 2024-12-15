@@ -6,7 +6,7 @@ import TypeIcon from "../../../../components/TypeIcon/TypeIcon.tsx";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import GenderlessIcon from "@mui/icons-material/Transgender";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import ShinyIcon from "@mui/icons-material/AutoAwesome";
 import TeraTypeMenu from "./TeraTypeDropdown/TeraTypeMenu.tsx";
 import {PokemonType} from "../../../../global/enums.ts";
 import FormControl from "@mui/material/FormControl";
@@ -111,7 +111,7 @@ const MemberCard: FC<IMemberCardProps> = ({i, editMode, advancedOptions}) => {
                         value="shiny"
                         disabled={!editMode}
                     >
-                        <AutoAwesomeIcon sx={{width: 20, height: 20}}/>
+                        <ShinyIcon sx={{width: 20, height: 20}}/>
                     </ShinyButton>
                     <TeraTypeMenu teraType={pokemon.teraType} changeTeraType={(tera?: PokemonType) => handleTeraTypeChange(i, pokemon, tera)} disabled={!editMode}/>
                 </Box>
