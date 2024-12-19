@@ -52,6 +52,7 @@ const ViewDialog: FC<IViewDialogProps> = ({id, trigger, teamToView}) => {
                             label="Show Gender"
                             control={
                                 <Checkbox
+                                    disabled={!checked[0]}
                                     checked={checked[1]}
                                     onChange={(event) => handleChange(1, event.target.checked)}
                                 />
@@ -105,7 +106,11 @@ const ViewDialog: FC<IViewDialogProps> = ({id, trigger, teamToView}) => {
                                             </Box>
                                             <Stack spacing={1} width={"100%"} display={checked[3] ? '' : 'none'}>
                                                 {pokemon.moves.map(move => {
-                                                    if (!move) return null
+                                                    if (!move) {
+                                                        return (
+                                                            <Box sx={{height: '46px', border: '1px solid white', borderRadius: 2}}/>
+                                                        )
+                                                    }
                                                     return (
                                                         <MoveCard type1={move.type}>
                                                             <Typography variant="body2">{move.name}</Typography>
