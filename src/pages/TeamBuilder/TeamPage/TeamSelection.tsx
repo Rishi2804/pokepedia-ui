@@ -13,6 +13,7 @@ import {PokemonType} from "../../../global/enums.ts";
 import {versionGroupToStringMap} from "../utils.ts";
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import DeleteTeamButton from "./components/DeleteTeamButton.tsx";
+import ViewTeamButton from "./components/ViewTeamButton.tsx";
 
 interface TeamSelectionProps {
     isCreateFlow?: boolean;
@@ -88,7 +89,10 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
                         input: {disableUnderline: !!currentTeam.name.length}
                     }}
                 />
-                {!isCreateFlow && <DeleteTeamButton id={currentTeam.id}/>}
+                <Box sx={{display: 'flex', gap: 1}}>
+                    {!isCreateFlow && <ViewTeamButton id={currentTeam.id} currentTeam={currentTeam}/>}
+                    {!isCreateFlow && <DeleteTeamButton id={currentTeam.id}/>}
+                </Box>
             </Box>
             <TeamView isCreateFlow={isCreateFlow} editMode={editMode} setEditMode={setEditMode} advancedOptions={advancedOptions} setAdvancedOptions={setAdvancedOptions}/>
             <Paper sx={{ px: 4, py: 2, display: editMode ? 'block' : 'none' }}>
