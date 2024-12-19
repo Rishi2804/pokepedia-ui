@@ -1,4 +1,4 @@
-import {Box, Grid2 as Grid, Modal, Typography} from "@mui/material";
+import {Box, Checkbox, FormControlLabel, FormGroup, Grid2 as Grid, Modal, Stack, Typography} from "@mui/material";
 import {FC, ReactNode, useState} from "react";
 import {PokemonTeam} from "../../../global/types.ts";
 import {useTeamStore} from "../../../store/teamStore.ts";
@@ -6,6 +6,8 @@ import {DialogBox, MoveCard, PokemonCard} from "./styles.ts";
 import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
 import TypeIcon from "../../../components/TypeIcon/TypeIcon.tsx";
 import MoveClassIcon from "../../../components/MoveClassIcon/MoveClassIcon.tsx";
+import MaleIcon from "@mui/icons-material/Male";
+import FemaleIcon from "@mui/icons-material/Female";
 
 interface IViewDialogProps {
     id: number;
@@ -15,9 +17,19 @@ interface IViewDialogProps {
 
 const ViewDialog: FC<IViewDialogProps> = ({id, trigger, teamToView}) => {
     const [open, setOpen] = useState<boolean>(false)
-    const { teams } = useTeamStore()
+    const [checked, setChecked] = useState<boolean[]>([false, false, false, false])
+    const {teams} = useTeamStore()
     const team = teamToView ?? teams.find(team => team.id === id)
     if (!team) return null
+
+    const handleChange = (i: number, isChecked: boolean) => {
+        setChecked((prevChecked) => {
+            const updatedChecked = [...prevChecked];
+            updatedChecked[i] = isChecked;
+            if (i === 0 && !isChecked) updatedChecked[1] = false
+            return updatedChecked;
+        })
+    }
 
     return (
         <>
@@ -26,47 +38,92 @@ const ViewDialog: FC<IViewDialogProps> = ({id, trigger, teamToView}) => {
             </Box>
             <Modal open={open} onClose={() => setOpen(false)}>
                 <DialogBox>
+                    <FormGroup sx={{display: 'flex', flexDirection: 'row', gap: 3, marginTop: -5, marginBottom: 2}}>
+                        <FormControlLabel
+                            label="Show Names"
+                            control={
+                                <Checkbox
+                                    checked={checked[0]}
+                                    onChange={(event) => handleChange(0, event.target.checked)}
+                                />
+                            }
+                        />
+                        <FormControlLabel
+                            label="Show Gender"
+                            control={
+                                <Checkbox
+                                    checked={checked[1]}
+                                    onChange={(event) => handleChange(1, event.target.checked)}
+                                />
+                            }
+                        />
+                        <FormControlLabel
+                            label="Show Types"
+                            control={
+                                <Checkbox
+                                    checked={checked[2]}
+                                    onChange={(event) => handleChange(2, event.target.checked)}
+                                />
+                            }
+                        />
+                        <FormControlLabel
+                            label="Show Moves"
+                            control={
+                                <Checkbox
+                                    checked={checked[3]}
+                                    onChange={(event) => handleChange(3, event.target.checked)}
+                                />
+                            }
+                        />
+                    </FormGroup>
+                    <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                     <Grid container spacing={1} sx={{width: '100%', height: '100%'}}>
                         <Typography variant="h2" sx={{width: '100%', textAlign: 'center'}}>{team.name}</Typography>
                         {
                             team.pokemon.map(pokemon => {
                                 return (
-                                    <Grid size={4}>
-                                        <PokemonCard type1={pokemon.teraType ?? pokemon.type1} type2={pokemon.teraType ?? pokemon.type2}>
-                                            <Box sx={{width: '40%', display: 'flex', flexDirection: 'column'}}>
-                                                <PokemonImg id={pokemon.id} shiny={pokemon.shiny} female={pokemon.gender === 'female'}/>
+                                    <Grid size={2}>
+                                        <PokemonCard type1={pokemon.teraType ?? pokemon.type1}
+                                                     type2={pokemon.teraType ?? pokemon.type2}>
+                                            <Box sx={{width: '100%', display: 'flex', flexDirection: 'column'}}>
+                                                <PokemonImg id={pokemon.id} shiny={pokemon.shiny}
+                                                            female={pokemon.gender === 'female'}/>
                                             </Box>
-                                            <Typography variant="h4">{pokemon.name}</Typography>
-                                            <Box sx={{display: 'flex', gap: 1}}>
-                                                <TypeIcon type={pokemon.type1} variant="circular" size={30} />
-                                                {pokemon.type2 && <TypeIcon type={pokemon.type2} variant="circular" size={30}/>}
-                                                {pokemon.teraType && <TypeIcon type={pokemon.teraType} variant="circular" size={30}/>}
-                                            </Box>
-                                            <Grid container spacing={1} sx={{width: '100%'}}>
+                                            <Typography variant="h4" sx={{display: checked[0] ? 'flex' : 'none'}}>
+                                                {pokemon.name}
                                                 {
-                                                    pokemon.moves.map(move => {
-                                                        if (!move) return null
-
-                                                        return (
-                                                            <Grid size={6}>
-                                                                <MoveCard type1={move.type}>
-                                                                    <Typography variant={"body2"}>{move.name}</Typography>
-                                                                    <Box sx={{display: 'flex', gap: 1, flexDirection: 'column'}}>
-                                                                        <TypeIcon type={move.type} size={20} variant="circular" />
-                                                                        <MoveClassIcon mClass={move.moveClass} size={20} />
-                                                                    </Box>
-                                                                </MoveCard>
-                                                            </Grid>
-                                                        )
-                                                    })
+                                                    checked[1] && (pokemon.gender === 'male' ?
+                                                    <MaleIcon sx={{width: 20, height: 20}}/>
+                                                    : pokemon.gender === 'female' ?
+                                                    <FemaleIcon sx={{width: 20, height: 20}}/> : null)
                                                 }
-                                            </Grid>
+                                            </Typography>
+                                            <Box sx={{display: checked[2] ? 'flex' : 'none', gap: 1}}>
+                                                <TypeIcon type={pokemon.type1} variant="circular" size={25} />
+                                                {pokemon.type2 && <TypeIcon type={pokemon.type2} variant="circular" size={25}/>}
+                                                {pokemon.teraType && <TypeIcon type={pokemon.teraType} variant="circular" size={25}/>}
+                                            </Box>
+                                            <Stack spacing={1} width={"100%"} display={checked[3] ? '' : 'none'}>
+                                                {pokemon.moves.map(move => {
+                                                    if (!move) return null
+                                                    return (
+                                                        <MoveCard type1={move.type}>
+                                                            <Typography variant="body2">{move.name}</Typography>
+                                                            <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+                                                                <TypeIcon type={move.type} variant="empty" size={20} />
+                                                                <MoveClassIcon mClass={move.moveClass} size={20}/>
+                                                            </Box>
+                                                        </MoveCard>
+                                                    )
+                                                })}
+                                            </Stack>
                                         </PokemonCard>
                                     </Grid>
                                 )
                             })
                         }
                     </Grid>
+                    </Box>
                 </DialogBox>
             </Modal>
         </>

@@ -14,9 +14,10 @@ export const DialogBox = styled(Paper)(({theme}) => ({
     borderRadius: 20,
     border: `1px solid ${theme.palette.primaryBorder}`,
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 60
+    justifyContent: 'flex-start',
+    padding: 60,
 }))
 
 interface TypeProps {
@@ -25,20 +26,22 @@ interface TypeProps {
 }
 
 export const PokemonCard = styled(Paper)<TypeProps>(({ type1, type2 }) => ({
-    borderColor: type2 ? TypeToCardBorder[type2] : TypeToCardBorder[type1],
-    backgroundColor: TypeToCardColor[type1],
+    borderColor: `${type2 ? TypeToCardBorder[type2] : TypeToCardBorder[type1]}80`,
+    backgroundColor: `${TypeToCardColor[type1]}80`,
     borderWidth: 5,
     borderRadius: 5,
     borderStyle: "solid",
     display: "flex",
-    padding: 1,
+    padding: 10,
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    gap: 10,
 }));
-export const MoveCard = styled(Paper)<TypeProps>(({ type1, type2 }) => ({
-    borderColor: type2 ? TypeToCardBorder[type2] : TypeToCardBorder[type1],
-    backgroundColor: TypeToCardColor[type1],
+
+export const MoveCard = styled(Paper)<TypeProps>(({ type1 }) => ({
+    borderColor: `${TypeToCardBorder[type1]}60`,
+    backgroundColor: `${TypeToCardColor[type1]}60`,
     borderWidth: 2,
     borderRadius: 5,
     borderStyle: "solid",
