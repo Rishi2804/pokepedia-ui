@@ -83,7 +83,10 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
 
     setCurrentTeam: (team: PokemonTeam) => set({ currentTeam: team }),
 
-    setTeams: (teams: PokemonTeam[]) => set({ teams: teams }),
+    setTeams: (teams: PokemonTeam[]) => set(() => {
+        saveTeamsToLocalStorage(teams);
+        return { teams }
+    }),
 
     validateCurrentTeam: () => {
         const currentTeam = getState().currentTeam;
