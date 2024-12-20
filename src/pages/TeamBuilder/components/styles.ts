@@ -37,6 +37,7 @@ export const PokemonCard = styled(Paper)<TypeProps>(({ type1, type2 }) => ({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
+    height: '100%',
 }));
 
 export const MoveCard = styled(Paper)<TypeProps>(({ type1 }) => ({

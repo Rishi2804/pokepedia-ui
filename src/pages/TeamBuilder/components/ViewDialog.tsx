@@ -8,6 +8,7 @@ import TypeIcon from "../../../components/TypeIcon/TypeIcon.tsx";
 import MoveClassIcon from "../../../components/MoveClassIcon/MoveClassIcon.tsx";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
+import {COLORS} from "../../../theme/styles/colors.ts";
 
 interface IViewDialogProps {
     id: number;
@@ -90,7 +91,7 @@ const ViewDialog: FC<IViewDialogProps> = ({id, trigger, teamToView}) => {
                                                 <PokemonImg id={pokemon.id} shiny={pokemon.shiny}
                                                             female={pokemon.gender === 'female'}/>
                                             </Box>
-                                            <Typography variant="h4" sx={{display: checked[0] ? 'flex' : 'none'}}>
+                                            <Typography variant="h4" sx={{display: checked[0] ? 'flex' : 'none', color: COLORS.WHITE}}>
                                                 {pokemon.name}
                                                 {
                                                     checked[1] && (pokemon.gender === 'male' ?
@@ -113,7 +114,7 @@ const ViewDialog: FC<IViewDialogProps> = ({id, trigger, teamToView}) => {
                                                     }
                                                     return (
                                                         <MoveCard type1={move.type}>
-                                                            <Typography variant="body2">{move.name}</Typography>
+                                                            <Typography variant="body2" sx={{color: COLORS.WHITE}}>{move.name}</Typography>
                                                             <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
                                                                 <TypeIcon type={move.type} variant="empty" size={20} />
                                                                 <MoveClassIcon mClass={move.moveClass} size={20}/>
