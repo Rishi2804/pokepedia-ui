@@ -20,6 +20,7 @@ interface TeamStore {
     removePokemon: (index: number) => void;
     editPokemon: (index: number, mon: PokemonTeamMember) => void;
     setCurrentTeam: (team: PokemonTeam) => void;
+    setTeams: (teams: PokemonTeam[]) => void;
     validateCurrentTeam: () => boolean;
     createNewTeam: (versionGroup: VersionGroup | null) => void;
     startEditingTeam: (id: number) => void;
@@ -81,6 +82,8 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
     }),
 
     setCurrentTeam: (team: PokemonTeam) => set({ currentTeam: team }),
+
+    setTeams: (teams: PokemonTeam[]) => set({ teams: teams }),
 
     validateCurrentTeam: () => {
         const currentTeam = getState().currentTeam;
