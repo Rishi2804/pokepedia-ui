@@ -4,16 +4,17 @@ import { FC } from 'react';
 
 interface IMultiplierBoxProps {
     mult: '0' | '2' | '4' | '1/2' | '1/4';
+    size?: number;
 }
 
-const MultiplierBox: FC<IMultiplierBoxProps> = ({ mult }) => {
+const MultiplierBox: FC<IMultiplierBoxProps> = ({ mult, size }) => {
 
     const StyledBox = styled(Box)<{ borderColor: string }>(({ theme, borderColor }) => ({
         border: '2px solid',
         display: 'flex',
         borderRadius: theme.spacing(1),
-        width: 45,
-        height: 45,
+        width: size ?? 45,
+        height: size ?? 45,
         justifyContent: 'center',
         alignItems: 'center',
         borderColor: borderColor, // dynamic borderColor based on the 'mult' prop

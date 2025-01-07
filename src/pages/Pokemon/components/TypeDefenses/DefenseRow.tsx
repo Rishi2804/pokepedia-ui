@@ -1,5 +1,5 @@
 import {Stack} from "@mui/material";
-import MultiplierBox from "./MultiplierBox.tsx";
+import MultiplierBox from "../../../../components/MultiplierBox/MultiplierBox.tsx";
 import {FC} from "react";
 import {PokemonType} from "../../../../global/enums.ts";
 import TypeIcon from "../../../../components/TypeIcon/TypeIcon.tsx";

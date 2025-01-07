@@ -251,7 +251,7 @@ export const abilityImmunities: Record<number, PokemonType | null> = {
     25: null, // Wonder Guard
 }
 
-export function getTypeDefenses(type1: PokemonType, type2: PokemonType | null, abilityId?: number) {
+export function getTypeDefenses(type1: PokemonType, type2?: PokemonType | null, abilityId?: number) {
     const res: TypeDefences = {
         x0: [],
         x1_4: [],

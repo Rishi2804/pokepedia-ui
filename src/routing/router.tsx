@@ -11,6 +11,7 @@ import Ability from "../pages/Abilities/AbilityPage/Ability.tsx";
 import ErrorPage from "../containers/error/ErrorPage.tsx";
 import TeamsHome from "../pages/TeamBuilder/TeamsHome/TeamsHome.tsx";
 import TeamSelection from "../pages/TeamBuilder/TeamPage/TeamSelection.tsx";
+import Types from "../pages/Types/Types.tsx";
 
 export const router = createBrowserRouter([{
         element: <Layout/>,
@@ -49,6 +50,11 @@ export const router = createBrowserRouter([{
                 path: "/ability",
                 errorElement: <ErrorPage />,
                 element: <AbilityHome />
+            },
+            {
+                path: "/types",
+                errorElement: <ErrorPage />,
+                element: <Types />
             },
             {
                 path: "/ability/:id",
