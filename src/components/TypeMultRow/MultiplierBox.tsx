@@ -17,7 +17,7 @@ const MultiplierBox: FC<IMultiplierBoxProps> = ({ mult, size }) => {
         height: size ?? 45,
         justifyContent: 'center',
         alignItems: 'center',
-        borderColor: borderColor, // dynamic borderColor based on the 'mult' prop
+        borderColor: borderColor,
     }));
 
 
