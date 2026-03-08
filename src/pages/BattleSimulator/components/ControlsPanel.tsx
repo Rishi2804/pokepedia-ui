@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import { MoveInfo, Pokemon, PlayerState } from '../types';
 import * as S from '../styles';
 import MoveButton from './MoveButton';
@@ -19,6 +19,8 @@ const ControlsPanel: React.FC<ControlsPanelProps> = ({
   availableSwitches,
   onMoveClick,
 }) => {
+  const theme = useTheme();
+
   return (
     <S.ControlsSection>
       {activeMoves && activeMoves.length > 0 ? (
@@ -48,13 +50,12 @@ const ControlsPanel: React.FC<ControlsPanelProps> = ({
                 onClick={() => onMoveClick(`move ${n}`)}
                 sx={{
                   width: '100%',
-                  fontFamily: '"Rajdhani", sans-serif',
-                  color: '#aaa',
-                  borderColor: 'rgba(255,255,255,0.15)',
+                  color: theme.palette.text.primary,
+                  borderColor: theme.palette.divider,
                   textTransform: 'none',
                   '&:hover': {
-                    borderColor: '#6699ff',
-                    color: '#6699ff',
+                    borderColor: theme.palette.primary.main,
+                    color: theme.palette.primary.main,
                   },
                 }}
               >

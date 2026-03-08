@@ -30,9 +30,9 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 function hpColor(pct: number): string {
-  if (pct > 50) return '#48d048';
-  if (pct > 20) return '#f8d030';
-  return '#f04030';
+  if (pct > 50) return '#4caf50';
+  if (pct > 20) return '#ff9800';
+  return '#f44336';
 }
 
 const HPBar: React.FC<{ hp: number; maxHp: number; pct: number }> = ({ hp, maxHp, pct }) => (
@@ -51,6 +51,8 @@ const HPBar: React.FC<{ hp: number; maxHp: number; pct: number }> = ({ hp, maxHp
 
 const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, isActive, isOwn = false }) => {
   const fainted = pokemon.fainted || pokemon.status === 'fnt';
+  const maleColor = '#3366ff';
+  const femaleColor = '#ff77dd';
 
   return (
     <S.PokemonCardContainer isActive={isActive} isOwn={isOwn} sx={{ opacity: fainted ? 0.4 : 1 }}>
@@ -58,7 +60,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, isActive, isOwn = fa
         <S.PokemonName fainted={fainted}>
           {pokemon.name}
           {pokemon.gender && (
-            <span style={{ color: pokemon.gender === 'M' ? '#88aaff' : '#ff88aa', marginLeft: 4 }}>
+            <span style={{ color: pokemon.gender === 'M' ? maleColor : femaleColor, marginLeft: 4 }}>
               {pokemon.gender === 'M' ? '♂' : '♀'}
             </span>
           )}

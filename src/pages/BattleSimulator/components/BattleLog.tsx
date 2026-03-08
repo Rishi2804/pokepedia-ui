@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from '@mui/material/styles';
 import { LogEntry } from '../types';
 import * as S from '../styles';
 
@@ -6,48 +7,51 @@ interface BattleLogProps {
   logs: LogEntry[];
 }
 
-const LOG_STYLES: Record<string, React.CSSProperties> = {
-  turn: {
-    color: '#ffd700',
-    fontWeight: 700,
-    borderTop: '1px solid rgba(255,215,0,0.2)',
-    paddingTop: 6,
-    marginTop: 4,
-  },
-  move: {
-    color: '#88ccff',
-  },
-  damage: {
-    color: '#ff8866',
-  },
-  faint: {
-    color: '#ff4444',
-    fontWeight: 600,
-  },
-  win: {
-    color: '#ffd700',
-    fontWeight: 700,
-    fontSize: '1rem',
-  },
-  system: {
-    color: '#999',
-  },
-  status: {
-    color: '#cc88ff',
-  },
-  switch: {
-    color: '#88ffaa',
-  },
-  boost: {
-    color: '#ffbb44',
-  },
-  weather: {
-    color: '#66ccff',
-  },
-};
-
 const BattleLog: React.FC<BattleLogProps> = ({ logs }) => {
+  const theme = useTheme();
   const logEndRef = useRef<HTMLDivElement>(null);
+
+  const LOG_STYLES: Record<string, React.CSSProperties> = {
+    turn: {
+      color: theme.palette.primary.main,
+      fontWeight: 700,
+      borderTop: `1px solid ${theme.palette.mode === 'light' 
+        ? 'rgba(25,118,210,0.2)' 
+        : 'rgba(25,118,210,0.3)'}`,
+      paddingTop: 6,
+      marginTop: 4,
+    },
+    move: {
+      color: theme.palette.primary.main,
+    },
+    damage: {
+      color: '#ff6b6b',
+    },
+    faint: {
+      color: theme.palette.error.main,
+      fontWeight: 600,
+    },
+    win: {
+      color: theme.palette.primary.main,
+      fontWeight: 700,
+      fontSize: '1rem',
+    },
+    system: {
+      color: theme.palette.text.secondary,
+    },
+    status: {
+      color: theme.palette.mode === 'light' ? '#8e24aa' : '#ba68c8',
+    },
+    switch: {
+      color: '#4caf50',
+    },
+    boost: {
+      color: '#ff9800',
+    },
+    weather: {
+      color: '#29b6f6',
+    },
+  };
 
   // Auto-scroll log
   useEffect(() => {

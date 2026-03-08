@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Chip } from '@mui/material';
+import { Box, Chip, useTheme } from '@mui/material';
 import { BattleState } from '../types';
 import * as S from '../styles';
 
@@ -9,6 +9,8 @@ interface BattleHeaderProps {
 }
 
 const BattleHeader: React.FC<BattleHeaderProps> = ({ battleState, connectionStatus }) => {
+  const theme = useTheme();
+
   return (
     <S.Header>
       <Box>
@@ -21,8 +23,10 @@ const BattleHeader: React.FC<BattleHeaderProps> = ({ battleState, connectionStat
             label={battleState.weather}
             size="small"
             sx={{
-              backgroundColor: 'rgba(100,180,255,0.15)',
-              color: '#88ccff',
+              backgroundColor: theme.palette.mode === 'light'
+                ? 'rgba(25,118,210,0.12)'
+                : 'rgba(25,118,210,0.25)',
+              color: theme.palette.primary.main,
               fontFamily: 'monospace',
               fontSize: '0.65rem',
               height: 22,
@@ -35,8 +39,10 @@ const BattleHeader: React.FC<BattleHeaderProps> = ({ battleState, connectionStat
             label={c.replace('move: ', '')}
             size="small"
             sx={{
-              backgroundColor: 'rgba(255,200,50,0.12)',
-              color: '#ffcc44',
+              backgroundColor: theme.palette.mode === 'light'
+                ? 'rgba(255,152,0,0.12)'
+                : 'rgba(255,152,0,0.25)',
+              color: theme.palette.mode === 'light' ? '#ff9800' : '#ffb74d',
               fontFamily: 'monospace',
               fontSize: '0.65rem',
               height: 22,
@@ -45,8 +51,20 @@ const BattleHeader: React.FC<BattleHeaderProps> = ({ battleState, connectionStat
         ))}
         <S.ConnectionIndicator
           sx={{
-            backgroundColor: connectionStatus === 'connected' ? 'rgba(60,200,60,0.1)' : 'rgba(255,60,60,0.1)',
-            borderColor: connectionStatus === 'connected' ? 'rgba(60,200,60,0.3)' : 'rgba(255,60,60,0.3)',
+            backgroundColor: connectionStatus === 'connected' 
+              ? (theme.palette.mode === 'light' 
+                ? 'rgba(76,175,80,0.12)' 
+                : 'rgba(76,175,80,0.25)')
+              : (theme.palette.mode === 'light'
+                ? 'rgba(211,47,47,0.12)'
+                : 'rgba(211,47,47,0.25)'),
+            borderColor: connectionStatus === 'connected'
+              ? (theme.palette.mode === 'light'
+                ? 'rgba(76,175,80,0.3)'
+                : 'rgba(76,175,80,0.4)')
+              : (theme.palette.mode === 'light'
+                ? 'rgba(211,47,47,0.3)'
+                : 'rgba(211,47,47,0.4)'),
           }}
         >
           <S.StatusDot connected={connectionStatus === 'connected'} />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { PlayerState } from '../types';
 import * as S from '../styles';
 import PokemonCard from './PokemonCard';
@@ -10,6 +11,7 @@ interface PlayerPanelProps {
 }
 
 const PlayerPanel: React.FC<PlayerPanelProps> = ({ player, isOwn }) => {
+  const theme = useTheme();
   const faintedCount = player.team.filter(p => p.fainted || p.status === 'fnt').length;
   const aliveCount = player.teamSize - faintedCount;
 
@@ -39,7 +41,7 @@ const PlayerPanel: React.FC<PlayerPanelProps> = ({ player, isOwn }) => {
       {player.active ? (
         <PokemonCard pokemon={player.active} isActive={true} isOwn={isOwn} />
       ) : (
-        <Box sx={{ p: 2, borderRadius: 2, border: '1px dashed rgba(255,255,255,0.15)', textAlign: 'center' }}>
+        <Box sx={{ p: 2, borderRadius: 2, border: `1px dashed ${theme.palette.mode === 'light' ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.15)'}`, textAlign: 'center' }}>
           <S.LogEmpty>No active Pokémon</S.LogEmpty>
         </Box>
       )}

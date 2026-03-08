@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Grid2 as Grid, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { BattleState, LogEntry } from './types';
 import * as S from './styles';
 import { makeInitialBattleState, processMessage } from './utils';
@@ -84,6 +85,7 @@ const BattleSimulator: React.FC = () => {
     setCurrentPlayer(prev => (prev === 'p1' ? 'p2' : 'p1'));
   };
 
+  const theme = useTheme();
   const activeMoves = battleState.requestData?.active?.[0]?.moves;
   const currentPlayerState = battleState[currentPlayer];
   const availableSwitches = currentPlayerState.team.filter(
@@ -101,7 +103,7 @@ const BattleSimulator: React.FC = () => {
           background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.1);
+          background: ${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'};
           border-radius: 2px;
         }
       `}</style>
@@ -111,7 +113,7 @@ const BattleSimulator: React.FC = () => {
       {!battleStarted ? (
         <S.WelcomeContainer>
           <S.WelcomeTitle>READY FOR BATTLE?</S.WelcomeTitle>
-          <Typography sx={{ color: '#666', fontFamily: 'monospace', fontSize: '0.8rem', textAlign: 'center' }}>
+          <Typography sx={{ color: theme.palette.text.secondary, fontFamily: 'monospace', fontSize: '0.8rem', textAlign: 'center' }}>
             Gen 7 Random Battle Format
           </Typography>
           <S.StartButton
