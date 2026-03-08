@@ -12,6 +12,7 @@ import ErrorPage from "../containers/error/ErrorPage.tsx";
 import TeamsHome from "../pages/TeamBuilder/TeamsHome/TeamsHome.tsx";
 import TeamSelection from "../pages/TeamBuilder/TeamPage/TeamSelection.tsx";
 import Types from "../pages/Types/Types.tsx";
+import BattleSimulator from "../pages/BattleSimulator/BattleSimulator.tsx";
 
 export const router = createBrowserRouter([{
         element: <Layout/>,
@@ -75,6 +76,11 @@ export const router = createBrowserRouter([{
                 path: "/team-builder/:id",
                 errorElement: <ErrorPage />,
                 element: <TeamSelection />
+            },
+            {
+                path: "/battle-simulator",
+                errorElement: <ErrorPage />,
+                element: <BattleSimulator />
             }
         ]
 }])

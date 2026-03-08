@@ -13,6 +13,7 @@ const AppHeader: React.FC = () => {
         'Abilities': '/ability',
         'Types': '/types',
         'Team Builder': '/team-builder',
+        'Battle Simulator': '/battle-simulator',
     };
 
     const handleNavigation = (page: string) => {
