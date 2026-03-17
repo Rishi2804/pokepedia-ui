@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { PlayerState } from '../types';
-import * as S from '../styles';
-import PokemonCard from './PokemonCard';
+import { PlayerState } from '../../types.ts';
+import * as S from './styles.ts';
+import PokemonCard from '../PokemonCard/PokemonCard.tsx';
 
 interface PlayerPanelProps {
   player: PlayerState;

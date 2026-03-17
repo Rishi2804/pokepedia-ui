@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { Pokemon } from '../types';
-import * as S from '../styles';
+import { Pokemon } from '../../types.ts';
+import * as S from './styles.ts';
 
 interface PokemonCardProps {
   pokemon: Pokemon;

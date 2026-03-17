@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Chip, useTheme } from '@mui/material';
-import { BattleState } from '../types';
-import * as S from '../styles';
+import { BattleState } from '../../types.ts';
+import * as S from './styles.ts';
 
 interface BattleHeaderProps {
   battleState: BattleState;
@@ -14,7 +14,7 @@ const BattleHeader: React.FC<BattleHeaderProps> = ({ battleState, connectionStat
   return (
     <S.Header>
       <Box>
-        <S.HeaderTitle>⚔ BATTLE SIMULATOR</S.HeaderTitle>
+        <S.HeaderTitle>BATTLE SIMULATOR</S.HeaderTitle>
         {battleState.tier && <S.HeaderSubtitle>{battleState.tier} · Gen {battleState.gen}</S.HeaderSubtitle>}
       </Box>
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { LogEntry } from '../types';
-import * as S from '../styles';
+import { LogEntry } from '../../types.ts';
+import * as S from './styles.ts';
 
 interface BattleLogProps {
   logs: LogEntry[];

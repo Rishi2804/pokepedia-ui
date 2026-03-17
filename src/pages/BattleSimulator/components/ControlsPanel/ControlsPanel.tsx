@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, useTheme } from '@mui/material';
-import { MoveInfo, Pokemon, PlayerState } from '../types';
-import * as S from '../styles';
-import MoveButton from './MoveButton';
+import { MoveInfo, Pokemon, PlayerState } from '../../types.ts';
+import * as S from './styles.ts';
+import MoveButton from '../MoveButton/MoveButton.tsx';
 
 interface ControlsPanelProps {
   activeMoves: MoveInfo[] | undefined;

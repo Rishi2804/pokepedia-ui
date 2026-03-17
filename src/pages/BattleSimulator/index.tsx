@@ -4,10 +4,10 @@ import { useTheme } from '@mui/material/styles';
 import { BattleState, LogEntry } from './types';
 import * as S from './styles';
 import { makeInitialBattleState, processMessage } from './utils';
-import BattleHeader from './components/BattleHeader';
-import PlayerPanel from './components/PlayerPanel';
-import BattleLog from './components/BattleLog';
-import ControlsPanel from './components/ControlsPanel';
+import BattleHeader from './components/BattleHeader/BattleHeader.tsx';
+import PlayerPanel from './components/PlayerPanel/PlayerPanel.tsx';
+import BattleLog from './components/BattleLog/BattleLog.tsx';
+import ControlsPanel from './components/ControlsPanel/ControlsPanel.tsx';
 
 const BattleSimulator: React.FC = () => {
   const [battleStarted, setBattleStarted] = useState(false);
