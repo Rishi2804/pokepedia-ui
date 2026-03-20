@@ -1,3 +1,29 @@
+export interface ShowdownStats {
+  hp: number;
+  atk: number;
+  def: number;
+  spa: number;
+  spd: number;
+  spe: number;
+}
+
+export interface PokemonShowdownMember {
+  name: string;
+  species: string;
+  item?: string;
+  ability: string;
+  moves: string[];
+  nature: string;
+  evs: ShowdownStats;
+  ivs: ShowdownStats;
+  gender: "M" | "F" | "N";
+  level: number;
+  happiness: number;
+  gigantamax?: boolean;
+  dynamaxLevel?: number;
+  teraType?: string;
+}
+
 export interface Pokemon {
   ident: string;         // e.g. "p1a: Pikachu"
   name: string;          // e.g. "Pikachu"

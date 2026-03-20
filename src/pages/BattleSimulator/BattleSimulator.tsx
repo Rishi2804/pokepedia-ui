@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Grid2 as Grid, Typography } from '@mui/material';
+import {Button, Grid2 as Grid, Typography} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { BattleState, LogEntry } from './types';
 import * as S from './styles';
-import { makeInitialBattleState, processMessage } from './utils';
+import {makeInitialBattleState, makeShowdownTeam, processMessage} from './utils';
 import BattleHeader from './components/BattleHeader/BattleHeader.tsx';
 import PlayerPanel from './components/PlayerPanel/PlayerPanel.tsx';
 import BattleLog from './components/BattleLog/BattleLog.tsx';
 import ControlsPanel from './components/ControlsPanel/ControlsPanel.tsx';
+import {PokemonTeam} from "../../global/types.ts";
+import {useTeamStore} from "../../store/teamStore.ts";
 
 const BattleSimulator: React.FC = () => {
   const [battleStarted, setBattleStarted] = useState(false);
@@ -35,8 +37,9 @@ const BattleSimulator: React.FC = () => {
     };
 
     ws.onmessage = (event) => {
+      console.log("message recieved")
       const data = JSON.parse(event.data);
-
+      console.log(data.type);
       if (data.type === 'update' || data.type === 'sideupdate') {
         const { state: nextState, logs: newLogs } = processMessage(
           battleStateRef.current,
@@ -50,6 +53,8 @@ const BattleSimulator: React.FC = () => {
         if (data.type === 'sideupdate' && data.player && nextState.requestData) {
           setCurrentPlayer(data.player);
         }
+      } else if (data.type === 'validate-team') {
+        console.log("result: ", data.result);
       }
     };
 
@@ -85,7 +90,12 @@ const BattleSimulator: React.FC = () => {
     setCurrentPlayer(prev => (prev === 'p1' ? 'p2' : 'p1'));
   };
 
+  const validateTeam = (team: PokemonTeam) => {
+    send({ type: 'validate-team', team: makeShowdownTeam(team) });
+  }
+
   const theme = useTheme();
+  const { teams } = useTeamStore();
   const activeMoves = battleState.requestData?.active?.[0]?.moves;
   const currentPlayerState = battleState[currentPlayer];
   const availableSwitches = currentPlayerState.team.filter(
@@ -94,20 +104,6 @@ const BattleSimulator: React.FC = () => {
 
   return (
     <S.BattleContainer>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
-        ::-webkit-scrollbar {
-          width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-          background: ${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'};
-          border-radius: 2px;
-        }
-      `}</style>
-
       <BattleHeader battleState={battleState} connectionStatus={connectionStatus} />
 
       {!battleStarted ? (
@@ -123,6 +119,11 @@ const BattleSimulator: React.FC = () => {
           >
             START RANDOM BATTLE
           </S.StartButton>
+          <Button
+            onClick={() => validateTeam(teams[0])}
+          >
+            Test Validate
+          </Button>
         </S.WelcomeContainer>
       ) : (
         <Grid container sx={{ height: 'calc(100vh - 73px)' }}>
