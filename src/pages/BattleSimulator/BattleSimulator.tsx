@@ -86,7 +86,9 @@ const BattleSimulator: React.FC = () => {
   };
 
   const startBattle = () => {
-    send({ type: 'start-battle', format: 'gen7randombattle' });
+    const team1 = makeShowdownTeam(teams[0])
+    const team2 = makeShowdownTeam(teams[0])
+    send({ type: 'start-battle', format: `gen${battleGen}anythinggoes`, team1: team1, team2: team2 });
     setBattleStarted(true);
     setBattleState(makeInitialBattleState());
     setLogs([]);
@@ -142,7 +144,7 @@ const BattleSimulator: React.FC = () => {
             <Select
                 type={'number'}
                 label={"Select"}
-                value={p1TeamId}
+                value={p1TeamId.toString()}
                 onChange={(e) => setP1TeamId(e.target.value)}
             >
               {
@@ -159,7 +161,7 @@ const BattleSimulator: React.FC = () => {
             <Select
                 type={'number'}
                 label={"Select"}
-                value={p2TeamId}
+                value={p2TeamId.toString()}
                 onChange={(e) => setP2TeamId(e.target.value)}
             >
               {
