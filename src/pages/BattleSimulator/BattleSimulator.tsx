@@ -10,6 +10,10 @@ import BattleLog from './components/BattleLog/BattleLog.tsx';
 import ControlsPanel from './components/ControlsPanel/ControlsPanel.tsx';
 import {PokemonTeam} from "../../global/types.ts";
 import {useTeamStore} from "../../store/teamStore.ts";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 const BattleSimulator: React.FC = () => {
   const [battleStarted, setBattleStarted] = useState(false);
@@ -19,6 +23,9 @@ const BattleSimulator: React.FC = () => {
   const [battleState, setBattleState] = useState<BattleState>(makeInitialBattleState());
   const wsRef = useRef<WebSocket | null>(null);
   const battleStateRef = useRef<BattleState>(battleState);
+  const [battleGen, setBattleGen] = useState("9")
+  const [p1TeamId, setP1TeamId] = useState('');
+  const [p2TeamId, setP2TeamId] = useState('');
 
   // Keep ref in sync
   useEffect(() => {
@@ -112,6 +119,58 @@ const BattleSimulator: React.FC = () => {
           <Typography sx={{ color: theme.palette.text.secondary, fontFamily: 'monospace', fontSize: '0.8rem', textAlign: 'center' }}>
             Gen 7 Random Battle Format
           </Typography>
+          <FormControl>
+            <InputLabel>Select a Gen</InputLabel>
+            <Select
+              type={'number'}
+              label={"Select a Gen"}
+              value={battleGen}
+              onChange={(e) => setBattleGen(e.target.value)}
+            >
+              {
+                [...Array(9)].map((_, i) => {
+                  const gen = (i + 1).toString()
+                  return (
+                      <MenuItem value={gen} key={i}>Gen {gen}</MenuItem>
+                  )
+              })
+              }
+            </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel>P1: Select a Team</InputLabel>
+            <Select
+                type={'number'}
+                label={"Select"}
+                value={p1TeamId}
+                onChange={(e) => setP1TeamId(e.target.value)}
+            >
+              {
+                teams.map((p) => {
+                  return (
+                      <MenuItem value={p.id} key={p.id}>{p.name}</MenuItem>
+                  )
+                })
+              }
+            </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel>P2: Select a Team</InputLabel>
+            <Select
+                type={'number'}
+                label={"Select"}
+                value={p2TeamId}
+                onChange={(e) => setP2TeamId(e.target.value)}
+            >
+              {
+                teams.map((p) => {
+                  return (
+                      <MenuItem value={p.id} key={p.id}>{p.name}</MenuItem>
+                  )
+                })
+              }
+            </Select>
+          </FormControl>
           <S.StartButton
             variant="contained"
             onClick={startBattle}
