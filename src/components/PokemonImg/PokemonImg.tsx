@@ -1,5 +1,5 @@
 import {FC} from "react";
-import {specialImgs} from "./constants.ts";
+import {femaleImgs, specialImgs} from "./constants.ts";
 
 interface IPokemonImgProps {
     id: number
@@ -21,7 +21,7 @@ const PokemonImg: FC<IPokemonImgProps> = ({id, shiny, female}) => {
         path += "/shiny"
     }
 
-    if (female) {
+    if (femaleImgs.includes(id) && female) {
         path += "/female"
     }
 
