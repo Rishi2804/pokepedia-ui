@@ -30,8 +30,8 @@ export function useBattleActions({
         const msg: OutboundWSMessage = {
             type: 'start-battle',
             format: BATTLE_FORMATS.anythingGoes(battleGen),
-            team1: JSON.stringify(makeShowdownTeam(p1Team)),
-            team2: JSON.stringify(makeShowdownTeam(p2Team)),
+            team1: makeShowdownTeam(p1Team),
+            team2: makeShowdownTeam(p2Team),
         };
 
         send(msg);
@@ -50,7 +50,7 @@ export function useBattleActions({
 
     const validateTeam = useCallback(
         (team: PokemonTeam) => {
-            send({ type: 'validate-team', team: JSON.stringify(makeShowdownTeam(team)) });
+            send({ type: 'validate-team', team: makeShowdownTeam(team) });
         },
         [send],
     );
