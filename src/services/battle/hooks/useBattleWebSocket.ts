@@ -42,15 +42,23 @@ export function useBattleWebSocket({
             const { onStateChange, onLogsChange, onPlayerChange, getBattleState } = callbacksRef.current;
 
             if (data.type === 'update' || data.type === 'sideupdate') {
-                console.log(data.message)
+                // processMessage reads from getBattleState() (the ref) so it always
+                // sees the latest state even if two messages arrive before a re-render.
+                // onStateChange updates the ref synchronously via battleStateRef before
+                // calling setBattleState, so each message builds on the previous one.
                 const { state: nextState, logs: newLogs } = processMessage(getBattleState(), data.message);
-                console.log(newLogs);
                 onStateChange(nextState);
 
                 if (newLogs.length) onLogsChange(newLogs);
 
-                if (data.type === 'sideupdate' && data.player && nextState.requestData) {
-                    onPlayerChange(data.player);
+                // For sideupdates, the envelope player field is ground truth for whose
+                // turn it is — it comes directly from the server routing, not from the
+                // message body. Use requestData as a fallback only.
+                if (data.type === 'sideupdate') {
+                    const player: 'p1' | 'p2' | undefined =
+                        data.player ??
+                        (nextState.requestData?.side?.id as 'p1' | 'p2' | undefined);
+                    if (player) onPlayerChange(player);
                 }
             } else if (data.type === 'validate-team') {
                 console.log('validate-team result:', data.result);

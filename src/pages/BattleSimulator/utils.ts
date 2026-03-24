@@ -50,7 +50,8 @@ export function makeInitialBattleState(): BattleState {
     tier: '',
     phase: 'init',
     waitingFor: null,
-    requestData: null,
+    p1RequestData: null,
+    p2RequestData: null,
   };
 }
 
@@ -629,9 +630,10 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
     case 'request': {
       try {
         const reqData: RequestData = JSON.parse(parts.slice(2).join('|'));
-        // Always set requestData — teampreview requests have no active/side but
-        // the websocket hook needs a non-null requestData to fire onPlayerChange
-        newState.requestData = reqData;
+        // Store per-player so p2's request never clobbers p1's moves/switches
+        const reqPid = (reqData.side?.id ?? reqData.player) as 'p1' | 'p2' | undefined;
+        if (reqPid === 'p1') newState.p1RequestData = reqData;
+        else if (reqPid === 'p2') newState.p2RequestData = reqData;
 
         if (!reqData.side && !reqData.active) break;
 

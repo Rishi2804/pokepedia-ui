@@ -19,6 +19,7 @@ export function useBattleActions({
                                      p1Team,
                                      p2Team,
                                      currentPlayer,
+                                     setCurrentPlayer,
                                      setBattleStarted,
                                      setBattleState,
                                      setLogs,
@@ -48,8 +49,11 @@ export function useBattleActions({
     const makeMove = useCallback(
         (choice: string) => {
             send({ type: 'move', player: currentPlayer, choice });
+            // Toggle to the other player immediately — the server won't tell us who
+            // goes next until after both players have submitted, so we drive it here.
+            setCurrentPlayer(prev => (prev === 'p1' ? 'p2' : 'p1'));
         },
-        [send, currentPlayer],
+        [send, currentPlayer, setCurrentPlayer],
     );
 
     const validateTeam = useCallback(

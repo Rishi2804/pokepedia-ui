@@ -25,16 +25,16 @@ export interface PokemonShowdownMember {
 }
 
 export interface Pokemon {
-  ident: string;         // e.g. "p1a: Pikachu"
-  name: string;          // e.g. "Pikachu"
-  details: string;       // e.g. "Pikachu, L59, F"
+  ident: string;
+  name: string;
+  details: string;
   species: string;
   level: number;
   gender: string;
-  hp: number;            // current HP (percentage 0-100, or absolute)
+  hp: number;
   maxHp: number;
-  hpPercent: number;     // 0-100
-  status: string | null; // slp, par, brn, frz, psn, tox, fnt
+  hpPercent: number;
+  status: string | null;
   active: boolean;
   fainted: boolean;
   boosts: Record<string, number>;
@@ -43,7 +43,7 @@ export interface Pokemon {
   ability: string;
   item: string;
   stats: Record<string, number>;
-  position: string; // 'a', 'b', etc.
+  position: string;
 }
 
 export interface MoveInfo {
@@ -76,7 +76,9 @@ export interface BattleState {
   tier: string;
   phase: 'init' | 'teampreview' | 'battle' | 'ended';
   waitingFor: 'p1' | 'p2' | 'both' | null;
-  requestData: RequestData | null;
+  // Per-player request data so p2's request never overwrites p1's
+  p1RequestData: RequestData | null;
+  p2RequestData: RequestData | null;
 }
 
 export interface RequestData {

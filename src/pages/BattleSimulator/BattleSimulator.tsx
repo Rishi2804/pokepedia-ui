@@ -30,7 +30,7 @@ const BattleSimulator: React.FC = () => {
   const { teams } = useTeamStore();
   const theme = useTheme();
 
-  // Keep ref in sync
+  // Keep refs in sync with state
   useEffect(() => {
     battleStateRef.current = battleState;
   }, [battleState]);
@@ -50,7 +50,6 @@ const BattleSimulator: React.FC = () => {
     getBattleState,
     onStateChange,
     onLogsChange,
-    // currentPlayer is now driven purely by sideupdate from server
     onPlayerChange: setCurrentPlayer,
   });
 
@@ -69,8 +68,10 @@ const BattleSimulator: React.FC = () => {
     setLogs,
   });
 
-  const activeMoves = battleState.requestData?.active?.[0]?.moves;
-  const isForceSwitch = !!(battleState.requestData?.forceSwitch?.[0]);
+  // Always read from the current player's own request — never from the other player's
+  const currentRequestData = currentPlayer === 'p1' ? battleState.p1RequestData : battleState.p2RequestData;
+  const activeMoves = currentRequestData?.active?.[0]?.moves;
+  const isForceSwitch = !!(currentRequestData?.forceSwitch?.[0]);
   const currentPlayerState = battleState[currentPlayer];
   const availableSwitches = currentPlayerState.team.filter(
       p => !p.active && !p.fainted && p.status !== 'fnt'
