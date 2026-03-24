@@ -37,16 +37,16 @@ export function useBattleWebSocket({
         onClose: () => console.log('[WS] Disconnected'),
         onError: (event) => console.error('[WS] Error:', event),
         onMessage: (event) => {
-            console.log('message received');
             const data = JSON.parse(event.data) as InboundWSMessage;
-            console.log(data.type);
 
             const { onStateChange, onLogsChange, onPlayerChange, getBattleState } = callbacksRef.current;
 
             if (data.type === 'update' || data.type === 'sideupdate') {
+                console.log(data.message)
                 const { state: nextState, logs: newLogs } = processMessage(getBattleState(), data.message);
-
+                console.log(newLogs);
                 onStateChange(nextState);
+
                 if (newLogs.length) onLogsChange(newLogs);
 
                 if (data.type === 'sideupdate' && data.player && nextState.requestData) {

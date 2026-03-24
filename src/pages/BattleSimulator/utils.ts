@@ -56,7 +56,7 @@ export function makeInitialBattleState(): BattleState {
 
 // ─── Protocol Parser ──────────────────────────────────────────────────────────
 
-export function applyProtocolLine(state: BattleState, line: string): { state: BattleState; logLine: string | null } {
+export function applyProtocolLine(state: BattleState, line: string): { state: BattleState; logLine: string | null; logType?: LogType } {
   if (!line.startsWith('|')) return { state, logLine: line.trim() || null };
 
   const parts = line.split('|');
@@ -64,6 +64,7 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
 
   const newState = { ...state, p1: { ...state.p1 }, p2: { ...state.p2 } };
   let logLine: string | null = null;
+  let logType: LogType | undefined;
 
   const getPlayer = (pid: string): 'p1' | 'p2' => pid.startsWith('p1') ? 'p1' : 'p2';
   const playerState = (pid: string) => pid.startsWith('p1') ? newState.p1 : newState.p2;
@@ -85,6 +86,15 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
   };
 
   switch (cmd) {
+      // ── No-ops (explicitly handled so they don't fall to default) ─────────────
+    case 'upkeep':
+    case 't:':
+    case 'rated':
+    case 'rule':
+    case 'seed':
+    case '':
+      break;
+
     case 'player': {
       const pid = parts[2] as 'p1' | 'p2';
       const uname = parts[3];
@@ -102,12 +112,27 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
     case 'gametype': newState.gameType = parts[2]; break;
     case 'gen': newState.gen = parseInt(parts[2]); break;
     case 'tier': newState.tier = parts[2]; break;
-    case 'teampreview': newState.phase = 'teampreview'; break;
-    case 'start': newState.phase = 'battle'; break;
+
+      // ── Team Preview ──────────────────────────────────────────────────────────
+    case 'clearpoke': {
+      // Clear both teams so we start fresh — important on rematch/restart
+      newState.p1 = { ...newState.p1, team: [] };
+      newState.p2 = { ...newState.p2, team: [] };
+      break;
+    }
+    case 'teampreview': {
+      newState.phase = 'teampreview';
+      break;
+    }
+    case 'start': {
+      newState.phase = 'battle';
+      break;
+    }
 
     case 'poke': {
       const pid = parts[2] as 'p1' | 'p2';
       const details = parts[3];
+      // In teampreview, details omit level/shininess per protocol; species may be "Arceus-*"
       const { species, level, gender } = parseDetails(details);
       const poke: Pokemon = {
         ident: `${pid}: ${species}`,
@@ -163,6 +188,70 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
       logLine = cmd === 'switch'
           ? `${ps.name} sent out ${name}!`
           : `${name} was dragged out!`;
+      break;
+    }
+
+      // ── Illusion drop — treat exactly like a switch with new identity ─────────
+    case 'replace': {
+      const ident = parts[2];
+      const details = parts[3];
+      const condition = parts[4];
+      const { player, position, name } = parsePokemonIdent(ident);
+      const pid = player as 'p1' | 'p2';
+      const { species, level, gender } = parseDetails(details);
+      const { hp, maxHp, hpPercent, status } = parseCondition(condition);
+      const ps = pid === 'p1' ? newState.p1 : newState.p2;
+
+      const newPoke: Pokemon = {
+        ident, name, details, species, level, gender,
+        hp, maxHp, hpPercent, status, active: true, fainted: false,
+        boosts: ps.active?.boosts || {}, volatileStatuses: ps.active?.volatileStatuses || [],
+        moves: [], ability: '', item: '', stats: {}, position,
+      };
+
+      const updatedTeam = ps.team.map(p => p.active ? newPoke : p);
+      const updatedPs = { ...ps, team: updatedTeam, active: newPoke };
+      if (pid === 'p1') newState.p1 = updatedPs; else newState.p2 = updatedPs;
+      logLine = `${name}'s Illusion was broken!`;
+      break;
+    }
+
+      // ── Permanent forme change (Mega Evolution, Primal Reversion, etc.) ───────
+    case 'detailschange':
+    case '-formechange': {
+      const ident = parts[2];
+      const details = parts[3];
+      const condition = parts[4];
+      const { player, position, name } = parsePokemonIdent(ident);
+      const pid = player as 'p1' | 'p2';
+      const { species, level, gender } = parseDetails(details);
+      const { hp, maxHp, hpPercent, status } = condition
+          ? parseCondition(condition)
+          : { hp: -1, maxHp: -1, hpPercent: -1, status: null };
+
+      updatePokemon(ident, p => ({
+        ...p,
+        details,
+        species,
+        level: level || p.level,
+        gender: gender || p.gender,
+        name,
+        ident,
+        position,
+        ...(hp >= 0 ? { hp, maxHp, hpPercent } : {}),
+        ...(status !== null ? { status } : {}),
+      }));
+      logLine = `${name} changed forme!`;
+      break;
+    }
+
+      // ── Transform (Ditto / Imposter) ─────────────────────────────────────────
+    case '-transform': {
+      const ident = parts[2];
+      const targetSpecies = parts[3];
+      const { name } = parsePokemonIdent(ident);
+      updatePokemon(ident, p => ({ ...p, volatileStatuses: [...p.volatileStatuses, 'transform'] }));
+      logLine = `${name} transformed into ${targetSpecies}!`;
       break;
     }
 
@@ -225,6 +314,22 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
       break;
     }
 
+    case '-cureteam': {
+      const ident = parts[2];
+      const { player, name } = parsePokemonIdent(ident);
+      const pid = player as 'p1' | 'p2';
+      const ps = pid === 'p1' ? newState.p1 : newState.p2;
+      const updatedTeam = ps.team.map(p => ({ ...p, status: null }));
+      const updated = {
+        ...ps,
+        team: updatedTeam,
+        active: ps.active ? { ...ps.active, status: null } : null,
+      };
+      if (pid === 'p1') newState.p1 = updated; else newState.p2 = updated;
+      logLine = `${name} cured its team's status conditions!`;
+      break;
+    }
+
     case '-boost': {
       const ident = parts[2];
       const stat = parts[3];
@@ -251,6 +356,73 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
       break;
     }
 
+      // ── Boost mutations missing from original ─────────────────────────────────
+    case '-setboost': {
+      const ident = parts[2];
+      const stat = parts[3];
+      const amount = parseInt(parts[4]);
+      const { name } = parsePokemonIdent(ident);
+      updatePokemon(ident, p => ({
+        ...p,
+        boosts: { ...p.boosts, [stat]: amount }
+      }));
+      logLine = `${name}'s ${stat} was set to ${amount > 0 ? '+' : ''}${amount}!`;
+      break;
+    }
+
+    case '-clearboost': {
+      const ident = parts[2];
+      const { name } = parsePokemonIdent(ident);
+      updatePokemon(ident, p => ({ ...p, boosts: {} }));
+      logLine = `${name}'s stat changes were cleared!`;
+      break;
+    }
+
+    case '-clearallboost': {
+      const clearBoosts = (ps: PlayerState): PlayerState => ({
+        ...ps,
+        team: ps.team.map(p => ({ ...p, boosts: {} })),
+        active: ps.active ? { ...ps.active, boosts: {} } : null,
+      });
+      newState.p1 = clearBoosts(newState.p1);
+      newState.p2 = clearBoosts(newState.p2);
+      logLine = `All stat changes were cleared!`;
+      break;
+    }
+
+    case '-invertboost': {
+      const ident = parts[2];
+      const { name } = parsePokemonIdent(ident);
+      updatePokemon(ident, p => ({
+        ...p,
+        boosts: Object.fromEntries(Object.entries(p.boosts).map(([k, v]) => [k, -v]))
+      }));
+      logLine = `${name}'s stat changes were inverted!`;
+      break;
+    }
+
+    case '-clearpositiveboost': {
+      const ident = parts[2];
+      const { name } = parsePokemonIdent(ident);
+      updatePokemon(ident, p => ({
+        ...p,
+        boosts: Object.fromEntries(Object.entries(p.boosts).map(([k, v]) => [k, Math.min(0, v)]))
+      }));
+      logLine = `${name}'s positive stat changes were cleared!`;
+      break;
+    }
+
+    case '-clearnegativeboost': {
+      const ident = parts[2];
+      const { name } = parsePokemonIdent(ident);
+      updatePokemon(ident, p => ({
+        ...p,
+        boosts: Object.fromEntries(Object.entries(p.boosts).map(([k, v]) => [k, Math.max(0, v)]))
+      }));
+      logLine = `${name}'s negative stat changes were cleared!`;
+      break;
+    }
+
     case '-weather': {
       const weather = parts[2];
       newState.weather = weather === 'none' ? null : weather;
@@ -258,7 +430,12 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
         RainDance: '🌧 Rain started falling!', Sandstorm: '🌪 A sandstorm kicked up!',
         SunnyDay: '☀️ The sunlight turned harsh!', Hail: '🌨 It started to hail!', Snow: '❄️ It started to snow!',
       };
-      logLine = weather === 'none' ? 'The weather cleared up.' : (weatherNames[weather] || `Weather: ${weather}`);
+      // [upkeep] tag means the weather is just continuing — less spammy to skip logging
+      if (parts.some(p => p === '[upkeep]')) {
+        logLine = null;
+      } else {
+        logLine = weather === 'none' ? '☁️ The weather cleared up.' : (weatherNames[weather] || `Weather: ${weather}`);
+      }
       break;
     }
 
@@ -314,20 +491,9 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
       break;
     }
 
-    case '-crit': {
-      logLine = `A critical hit!`;
-      break;
-    }
-
-    case '-supereffective': {
-      logLine = `It's super effective!`;
-      break;
-    }
-
-    case '-resisted': {
-      logLine = `It's not very effective...`;
-      break;
-    }
+    case '-crit': logLine = `A critical hit!`; break;
+    case '-supereffective': logLine = `It's super effective!`; break;
+    case '-resisted': logLine = `It's not very effective...`; break;
 
     case '-immune': {
       const { name } = parsePokemonIdent(parts[2]);
@@ -341,14 +507,25 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
       break;
     }
 
-    case '-fail': {
-      logLine = `But it failed!`;
-      break;
-    }
+    case '-fail': logLine = `But it failed!`; break;
 
     case '-mega': {
       const { name } = parsePokemonIdent(parts[2]);
-      logLine = `${name} has Mega Evolved!`;
+      const stone = parts[3];
+      logLine = `${name} has Mega Evolved using ${stone}!`;
+      break;
+    }
+
+    case '-primal': {
+      const { name } = parsePokemonIdent(parts[2]);
+      logLine = `${name} has reverted to its primal forme!`;
+      break;
+    }
+
+    case '-burst': {
+      const { name } = parsePokemonIdent(parts[2]);
+      const species = parts[3];
+      logLine = `${name} Ultra Burst into ${species}!`;
       break;
     }
 
@@ -358,11 +535,24 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
       break;
     }
 
+    case '-zbroken': {
+      const { name } = parsePokemonIdent(parts[2]);
+      logLine = `${name} broke through the protection!`;
+      break;
+    }
+
     case '-ability': {
       const { name } = parsePokemonIdent(parts[2]);
       const ability = parts[3];
       updatePokemon(parts[2], p => ({ ...p, ability }));
       logLine = `${name}'s ability: ${ability}`;
+      break;
+    }
+
+    case '-endability': {
+      const { name } = parsePokemonIdent(parts[2]);
+      updatePokemon(parts[2], p => ({ ...p, ability: '' }));
+      logLine = `${name}'s ability was suppressed!`;
       break;
     }
 
@@ -381,6 +571,47 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
       break;
     }
 
+      // ── Miscellaneous log-only messages ───────────────────────────────────────
+    case '-message': {
+      logLine = parts[2] || null;
+      break;
+    }
+
+    case '-hint': {
+      // Shown in parens per protocol spec
+      logLine = parts[2] ? `(${parts[2]})` : null;
+      break;
+    }
+
+    case '-activate': {
+      // Generic fallback: just log the effect name if present
+      logLine = parts[2] ? `${parts[2]}` : null;
+      break;
+    }
+
+    case '-hitcount': {
+      logLine = `Hit ${parts[3]} time(s)!`;
+      break;
+    }
+
+    case 'cant': {
+      const { name } = parsePokemonIdent(parts[2]);
+      const reason = parts[3];
+      logLine = `${name} can't move (${reason})!`;
+      break;
+    }
+
+    case 'inactive': logLine = `⏱ ${parts[2]}`; break;
+    case 'inactiveoff': logLine = `⏱ ${parts[2]}`; break;
+
+      // ── Error handling — surface to the log so the player knows to retry ──────
+    case 'error': {
+      const msg = parts.slice(2).join('|');
+      logLine = `⚠️ ${msg}`;
+      logType = 'system';
+      break;
+    }
+
     case 'win': {
       newState.winner = parts[2];
       newState.phase = 'ended';
@@ -395,24 +626,15 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
       break;
     }
 
-    case 'cant': {
-      const { name } = parsePokemonIdent(parts[2]);
-      const reason = parts[3];
-      logLine = `${name} can't move (${reason})!`;
-      break;
-    }
-
-    case '-hitcount': {
-      logLine = `Hit ${parts[3]} time(s)!`;
-      break;
-    }
-
-    case 'inactive': logLine = `⏱ ${parts[2]}`; break;
-
     case 'request': {
       try {
         const reqData: RequestData = JSON.parse(parts.slice(2).join('|'));
+        // Always set requestData — teampreview requests have no active/side but
+        // the websocket hook needs a non-null requestData to fire onPlayerChange
         newState.requestData = reqData;
+
+        if (!reqData.side && !reqData.active) break;
+
         if (reqData.side) {
           const pid = reqData.side.id as 'p1' | 'p2';
           const ps = pid === 'p1' ? newState.p1 : newState.p2;
@@ -455,7 +677,7 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
       break;
   }
 
-  return { state: newState, logLine };
+  return { state: newState, logLine, logType };
 }
 
 export function processMessage(state: BattleState, message: string): { state: BattleState; logs: LogEntry[] } {
@@ -467,10 +689,10 @@ export function processMessage(state: BattleState, message: string): { state: Ba
     if (!line.trim()) continue;
     if (line.startsWith('|split|')) continue;
 
-    const { state: nextState, logLine } = applyProtocolLine(currentState, line);
+    const { state: nextState, logLine, logType } = applyProtocolLine(currentState, line);
     currentState = nextState;
     if (logLine) {
-      logs.push({ text: logLine, type: classifyLog(line) });
+      logs.push({ text: logLine, type: logType ?? classifyLog(line) });
     }
   }
 
@@ -485,9 +707,10 @@ export function classifyLog(line: string): LogType {
   if (cmd === '-damage' || cmd === '-heal') return 'damage';
   if (cmd === 'faint') return 'faint';
   if (cmd === 'win' || cmd === 'tie') return 'win';
-  if (cmd === 'switch' || cmd === 'drag') return 'switch';
-  if (cmd === '-status' || cmd === '-curestatus') return 'status';
-  if (cmd === '-boost' || cmd === '-unboost') return 'boost';
+  if (cmd === 'switch' || cmd === 'drag' || cmd === 'replace') return 'switch';
+  if (cmd === '-status' || cmd === '-curestatus' || cmd === '-cureteam') return 'status';
+  if (cmd === '-boost' || cmd === '-unboost' || cmd === '-setboost' || cmd === '-clearboost' || cmd === '-clearallboost' || cmd === '-invertboost') return 'boost';
   if (cmd === '-weather') return 'weather';
+  if (cmd === 'error') return 'system';
   return 'system';
 }

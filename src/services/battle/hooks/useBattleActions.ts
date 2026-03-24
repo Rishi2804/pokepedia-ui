@@ -8,9 +8,10 @@ import { OutboundWSMessage, UseBattleActionsParams, UseBattleActionsReturn } fro
 /**
  * Encapsulates all user-initiated battle actions.
  *
- * Keeps action logic out of the page component and out of the WebSocket hook —
- * it only knows how to build the right outbound messages and update the minimal
- * state slices it owns.
+ * Note: currentPlayer is NOT toggled here on makeMove — it is driven
+ * exclusively by `sideupdate` messages from the server via onPlayerChange.
+ * Toggling it client-side caused desync when moves resolved out of order
+ * or during force-switch sequences.
  */
 export function useBattleActions({
                                      send,
@@ -18,7 +19,6 @@ export function useBattleActions({
                                      p1Team,
                                      p2Team,
                                      currentPlayer,
-                                     setCurrentPlayer,
                                      setBattleStarted,
                                      setBattleState,
                                      setLogs,
@@ -40,12 +40,16 @@ export function useBattleActions({
         setLogs([]);
     }, [send, battleGen, p1Team, p2Team, setBattleStarted, setBattleState, setLogs]);
 
+    /**
+     * Sends the player's choice (move, switch, or team order).
+     * currentPlayer comes from the server via sideupdate — we just read it here
+     * to tag the outbound message correctly.
+     */
     const makeMove = useCallback(
         (choice: string) => {
             send({ type: 'move', player: currentPlayer, choice });
-            setCurrentPlayer(prev => (prev === 'p1' ? 'p2' : 'p1'));
         },
-        [send, currentPlayer, setCurrentPlayer],
+        [send, currentPlayer],
     );
 
     const validateTeam = useCallback(

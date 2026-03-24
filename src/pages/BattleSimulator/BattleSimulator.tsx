@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import {Button, Grid2 as Grid, Typography} from '@mui/material';
+import { Grid2 as Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { BattleState, LogEntry } from './types';
 import * as S from './styles';
-import {makeInitialBattleState} from './utils';
+import { makeInitialBattleState } from './utils';
 import BattleHeader from './components/BattleHeader/BattleHeader.tsx';
 import PlayerPanel from './components/PlayerPanel/PlayerPanel.tsx';
 import BattleLog from './components/BattleLog/BattleLog.tsx';
 import ControlsPanel from './components/ControlsPanel/ControlsPanel.tsx';
-import {PokemonTeam} from "../../global/types.ts";
-import {useTeamStore} from "../../store/teamStore.ts";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import {makeShowdownTeam} from "../../services/battle/transformers/showdownTransformer.ts";
-import {useBattleWebSocket} from "../../services/battle/hooks/useBattleWebSocket.ts";
+import TeamPreview from './components/TeamPreview/TeamPreview.tsx';
+import { useTeamStore } from '../../store/teamStore.ts';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { useBattleWebSocket } from '../../services/battle/hooks/useBattleWebSocket.ts';
+import { useBattleActions } from '../../services/battle/hooks/useBattleActions.ts';
 
 const BattleSimulator: React.FC = () => {
   const [battleStarted, setBattleStarted] = useState(false);
@@ -23,9 +23,12 @@ const BattleSimulator: React.FC = () => {
   const [currentPlayer, setCurrentPlayer] = useState<'p1' | 'p2'>('p1');
   const [battleState, setBattleState] = useState<BattleState>(makeInitialBattleState());
   const battleStateRef = useRef<BattleState>(battleState);
-  const [battleGen, setBattleGen] = useState("9")
+  const [battleGen, setBattleGen] = useState('9');
   const [p1TeamId, setP1TeamId] = useState('');
   const [p2TeamId, setP2TeamId] = useState('');
+
+  const { teams } = useTeamStore();
+  const theme = useTheme();
 
   // Keep ref in sync
   useEffect(() => {
@@ -47,31 +50,27 @@ const BattleSimulator: React.FC = () => {
     getBattleState,
     onStateChange,
     onLogsChange,
+    // currentPlayer is now driven purely by sideupdate from server
     onPlayerChange: setCurrentPlayer,
   });
 
-  const startBattle = () => {
-    const p1Team = teams.find(t => t.id === Number(p1TeamId));
-    const p2Team = teams.find(t => t.id === Number(p2TeamId));
-    if (!p1Team || !p2Team) return;
-    send({ type: 'start-battle', format: `gen${battleGen}anythinggoes`, team1: makeShowdownTeam(p1Team), team2: makeShowdownTeam(p2Team) });
-    setBattleStarted(true);
-    setBattleState(makeInitialBattleState());
-    setLogs([]);
-  };
+  const p1Team = teams.find(t => t.id === Number(p1TeamId));
+  const p2Team = teams.find(t => t.id === Number(p2TeamId));
 
-  const makeMove = (choice: string) => {
-    send({ type: 'move', player: currentPlayer, choice });
-    setCurrentPlayer(prev => (prev === 'p1' ? 'p2' : 'p1'));
-  };
+  const { startBattle, makeMove, validateTeam } = useBattleActions({
+    send,
+    battleGen,
+    p1Team,
+    p2Team,
+    currentPlayer,
+    setCurrentPlayer,
+    setBattleStarted,
+    setBattleState,
+    setLogs,
+  });
 
-  const validateTeam = (team: PokemonTeam) => {
-    send({ type: 'validate-team', team: makeShowdownTeam(team) });
-  }
-
-  const theme = useTheme();
-  const { teams } = useTeamStore();
   const activeMoves = battleState.requestData?.active?.[0]?.moves;
+  const isForceSwitch = !!(battleState.requestData?.forceSwitch?.[0]);
   const currentPlayerState = battleState[currentPlayer];
   const availableSwitches = currentPlayerState.team.filter(
       p => !p.active && !p.fainted && p.status !== 'fnt'
@@ -84,75 +83,82 @@ const BattleSimulator: React.FC = () => {
         {!battleStarted ? (
             <S.WelcomeContainer>
               <S.WelcomeTitle>READY FOR BATTLE?</S.WelcomeTitle>
-              <Typography sx={{ color: theme.palette.text.secondary, fontFamily: 'monospace', fontSize: '0.8rem', textAlign: 'center' }}>
-                Gen 7 Random Battle Format
+              <Typography
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    fontFamily: 'monospace',
+                    fontSize: '0.8rem',
+                    textAlign: 'center',
+                  }}
+              >
+                Anything Goes Format
               </Typography>
-              <FormControl>
+
+              <FormControl sx={{ minWidth: 200 }}>
                 <InputLabel>Select a Gen</InputLabel>
                 <Select
-                    type={'number'}
-                    label={"Select a Gen"}
+                    label="Select a Gen"
                     value={battleGen}
-                    onChange={(e) => setBattleGen(e.target.value)}
+                    onChange={e => setBattleGen(e.target.value)}
                 >
-                  {
-                    [...Array(9)].map((_, i) => {
-                      const gen = (i + 1).toString()
-                      return (
-                          <MenuItem value={gen} key={i}>Gen {gen}</MenuItem>
-                      )
-                    })
-                  }
+                  {[...Array(9)].map((_, i) => {
+                    const gen = (i + 1).toString();
+                    return (
+                        <MenuItem value={gen} key={i}>
+                          Gen {gen}
+                        </MenuItem>
+                    );
+                  })}
                 </Select>
               </FormControl>
-              <FormControl>
+
+              <FormControl sx={{ minWidth: 200 }}>
                 <InputLabel>P1: Select a Team</InputLabel>
                 <Select
-                    type={'number'}
-                    label={"Select"}
-                    value={p1TeamId.toString()}
-                    onChange={(e) => setP1TeamId(e.target.value)}
+                    label="P1: Select a Team"
+                    value={p1TeamId}
+                    onChange={e => setP1TeamId(e.target.value)}
                 >
-                  {
-                    teams.map((p) => {
-                      return (
-                          <MenuItem value={p.id} key={p.id}>{p.name}</MenuItem>
-                      )
-                    })
-                  }
+                  {teams.map(t => (
+                      <MenuItem value={String(t.id)} key={t.id}>
+                        {t.name}
+                      </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
-              <FormControl>
+
+              <FormControl sx={{ minWidth: 200 }}>
                 <InputLabel>P2: Select a Team</InputLabel>
                 <Select
-                    type={'number'}
-                    label={"Select"}
-                    value={p2TeamId.toString()}
-                    onChange={(e) => setP2TeamId(e.target.value)}
+                    label="P2: Select a Team"
+                    value={p2TeamId}
+                    onChange={e => setP2TeamId(e.target.value)}
                 >
-                  {
-                    teams.map((p) => {
-                      return (
-                          <MenuItem value={p.id} key={p.id}>{p.name}</MenuItem>
-                      )
-                    })
-                  }
+                  {teams.map(t => (
+                      <MenuItem value={String(t.id)} key={t.id}>
+                        {t.name}
+                      </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
+
               <S.StartButton
                   variant="contained"
                   onClick={startBattle}
-                  disabled={connectionStatus !== 'connected'}
+                  disabled={connectionStatus !== 'connected' || !p1Team || !p2Team}
               >
-                START RANDOM BATTLE
+                START BATTLE
               </S.StartButton>
-              <Button
-                  onClick={() => validateTeam(teams[0])}
-              >
-                Test Validate
-              </Button>
             </S.WelcomeContainer>
+        ) : battleState.phase === 'teampreview' ? (
+            // ── Team Preview ──────────────────────────────────────────────────────
+            <TeamPreview
+                battleState={battleState}
+                currentPlayer={currentPlayer}
+                onConfirm={(player, order) => send({ type: 'move', player, choice: `team ${order}` })}
+            />
         ) : (
+            // ── Battle ────────────────────────────────────────────────────────────
             <Grid container sx={{ height: 'calc(100vh - 73px)' }}>
               {/* P1 Panel */}
               <Grid size={{ xs: 2.5 }} component={S.P1Panel}>
@@ -161,7 +167,6 @@ const BattleSimulator: React.FC = () => {
 
               {/* Center: Log + Controls */}
               <Grid size={{ xs: 7 }} component={S.CenterPanel}>
-                {/* Turn indicator */}
                 <S.TurnIndicator>
                   <S.TurnText>TURN {battleState.turn || '—'}</S.TurnText>
                   {battleState.winner ? (
@@ -171,17 +176,17 @@ const BattleSimulator: React.FC = () => {
                   ) : (
                       <S.CurrentPlayerText isP1={currentPlayer === 'p1'}>
                         {currentPlayer.toUpperCase()} to move
+                        {isForceSwitch ? ' — choose a switch!' : ''}
                       </S.CurrentPlayerText>
                   )}
                 </S.TurnIndicator>
 
-                {/* Battle Log */}
                 <BattleLog logs={logs} />
 
-                {/* Controls */}
                 {!battleState.winner && (
                     <ControlsPanel
-                        activeMoves={activeMoves}
+                        activeMoves={isForceSwitch ? undefined : activeMoves}
+                        isForceSwitch={isForceSwitch}
                         currentPlayer={currentPlayer}
                         currentPlayerState={currentPlayerState}
                         availableSwitches={availableSwitches}
