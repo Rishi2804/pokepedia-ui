@@ -17,6 +17,7 @@ interface UseBattleWebSocketOptions {
     onStateChange: (next: BattleState) => void;
     onLogsChange: (newLogs: LogEntry[]) => void;
     onPlayerChange: (player: 'p1' | 'p2') => void;
+    onValidateResult: (player: 'p1' | 'p2', error: string | null) => void;
     getBattleState: () => BattleState;
 }
 
@@ -24,11 +25,12 @@ export function useBattleWebSocket({
                                        onStateChange,
                                        onLogsChange,
                                        onPlayerChange,
+                                       onValidateResult,
                                        getBattleState,
                                    }: UseBattleWebSocketOptions): UseBattleWebSocketReturn {
-    const callbacksRef = useRef({ onStateChange, onLogsChange, onPlayerChange, getBattleState });
+    const callbacksRef = useRef({ onStateChange, onLogsChange, onPlayerChange, onValidateResult, getBattleState });
     useEffect(() => {
-        callbacksRef.current = { onStateChange, onLogsChange, onPlayerChange, getBattleState };
+        callbacksRef.current = { onStateChange, onLogsChange, onPlayerChange, onValidateResult, getBattleState };
     });
 
     const { sendJsonMessage, readyState } = useWebSocket(BATTLE_WS_URL, {
@@ -39,7 +41,7 @@ export function useBattleWebSocket({
         onMessage: (event) => {
             const data = JSON.parse(event.data) as InboundWSMessage;
 
-            const { onStateChange, onLogsChange, onPlayerChange, getBattleState } = callbacksRef.current;
+            const { onStateChange, onLogsChange, onPlayerChange, onValidateResult, getBattleState } = callbacksRef.current;
 
             if (data.type === 'update' || data.type === 'sideupdate') {
                 // processMessage reads from getBattleState() (the ref) so it always
@@ -52,16 +54,18 @@ export function useBattleWebSocket({
                 if (newLogs.length) onLogsChange(newLogs);
 
                 // For sideupdates, the envelope player field is ground truth for whose
-                // turn it is — it comes directly from the server routing, not from the
-                // message body. Use requestData as a fallback only.
+                // turn it is. Fall back to whichever per-player request was just set.
                 if (data.type === 'sideupdate') {
                     const player: 'p1' | 'p2' | undefined =
                         data.player ??
-                        (nextState.requestData?.side?.id as 'p1' | 'p2' | undefined);
+                        (nextState.p1RequestData?.side?.id as 'p1' | 'p2' | undefined) ??
+                        (nextState.p2RequestData?.side?.id as 'p1' | 'p2' | undefined);
                     if (player) onPlayerChange(player);
                 }
             } else if (data.type === 'validate-team') {
-                console.log('validate-team result:', data.result);
+                // result is null on success, a string describing the error on failure
+                // player tells us which team this result belongs to
+                onValidateResult(data.player, data.result);
             }
         },
     });

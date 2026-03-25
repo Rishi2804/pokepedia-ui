@@ -22,6 +22,8 @@ export interface MoveMessage {
 
 export interface ValidateTeamMessage {
     type: 'validate-team';
+    player: 'p1' | 'p2';
+    format: string;
     team: PokemonShowdownMember[];
 }
 
@@ -42,6 +44,7 @@ export interface SideUpdateWSMessage {
 
 export interface ValidateTeamResultWSMessage {
     type: 'validate-team';
+    player: 'p1' | 'p2';
     result: string | null;
 }
 
@@ -57,6 +60,12 @@ export interface UseBattleWebSocketReturn {
     send: (msg: OutboundWSMessage) => void;
 }
 
+export interface ValidationState {
+    status: 'idle' | 'validating' | 'error';
+    p1Error: string | null;
+    p2Error: string | null;
+}
+
 export interface UseBattleActionsParams {
     send: (msg: OutboundWSMessage) => void;
     battleGen: string;
@@ -67,10 +76,11 @@ export interface UseBattleActionsParams {
     setBattleStarted: React.Dispatch<React.SetStateAction<boolean>>;
     setBattleState: React.Dispatch<React.SetStateAction<BattleState>>;
     setLogs: React.Dispatch<React.SetStateAction<LogEntry[]>>;
+    setValidation: React.Dispatch<React.SetStateAction<ValidationState>>;
 }
 
 export interface UseBattleActionsReturn {
-    startBattle: () => void;
+    validateAndStart: () => void;
     makeMove: (choice: string) => void;
-    validateTeam: (team: PokemonTeam) => void;
+    onValidateResult: (player: 'p1' | 'p2', error: string | null) => void;
 }

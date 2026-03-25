@@ -16,6 +16,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useBattleWebSocket } from '../../services/battle/hooks/useBattleWebSocket.ts';
 import { useBattleActions } from '../../services/battle/hooks/useBattleActions.ts';
+import type { ValidationState } from '../../services/battle/types.ts';
 
 const BattleSimulator: React.FC = () => {
   const [battleStarted, setBattleStarted] = useState(false);
@@ -26,6 +27,7 @@ const BattleSimulator: React.FC = () => {
   const [battleGen, setBattleGen] = useState('9');
   const [p1TeamId, setP1TeamId] = useState('');
   const [p2TeamId, setP2TeamId] = useState('');
+  const [validation, setValidation] = useState<ValidationState>({ status: 'idle', p1Error: null, p2Error: null });
 
   const { teams } = useTeamStore();
   const theme = useTheme();
@@ -46,17 +48,21 @@ const BattleSimulator: React.FC = () => {
     setLogs(prev => [...prev, ...newLogs]);
   }, []);
 
+  const onValidateResultRef = useRef<(player: 'p1' | 'p2', error: string | null) => void>(() => {});
+
   const { connectionStatus, send } = useBattleWebSocket({
     getBattleState,
     onStateChange,
     onLogsChange,
     onPlayerChange: setCurrentPlayer,
+    onValidateResult: (player, error) => onValidateResultRef.current(player, error),
   });
 
   const p1Team = teams.find(t => t.id === Number(p1TeamId));
   const p2Team = teams.find(t => t.id === Number(p2TeamId));
 
-  const { startBattle, makeMove, validateTeam } = useBattleActions({
+  // Keep the ref in sync so useBattleWebSocket always calls the latest version
+  const { validateAndStart, makeMove, onValidateResult } = useBattleActions({
     send,
     battleGen,
     p1Team,
@@ -66,7 +72,10 @@ const BattleSimulator: React.FC = () => {
     setBattleStarted,
     setBattleState,
     setLogs,
+    setValidation,
   });
+
+  onValidateResultRef.current = onValidateResult;
 
   // Always read from the current player's own request — never from the other player's
   const currentRequestData = currentPlayer === 'p1' ? battleState.p1RequestData : battleState.p2RequestData;
@@ -143,12 +152,26 @@ const BattleSimulator: React.FC = () => {
                 </Select>
               </FormControl>
 
+              {validation.status === 'error' && (
+                  <>
+                    {validation.p1Error && (
+                        <Typography sx={{ color: 'error.main', fontFamily: 'monospace', fontSize: '0.75rem', maxWidth: 400, textAlign: 'center' }}>
+                          P1 team invalid: {validation.p1Error}
+                        </Typography>
+                    )}
+                    {validation.p2Error && (
+                        <Typography sx={{ color: 'error.main', fontFamily: 'monospace', fontSize: '0.75rem', maxWidth: 400, textAlign: 'center' }}>
+                          P2 team invalid: {validation.p2Error}
+                        </Typography>
+                    )}
+                  </>
+              )}
               <S.StartButton
                   variant="contained"
-                  onClick={startBattle}
-                  disabled={connectionStatus !== 'connected' || !p1Team || !p2Team}
+                  onClick={validateAndStart}
+                  disabled={connectionStatus !== 'connected' || !p1Team || !p2Team || validation.status === 'validating'}
               >
-                START BATTLE
+                {validation.status === 'validating' ? 'VALIDATING...' : 'START BATTLE'}
               </S.StartButton>
             </S.WelcomeContainer>
         ) : battleState.phase === 'teampreview' ? (
