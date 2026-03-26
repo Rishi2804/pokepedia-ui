@@ -6,9 +6,9 @@ import * as S from './styles';
 import { makeInitialBattleState } from './utils';
 import BattleHeader from './components/BattleHeader/BattleHeader.tsx';
 import PlayerPanel from './components/PlayerPanel/PlayerPanel.tsx';
-import BattleLog from './components/BattleLog/BattleLog.tsx';
 import ControlsPanel from './components/ControlsPanel/ControlsPanel.tsx';
 import TeamPreview from './components/TeamPreview/TeamPreview.tsx';
+import Battlefield from './components/Battlefield/Battlefield.tsx';
 import { useTeamStore } from '../../store/teamStore.ts';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -184,29 +184,23 @@ const BattleSimulator: React.FC = () => {
         ) : (
             // ── Battle ────────────────────────────────────────────────────────────
             <Grid container sx={{ height: 'calc(100vh - 73px)' }}>
-              {/* P1 Panel */}
+              {/* P1 Panel — includes collapsible log */}
               <Grid size={{ xs: 2.5 }} component={S.P1Panel}>
-                <PlayerPanel player={battleState.p1} isOwn={true} />
+                <PlayerPanel player={battleState.p1} isOwn={true} logs={logs} />
               </Grid>
 
-              {/* Center: Log + Controls */}
+              {/* Center: Battlefield + Controls */}
               <Grid size={{ xs: 7 }} component={S.CenterPanel}>
-                <S.TurnIndicator>
-                  <S.TurnText>TURN {battleState.turn || '—'}</S.TurnText>
-                  {battleState.winner ? (
-                      <S.WinnerText>
-                        🏆 {battleState.winner === 'tie' ? 'TIE GAME' : `${battleState.winner} WINS`}
-                      </S.WinnerText>
-                  ) : (
-                      <S.CurrentPlayerText isP1={currentPlayer === 'p1'}>
-                        {currentPlayer.toUpperCase()} to move
-                        {isForceSwitch ? ' — choose a switch!' : ''}
-                      </S.CurrentPlayerText>
-                  )}
-                </S.TurnIndicator>
-
-                <BattleLog logs={logs} />
-
+                <Battlefield
+                    p1={battleState.p1}
+                    p2={battleState.p2}
+                    weather={battleState.weather}
+                    fieldConditions={battleState.fieldConditions}
+                    turn={battleState.turn}
+                    currentPlayer={currentPlayer}
+                    winner={battleState.winner}
+                    isForceSwitch={isForceSwitch}
+                />
                 {!battleState.winner && (
                     <ControlsPanel
                         activeMoves={isForceSwitch ? undefined : activeMoves}

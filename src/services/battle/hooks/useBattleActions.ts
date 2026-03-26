@@ -63,7 +63,9 @@ export function useBattleActions({
                 team2: makeShowdownTeam(p2Team!),
             });
             setBattleStarted(true);
-            setBattleState(makeInitialBattleState());
+            const p1Meta = p1Team!.pokemon.map(p => ({ name: p.name, pokedexId: p.id, shiny: p.shiny }));
+            const p2Meta = p2Team!.pokemon.map(p => ({ name: p.name, pokedexId: p.id, shiny: p.shiny }));
+            setBattleState(makeInitialBattleState(p1Meta, p2Meta));
             setLogs([]);
         },
         [send, battleGen, p1Team, p2Team, setBattleStarted, setBattleState, setLogs, setValidation],

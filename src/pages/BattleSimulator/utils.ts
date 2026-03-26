@@ -37,7 +37,20 @@ export function makeInitialPlayer(id: 'p1' | 'p2'): PlayerState {
   return { id, name: id === 'p1' ? 'Player 1' : 'Player 2', teamSize: 6, active: null, team: [], sideConditions: [] };
 }
 
-export function makeInitialBattleState(): BattleState {
+export interface TeamMetadata {
+  name: string;
+  pokedexId: number;
+  shiny: boolean;
+}
+
+export function makeInitialBattleState(
+    p1Meta: TeamMetadata[] = [],
+    p2Meta: TeamMetadata[] = [],
+): BattleState {
+  const visualMeta: Record<string, { pokedexId: number; shiny: boolean }> = {};
+  for (const m of [...p1Meta, ...p2Meta]) {
+    visualMeta[m.name] = { pokedexId: m.pokedexId, shiny: m.shiny };
+  }
   return {
     turn: 0,
     weather: null,
@@ -52,6 +65,7 @@ export function makeInitialBattleState(): BattleState {
     waitingFor: null,
     p1RequestData: null,
     p2RequestData: null,
+    visualMeta,
   };
 }
 
@@ -63,7 +77,7 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
   const parts = line.split('|');
   const cmd = parts[1];
 
-  const newState = { ...state, p1: { ...state.p1 }, p2: { ...state.p2 } };
+  const newState = { ...state, p1: { ...state.p1 }, p2: { ...state.p2 }, visualMeta: state.visualMeta };
   let logLine: string | null = null;
   let logType: LogType | undefined;
 
@@ -135,6 +149,7 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
       const details = parts[3];
       // In teampreview, details omit level/shininess per protocol; species may be "Arceus-*"
       const { species, level, gender } = parseDetails(details);
+      const meta = newState.visualMeta[species];
       const poke: Pokemon = {
         ident: `${pid}: ${species}`,
         name: species,
@@ -147,6 +162,8 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
         boosts: {}, volatileStatuses: [],
         moves: [], ability: '', item: '', stats: {},
         position: '',
+        pokedexId: meta?.pokedexId,
+        shiny: meta?.shiny,
       };
       const ps = pid === 'p1' ? newState.p1 : newState.p2;
       const updated = { ...ps, team: [...ps.team, poke] };
@@ -173,6 +190,7 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
         ident, name, details, species, level, gender,
         hp, maxHp, hpPercent, status, active: true, fainted: false,
         position, boosts: {}, volatileStatuses: [],
+        // pokedexId and shiny carried from existing via spread above
       } : {
         ident, name, details, species, level, gender,
         hp, maxHp, hpPercent, status, active: true, fainted: false,
@@ -660,6 +678,9 @@ export function applyProtocolLine(state: BattleState, line: string): { state: Ba
               boosts: existing?.boosts || {},
               volatileStatuses: existing?.volatileStatuses || [],
               position: existing?.position || '',
+              // Preserve visual metadata from team builder
+              pokedexId: existing?.pokedexId,
+              shiny: existing?.shiny,
             } as Pokemon;
           });
           if (reqData.active && reqData.active[0]?.moves) {

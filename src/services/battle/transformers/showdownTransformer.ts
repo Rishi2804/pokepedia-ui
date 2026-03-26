@@ -25,6 +25,8 @@ export function makeShowdownTeam(
             level: 100,
             happiness: 255,
             nature: "Serious",
+            pokedexId: pokemon.id,
+            shiny: pokemon.shiny,
             // default EVs (can be customized later)
             evs: {
                 hp: 1,

@@ -22,6 +22,9 @@ export interface PokemonShowdownMember {
   gigantamax?: boolean;
   dynamaxLevel?: number;
   teraType?: string;
+  // Visual metadata — ignored by the server, used by the client for sprites
+  pokedexId?: number;
+  shiny?: boolean;
 }
 
 export interface Pokemon {
@@ -44,6 +47,9 @@ export interface Pokemon {
   item: string;
   stats: Record<string, number>;
   position: string;
+  // Visual metadata carried over from the team builder
+  pokedexId?: number;
+  shiny?: boolean;
 }
 
 export interface MoveInfo {
@@ -64,6 +70,11 @@ export interface PlayerState {
   sideConditions: string[];
 }
 
+export interface PokemonVisualMeta {
+  pokedexId: number;
+  shiny: boolean;
+}
+
 export interface BattleState {
   turn: number;
   weather: string | null;
@@ -79,6 +90,8 @@ export interface BattleState {
   // Per-player request data so p2's request never overwrites p1's
   p1RequestData: RequestData | null;
   p2RequestData: RequestData | null;
+  // name -> visual metadata, seeded from team builder before battle starts
+  visualMeta: Record<string, PokemonVisualMeta>;
 }
 
 export interface RequestData {
