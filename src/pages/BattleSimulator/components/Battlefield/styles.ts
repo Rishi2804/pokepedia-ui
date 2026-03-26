@@ -81,3 +81,27 @@ export const FallbackSpriteBox = styled(Box)(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
 }));
+
+export const TurnIndicatorBox = styled(Box)(({ theme }) => ({
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 6,
+    paddingBottom: 6,
+    borderRadius: 8,
+    border: `1px solid ${theme.palette.divider}`,
+    backgroundColor: theme.palette.background.paper,
+    opacity: 0.9,
+    textAlign: 'center',
+}));
+
+export const TurnText = styled(Box)(({ theme }) => ({
+    fontFamily: 'monospace',
+    fontSize: '0.7rem',
+    color: theme.palette.text.secondary,
+}));
+
+export const WinnerText = styled(Box)(({ theme }) => ({
+    fontWeight: 700,
+    fontSize: '0.85rem',
+    color: theme.palette.primary.main,
+}));

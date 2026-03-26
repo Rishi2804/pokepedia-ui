@@ -9,6 +9,10 @@ interface BattlefieldProps {
     p2: PlayerState;
     weather: string | null;
     fieldConditions: string[];
+    turn: number;
+    currentPlayer: 'p1' | 'p2';
+    winner: string | null;
+    isForceSwitch: boolean;
 }
 
 const WEATHER_BG: Record<string, string> = {
@@ -71,7 +75,7 @@ const SpriteSlot: React.FC<{
 };
 
 const Battlefield: React.FC<BattlefieldProps> = ({
-                                                     p1, p2, weather, fieldConditions,
+                                                     p1, p2, weather, fieldConditions, turn, currentPlayer, winner, isForceSwitch,
                                                  }) => {
     const weatherBg = weather ? WEATHER_BG[weather] : undefined;
 
@@ -98,6 +102,22 @@ const Battlefield: React.FC<BattlefieldProps> = ({
                     <SpriteSlot pokemon={p2.active} size={180} label={p2.name} />
                 </Grid2>
             </Grid2>
+
+            {/* ── Turn / status indicator ───────────────────────────── */}
+            <S.TurnIndicatorBox>
+                {winner ? (
+                    <S.WinnerText>
+                        🏆 {winner === 'tie' ? 'TIE GAME' : `${winner} WINS`}
+                    </S.WinnerText>
+                ) : (
+                    <S.TurnText>
+                        Turn {turn || '—'} &nbsp;·&nbsp;{' '}
+                        <Box component="span" sx={{ color: currentPlayer === 'p1' ? 'primary.main' : 'error.main', fontWeight: 600 }}>
+                            {currentPlayer.toUpperCase()} {isForceSwitch ? 'must switch' : 'to move'}
+                        </Box>
+                    </S.TurnText>
+                )}
+            </S.TurnIndicatorBox>
 
             <Grid2 container sx={{ width: '100%' }}>
                 {/* P1 bottom-left */}
