@@ -14,8 +14,8 @@ export type IApiResponse<T> =
     API FETCHES
 */
 interface IPokemonAbility {
-    abilityId: number;
-    abilityName: string;
+    id: number;
+    name: string;
     isHidden: boolean;
     genRemoved: number | null;
 }
@@ -94,7 +94,7 @@ export interface ISpeciesDetails {
 export interface IPokemonSnapshot {
     dexNumber: number;
     speciesId: number;
-    pokemonId: number;
+    id: number;
     name: string;
     type1: keyof typeof PokemonType;
     type2: keyof typeof PokemonType | null;

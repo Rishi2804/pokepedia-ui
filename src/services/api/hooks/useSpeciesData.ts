@@ -33,6 +33,7 @@ export const useSpeciesDetails = ({ speciesIdOrName }: ISpeciesProps) => {
                     setError(response.error || 'An error occurred while fetching Species details');
                 }
             } catch (err) {
+                console.error(err)
                 setError(err instanceof Error ? err.message : 'An unknown error occurred');
             } finally {
                 setLoading(false);  // End loading state

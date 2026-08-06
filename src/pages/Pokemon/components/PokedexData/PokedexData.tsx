@@ -15,8 +15,8 @@ interface IPokedexDataProps {
     height: number;
     weight: number;
     abilities: {
-        abilityId: number;
-        abilityName: string;
+        id: number;
+        name: string;
         isHidden: boolean;
         genRemoved: number | null;
     }[];

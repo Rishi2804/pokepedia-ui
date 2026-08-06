@@ -11,6 +11,7 @@ interface IAbilityDescriptionsProps {
 }
 
 const AbilityDescriptions: FC<IAbilityDescriptionsProps> = ({entries}) => {
+    console.log(entries)
     return (
         <Grid size={12}>
             <Typography variant="h2" sx={{marginBottom: 2}} id={"Descriptions"}>Descriptions</Typography>
@@ -19,7 +20,7 @@ const AbilityDescriptions: FC<IAbilityDescriptionsProps> = ({entries}) => {
                     {
                         entries.map(entry => {
                             const games: Game[] = entry.versionGroups
-                                .flatMap(group => group.split("/"))
+                                .flatMap(group => group ? group.split("/") : [])
                                 .map(game => game as Game)
                             return (
                                 <GameTextEntry games={games} entry={entry.description} />

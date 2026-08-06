@@ -103,7 +103,7 @@ const Pokemon = () => {
                 <TypeDefenses
                     type1={data.pokemon[i].type1}
                     type2={data.pokemon[i].type2}
-                    abilities={data.pokemon[i].abilities.map(ability => {return{id: ability.abilityId, name: ability.abilityName}})}
+                    abilities={data.pokemon[i].abilities.map(ability => {return{id: ability.id, name: ability.name}})}
                 />
                 <EvolutionData lines={data.pokemon[i].evolutionChain} />
                 <PokedexEntries

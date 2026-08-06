@@ -15,7 +15,7 @@ export function prepareForUI(ability: IAbilityDetails): AbilityDetails {
             return {
                     dexNumber: mon.speciesId,
                     speciesId: mon.speciesId,
-                    pokemonId: mon.pokemonId,
+                    pokemonId: mon.id,
                     name: mon.name,
                     type1: PokemonType[mon.type1],
                     type2: mon.type2 ? PokemonType[mon.type2] : null,

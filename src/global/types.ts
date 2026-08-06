@@ -20,8 +20,8 @@ export interface PokedexDetails {
 }
 
 interface PokemonAbility {
-    abilityId: number;
-    abilityName: string;
+    id: number;
+    name: string;
     isHidden: boolean;
     genRemoved: number | null;
 }
