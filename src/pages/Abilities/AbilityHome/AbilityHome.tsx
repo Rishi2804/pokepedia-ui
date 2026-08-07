@@ -7,7 +7,7 @@ import Filters from "../../../components/Filters/Filters.tsx";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {navName} from "../../../global/utils.ts";
-import Loading from "../../../containers/loading/Loading.tsx";
+import AbilityHomeSkeleton from "./AbilityHomeSkeleton.tsx";
 
 const AbilityHome = () => {
     const [searchTerm, setSearchTerm] = useState<string>("")
@@ -20,7 +20,7 @@ const AbilityHome = () => {
 
     if (isPending) {
         return (
-            <Loading />
+            <AbilityHomeSkeleton />
         )
     }
 

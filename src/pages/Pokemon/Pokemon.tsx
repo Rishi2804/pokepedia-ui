@@ -16,7 +16,7 @@ import Learnset from "./components/Learnset/Learnset.tsx";
 import {ArrowBack, ArrowForward} from '@mui/icons-material';
 import QuickScroll from "../../components/QuickScroll/QuickScroll.tsx";
 import PokemonImages from "./components/PokemonImages/PokemonImages.tsx";
-import Loading from "../../containers/loading/Loading.tsx";
+import PokemonSkeleton from "./PokemonSkeleton.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
@@ -54,7 +54,7 @@ const Pokemon = () => {
 
     if (isPending) {
         return (
-            <Loading />
+            <PokemonSkeleton />
         )
     }
 

@@ -6,7 +6,7 @@ import {useState} from "react";
 import {PokemonType} from "../../../global/enums.ts";
 import MoveList from "../../../components/MoveList/MoveList.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
-import Loading from "../../../containers/loading/Loading.tsx";
+import MoveHomeSkeleton from "./MoveHomeSkeleton.tsx";
 
 const MoveHome = () => {
 
@@ -17,7 +17,7 @@ const MoveHome = () => {
 
     if (isPending) {
         return (
-            <Loading />
+            <MoveHomeSkeleton />
         )
     }
 

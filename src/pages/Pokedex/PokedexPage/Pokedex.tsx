@@ -10,7 +10,7 @@ import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
 import Filters from "../../../components/Filters/Filters.tsx";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
 import {VersionToHeaderText} from "./utils.ts";
-import Loading from "../../../containers/loading/Loading.tsx";
+import PokedexSkeleton from "./PokedexSkeleton.tsx";
 
 const Pokedex = () => {
     const { pokedexVersion: dex } =  useParams<{ pokedexVersion: PokedexVersion }>()
@@ -21,7 +21,7 @@ const Pokedex = () => {
 
     if (isPending) {
         return (
-            <Loading />
+            <PokedexSkeleton />
         )
     }
 
