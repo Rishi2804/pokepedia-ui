@@ -1,6 +1,6 @@
 import {useTeamCandidatesDetails} from "../../../services/api/hooks/useTeamCandidatesData.ts";
 import {useNavigate, useParams} from "react-router-dom";
-import Loading from "../../../containers/loading/Loading.tsx";
+import TeamSelectionSkeleton from "./TeamSelectionSkeleton.tsx";
 import {Box, Grid2 as Grid, Paper, Typography} from "@mui/material";
 import {Card, TeamNameInput} from "./styles.ts";
 import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
@@ -44,7 +44,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
     }
 
     if (isPending) {
-        return (<Loading />);
+        return (<TeamSelectionSkeleton />);
     }
 
     if (error) {

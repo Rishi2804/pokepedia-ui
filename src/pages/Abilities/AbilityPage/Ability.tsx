@@ -6,7 +6,7 @@ import AbilityEffects from "./components/AbilityEffects/AbilityEffects.tsx";
 import AbilityDescriptions from "./components/AbilityDescriptions/AbilityDescriptions.tsx";
 import PokemonList from "../../../components/PokemonList/PokemonList.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
-import Loading from "../../../containers/loading/Loading.tsx";
+import AbilitySkeleton from "./AbilitySkeleton.tsx";
 
 const Ability = () => {
     const { id } = useParams();
@@ -14,7 +14,7 @@ const Ability = () => {
 
     if (isPending) {
         return (
-            <Loading />
+            <AbilitySkeleton />
         )
     }
 

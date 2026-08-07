@@ -9,7 +9,7 @@ import MoveEffects from "./components/MoveEffects/MoveEffects.tsx";
 import MoveDescriptions from "./components/MoveDescriptions/MoveDescriptions.tsx";
 import PokemonList from "../../../components/PokemonList/PokemonList.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
-import Loading from "../../../containers/loading/Loading.tsx";
+import MoveSkeleton from "./MoveSkeleton.tsx";
 
 
 const Move = () => {
@@ -18,7 +18,7 @@ const Move = () => {
 
     if (isPending) {
         return (
-            <Loading />
+            <MoveSkeleton />
         )
     }
 
