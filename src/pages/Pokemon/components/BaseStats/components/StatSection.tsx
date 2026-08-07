@@ -2,6 +2,7 @@ import {FC} from "react";
 import {Box, Typography} from "@mui/material";
 import {StatBar, StatRow} from "./styles.tsx";
 import {PokemonType} from "../../../../../global/enums.ts";
+import {calcHp, calcStat} from "../../../../TeamBuilder/utils/stats.ts";
 
 interface IDexNumberProps {
     stat: number;
@@ -11,20 +12,12 @@ interface IDexNumberProps {
 }
 
 const StatSection: FC<IDexNumberProps> = ({stat, name, type1, type2}) => {
-    const calculateHpStat = (base: number, iv: number, ev: number, level: number) => {
-        return Math.floor(0.01 * (2 * base + iv + Math.floor(0.25 * ev)) * level) + level + 10
-    }
-
-    const calculateStat = (base: number, iv: number, ev: number, level: number, nature: number) => {
-        return Math.floor((Math.floor(0.01 * (2 * base + iv + Math.floor(0.25 * ev)) * level) + 5) * nature)
-    }
-
     const minStat = name === "HP" ?
-        calculateHpStat(stat, 0, 0, 50) :
-        calculateStat(stat, 0, 0, 50, 0.9)
+        calcHp(stat, 0, 0, 50) :
+        calcStat(stat, 0, 0, 50, 0.9)
     const maxStat = name === "HP" ?
-        calculateHpStat(stat, 31, 252, 50) :
-        calculateStat(stat, 31, 252, 50, 1.1)
+        calcHp(stat, 31, 252, 50) :
+        calcStat(stat, 31, 252, 50, 1.1)
 
     return (
         <StatRow>
