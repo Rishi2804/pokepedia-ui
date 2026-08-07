@@ -171,23 +171,32 @@ export interface TeamMove {
     moveClass: MoveClass;
 }
 
-export interface TeamCandidate {
+// Showdown's stat keys, used for base stats, EVs, and IVs alike so the team
+// builder's model maps onto Showdown's PokemonSet without translation.
+export type StatKey = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
+export type StatSpread = Record<StatKey, number>;
+
+export interface TeamCandidateSummary {
     id: number;
     name: string;
     type1: PokemonType;
     type2: PokemonType | null;
     gen: number;
     genderRate: number;
+}
+
+export interface TeamCandidate extends TeamCandidateSummary {
     abilities: {
         id: number;
         name: string;
     }[];
     moves: TeamMove[];
+    baseStats: StatSpread;
 }
 
 export interface CandidatesList {
     listName: string;
-    pokemon: TeamCandidate[]
+    pokemon: TeamCandidateSummary[]
 }
 
 export interface PokemonTeamMember {
