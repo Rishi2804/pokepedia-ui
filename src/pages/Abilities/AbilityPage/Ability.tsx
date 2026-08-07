@@ -10,20 +10,17 @@ import Loading from "../../../containers/loading/Loading.tsx";
 
 const Ability = () => {
     const { id } = useParams();
-    const { data, loading, error } = useAbilityDetails({abilityIdOrName: id ?? 0})
+    const { data, isPending, error } = useAbilityDetails(id ?? 0)
 
-    if (loading) {
+    if (isPending) {
         return (
             <Loading />
         )
     }
 
     if (error) {
-        throw new Error(error)
+        throw error
     }
-
-
-    if (!data) return null
 
     const sections = ["Effects", "Descriptions", "Pokemon with Ability"]
 
