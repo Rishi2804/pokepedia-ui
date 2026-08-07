@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import {makeGetRequest} from "../api.servies.ts";
+import {makeGetRequest} from "../api.service.ts";
 import {ENDPOINTS} from "../constants.ts";
 import {AbilitySnapshot} from "../../../global/types.ts";
-import {prepareForUI} from "../transformers/abilitiesTransformer.ts";
+import {parseAbilities} from "../parsers/parseAbilities.ts";
 
 export const useAbilitiesDetails = () => {
     const [data, setData] = useState<AbilitySnapshot[][]>([]);
@@ -16,10 +16,10 @@ export const useAbilitiesDetails = () => {
             setError(null); // Reset error before making a new request
 
             try {
-                const response = await makeGetRequest(`${ENDPOINTS.GET_ABILITY}/`);
+                const response = await makeGetRequest(`${ENDPOINTS.GET_ABILITY}/`, parseAbilities);
 
                 if (response.ok) {
-                    setData(prepareForUI(response.data));
+                    setData(response.data);
                 } else {
                     setError(response.error || 'An error occurred while fetching Abilities');
                 }

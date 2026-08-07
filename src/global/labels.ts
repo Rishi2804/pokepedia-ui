@@ -1,0 +1,171 @@
+import {Game, LearnMethod, MoveClass, PokedexRegion, PokemonType, VersionGroup} from "./enums.ts";
+
+export const pokemonTypeLabel: Record<PokemonType, string> = {
+    [PokemonType.NORMAL]: "Normal",
+    [PokemonType.FIGHTING]: "Fighting",
+    [PokemonType.FLYING]: "Flying",
+    [PokemonType.POISON]: "Poison",
+    [PokemonType.GROUND]: "Ground",
+    [PokemonType.ROCK]: "Rock",
+    [PokemonType.BUG]: "Bug",
+    [PokemonType.GHOST]: "Ghost",
+    [PokemonType.STEEL]: "Steel",
+    [PokemonType.FIRE]: "Fire",
+    [PokemonType.WATER]: "Water",
+    [PokemonType.GRASS]: "Grass",
+    [PokemonType.ELECTRIC]: "Electric",
+    [PokemonType.PSYCHIC]: "Psychic",
+    [PokemonType.ICE]: "Ice",
+    [PokemonType.DRAGON]: "Dragon",
+    [PokemonType.DARK]: "Dark",
+    [PokemonType.FAIRY]: "Fairy",
+};
+
+export const gameLabel: Record<Game, string> = {
+    [Game.RED]: "Red",
+    [Game.BLUE]: "Blue",
+    [Game.YELLOW]: "Yellow",
+    [Game.GOLD]: "Gold",
+    [Game.SILVER]: "Silver",
+    [Game.CRYSTAL]: "Crystal",
+    [Game.RUBY]: "Ruby",
+    [Game.SAPPHIRE]: "Sapphire",
+    [Game.EMERALD]: "Emerald",
+    [Game.FIRERED]: "FireRed",
+    [Game.LEAFGREEN]: "LeafGreen",
+    [Game.DIAMOND]: "Diamond",
+    [Game.PEARL]: "Pearl",
+    [Game.PLATINUM]: "Platinum",
+    [Game.HEARTGOLD]: "HeartGold",
+    [Game.SOULSILVER]: "SoulSilver",
+    [Game.BLACK]: "Black",
+    [Game.WHITE]: "White",
+    [Game.BLACK_2]: "Black 2",
+    [Game.WHITE_2]: "White 2",
+    [Game.X]: "X",
+    [Game.Y]: "Y",
+    [Game.OMEGA_RUBY]: "Omega Ruby",
+    [Game.ALPHA_SAPPHIRE]: "Alpha Sapphire",
+    [Game.SUN]: "Sun",
+    [Game.MOON]: "Moon",
+    [Game.ULTRA_SUN]: "Ultra Sun",
+    [Game.ULTRA_MOON]: "Ultra Moon",
+    [Game.LETS_GO_PIKACHU]: "Lets Go Pikachu",
+    [Game.LETS_GO_EEVEE]: "Lets Go Eevee",
+    [Game.SWORD]: "Sword",
+    [Game.SHIELD]: "Shield",
+    [Game.BRILLIANT_DIAMOND]: "Brilliant Diamond",
+    [Game.SHINING_PEARL]: "Shining Pearl",
+    [Game.LEGENDS_ARCEUS]: "Legends: Arceus",
+    [Game.SCARLET]: "Scarlet",
+    [Game.VIOLET]: "Violet",
+};
+
+export const versionGroupLabel: Record<VersionGroup, string> = {
+    [VersionGroup.RED_BLUE]: "Red/Blue",
+    [VersionGroup.YELLOW]: "Yellow",
+    [VersionGroup.GOLD_SILVER]: "Gold/Silver",
+    [VersionGroup.CRYSTAL]: "Crystal",
+    [VersionGroup.RUBY_SAPPHIRE]: "Ruby/Sapphire",
+    [VersionGroup.EMERALD]: "Emerald",
+    [VersionGroup.FIRERED_LEAFGREEN]: "FireRed/LeafGreen",
+    [VersionGroup.DIAMOND_PEARL]: "Diamond/Pearl",
+    [VersionGroup.PLATINUM]: "Platinum",
+    [VersionGroup.HEARTGOLD_SOULSILVER]: "HeartGold/SoulSilver",
+    [VersionGroup.BLACK_WHITE]: "Black/White",
+    [VersionGroup.BLACK_2_WHITE_2]: "Black 2/White 2",
+    [VersionGroup.X_Y]: "X/Y",
+    [VersionGroup.OMEGA_RUBY_ALPHA_SAPPHIRE]: "Omega Ruby/Alpha Sapphire",
+    [VersionGroup.SUN_MOON]: "Sun/Moon",
+    [VersionGroup.ULTRA_SUN_ULTRA_MOON]: "Ultra Sun/Ultra Moon",
+    [VersionGroup.LETS_GO_PIKACHU_LETS_GO_EEVEE]: "Lets Go Pikachu/Lets Go Eevee",
+    [VersionGroup.SWORD_SHIELD]: "Sword/Shield",
+    [VersionGroup.BRILLIANT_DIAMOND_AND_SHINING_PEARL]: "Brilliant Diamond/Shining Pearl",
+    [VersionGroup.LEGENDS_ARCEUS]: "Legends: Arceus",
+    [VersionGroup.SCARLET_VIOLET]: "Scarlet/Violet",
+};
+
+export const pokedexRegionLabel: Record<PokedexRegion, string> = {
+    [PokedexRegion.NATIONAL]: "national",
+    [PokedexRegion.KANTO]: "kanto",
+    [PokedexRegion.ORIGINAL_JOHTO]: "original-johto",
+    [PokedexRegion.HOENN]: "hoenn",
+    [PokedexRegion.ORIGINAL_SINNOH]: "original-sinnoh",
+    [PokedexRegion.EXTENDED_SINNOH]: "extended-sinnoh",
+    [PokedexRegion.UPDATED_JOHTO]: "updated-johto",
+    [PokedexRegion.ORIGINAL_UNOVA]: "original-unova",
+    [PokedexRegion.UPDATED_UNOVA]: "updated-unova",
+    [PokedexRegion.KALOS_CENTRAL]: "kalos-central",
+    [PokedexRegion.KALOS_COASTAL]: "kalos-coastal",
+    [PokedexRegion.KALOS_MOUNTAIN]: "kalos-mountain",
+    [PokedexRegion.UPDATED_HOENN]: "updated-hoenn",
+    [PokedexRegion.ORIGINAL_ALOLA]: "original-alola",
+    [PokedexRegion.ORIGINAL_MELEMELE]: "original-melemele",
+    [PokedexRegion.ORIGINAL_AKALA]: "original-akala",
+    [PokedexRegion.ORIGINAL_ULAULA]: "original-ulaula",
+    [PokedexRegion.ORIGINAL_PONI]: "original-poni",
+    [PokedexRegion.UPDATED_ALOLA]: "updated-alola",
+    [PokedexRegion.UPDATED_MELEMELE]: "updated-melemele",
+    [PokedexRegion.UPDATED_AKALA]: "updated-akala",
+    [PokedexRegion.UPDATED_ULAULA]: "updated-ulaula",
+    [PokedexRegion.UPDATED_PONI]: "updated-poni",
+    [PokedexRegion.LETSGO_KANTO]: "letsgo-kanto",
+    [PokedexRegion.GALAR]: "galar",
+    [PokedexRegion.ISLE_OF_ARMOR]: "isle-of-armor",
+    [PokedexRegion.CROWN_TUNDRA]: "crown-tundra",
+    [PokedexRegion.HISUI]: "hisui",
+    [PokedexRegion.PALDEA]: "paldea",
+    [PokedexRegion.KITAKAMI]: "kitakami",
+    [PokedexRegion.BLUEBERRY]: "blueberry",
+};
+
+export const learnMethodLabel: Record<LearnMethod, string> = {
+    [LearnMethod.LEVEL_UP]: "Level Up",
+    [LearnMethod.MACHINE]: "Machine",
+    [LearnMethod.TUTOR]: "Tutor",
+    [LearnMethod.EGG]: "Egg",
+    [LearnMethod.LIGHT_BALL_EGG]: "Light Ball Egg",
+    [LearnMethod.FORM_CHANGE]: "Form Change",
+    [LearnMethod.ZYGARDE_CUBE]: "Zygarde Cube",
+};
+
+export const moveClassLabel: Record<MoveClass, string> = {
+    [MoveClass.PHYSICAL]: "Physical",
+    [MoveClass.SPECIAL]: "Special",
+    [MoveClass.STATUS]: "Status",
+};
+
+// Replaces splitting the old "Red/Blue"-style label on "/" to recover the games in a version group.
+export const versionGroupGames: Record<VersionGroup, Game[]> = {
+    [VersionGroup.RED_BLUE]: [Game.RED, Game.BLUE],
+    [VersionGroup.YELLOW]: [Game.YELLOW],
+    [VersionGroup.GOLD_SILVER]: [Game.GOLD, Game.SILVER],
+    [VersionGroup.CRYSTAL]: [Game.CRYSTAL],
+    [VersionGroup.RUBY_SAPPHIRE]: [Game.RUBY, Game.SAPPHIRE],
+    [VersionGroup.EMERALD]: [Game.EMERALD],
+    [VersionGroup.FIRERED_LEAFGREEN]: [Game.FIRERED, Game.LEAFGREEN],
+    [VersionGroup.DIAMOND_PEARL]: [Game.DIAMOND, Game.PEARL],
+    [VersionGroup.PLATINUM]: [Game.PLATINUM],
+    [VersionGroup.HEARTGOLD_SOULSILVER]: [Game.HEARTGOLD, Game.SOULSILVER],
+    [VersionGroup.BLACK_WHITE]: [Game.BLACK, Game.WHITE],
+    [VersionGroup.BLACK_2_WHITE_2]: [Game.BLACK_2, Game.WHITE_2],
+    [VersionGroup.X_Y]: [Game.X, Game.Y],
+    [VersionGroup.OMEGA_RUBY_ALPHA_SAPPHIRE]: [Game.OMEGA_RUBY, Game.ALPHA_SAPPHIRE],
+    [VersionGroup.SUN_MOON]: [Game.SUN, Game.MOON],
+    [VersionGroup.ULTRA_SUN_ULTRA_MOON]: [Game.ULTRA_SUN, Game.ULTRA_MOON],
+    [VersionGroup.LETS_GO_PIKACHU_LETS_GO_EEVEE]: [Game.LETS_GO_PIKACHU, Game.LETS_GO_EEVEE],
+    [VersionGroup.SWORD_SHIELD]: [Game.SWORD, Game.SHIELD],
+    [VersionGroup.BRILLIANT_DIAMOND_AND_SHINING_PEARL]: [Game.BRILLIANT_DIAMOND, Game.SHINING_PEARL],
+    [VersionGroup.LEGENDS_ARCEUS]: [Game.LEGENDS_ARCEUS],
+    [VersionGroup.SCARLET_VIOLET]: [Game.SCARLET, Game.VIOLET],
+};
+
+// Replaces the BiDirectionalMap in pages/TeamBuilder/utils.ts; round-trips every VersionGroup member.
+export function versionGroupToSlug(versionGroup: VersionGroup): string {
+    return versionGroup.toLowerCase().replace(/_/g, '-');
+}
+
+export function versionGroupFromSlug(slug: string): VersionGroup | undefined {
+    const key = slug.toUpperCase().replace(/-/g, '_');
+    return (Object.values(VersionGroup) as string[]).includes(key) ? key as VersionGroup : undefined;
+}

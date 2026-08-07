@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import {makeGetRequest} from "../api.servies.ts";
+import {makeGetRequest} from "../api.service.ts";
 import {ENDPOINTS} from "../constants.ts";
-import {prepareForUI} from "../transformers/abilityTransformer.ts";
+import {parseAbility} from "../parsers/parseAbility.ts";
 import {AbilityDetails} from "../../../global/types.ts";
 
 interface IMovesProps {
@@ -25,10 +25,10 @@ export const useAbilityDetails = ({ abilityIdOrName }: IMovesProps) => {
             setError(null); // Reset error before making a new request
 
             try {
-                const response = await makeGetRequest(`${ENDPOINTS.GET_ABILITY}/${abilityIdOrName}`);
+                const response = await makeGetRequest(`${ENDPOINTS.GET_ABILITY}/${abilityIdOrName}`, parseAbility);
 
                 if (response.ok) {
-                    setData(prepareForUI(response.data));
+                    setData(response.data);
                 } else {
                     setError(response.error || 'An error occurred while fetching Ability');
                 }

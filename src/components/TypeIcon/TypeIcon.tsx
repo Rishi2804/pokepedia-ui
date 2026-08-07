@@ -2,6 +2,7 @@
 import {FC, useEffect, useState} from 'react';
 import {PokemonType} from "../../global/enums.ts";
 import {TypeToColor} from "../../global/utils.ts";
+import {pokemonTypeLabel} from "../../global/labels.ts";
 import {Box, Typography} from "@mui/material";
 import {IconContainer} from "./styles.ts";
 
@@ -46,7 +47,7 @@ const TypeIcon: FC<ITypeIconProps> = ({type, variant="full", size}) => {
     return (
         <Box style={{justifyContent: 'space-between', width: '120px', height: '30px', backgroundColor: TypeToColor[type], borderRadius: 10, display: 'flex', flexDirection: 'row', alignItems: 'center', padding: '5px'}}>
             {TypeSVG ? <TypeSVG width={"50px"} height={"50px"} color={"#fff"}/> : <p>Loading...</p>}
-            <Typography style={{color: "white", fontWeight: "bolder", textAlign: 'center', width: "100%"}}>{type.toUpperCase()}</Typography>
+            <Typography style={{color: "white", fontWeight: "bolder", textAlign: 'center', width: "100%"}}>{pokemonTypeLabel[type].toUpperCase()}</Typography>
         </Box>
     );
 }

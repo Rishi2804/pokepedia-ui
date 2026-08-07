@@ -1,9 +1,9 @@
 import {Box, Button, Dialog, Divider, Stack} from "@mui/material";
 import {useState} from "react";
 import {VersionGroup} from "../../../../global/enums.ts";
+import {versionGroupLabel, versionGroupToSlug} from "../../../../global/labels.ts";
 import {styled} from "@mui/system";
 import {useNavigate} from "react-router-dom";
-import {versionGroupToStringMap} from "../../utils.ts";
 
 
 const VersionGroupDialog = () => {
@@ -17,8 +17,8 @@ const VersionGroupDialog = () => {
         setOpen(false);
     }
 
-    const handleNavigate = (versionGroup: string) => {
-        navigate(`/team-builder/new/${versionGroupToStringMap.getByKey(versionGroup as VersionGroup) ?? 'national'}`);
+    const handleNavigate = (versionGroup: VersionGroup | null) => {
+        navigate(`/team-builder/new/${versionGroup ? versionGroupToSlug(versionGroup) : 'national'}`);
     }
 
     const VersionGroupText = styled(Box)(({ theme }) => ({
@@ -38,10 +38,10 @@ const VersionGroupDialog = () => {
             <Button variant="contained" sx={{padding: 1.5}} onClick={handleClickOpen}>Create New Team</Button>
             <Dialog open={open} onClose={handleClose} PaperProps={{sx: {width: '30rem'}}}>
                 <Stack divider={<Divider flexItem /> }>
-                    <VersionGroupText onClick={() => handleNavigate('Home')}>Home</VersionGroupText>
+                    <VersionGroupText onClick={() => handleNavigate(null)}>Home</VersionGroupText>
                     {
                          Object.values(VersionGroup).reverse().map(group => (
-                             <VersionGroupText onClick={() => handleNavigate(group)}>{group}</VersionGroupText>
+                             <VersionGroupText onClick={() => handleNavigate(group)}>{versionGroupLabel[group]}</VersionGroupText>
                          ))
                     }
                 </Stack>
