@@ -24,7 +24,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
     const { currentTeam, addPokemon, changeTeamName, startEditingTeam, createNewTeam } = useTeamStore();
     const { versionGroup, id } = useParams()
     const navigate = useNavigate()
-    const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? (currentTeam?.versionGroup ? versionGroupToSlug(currentTeam.versionGroup) : undefined) ?? 'national'});
+    const { data, isPending, error } = useTeamCandidatesDetails(versionGroup ?? (currentTeam?.versionGroup ? versionGroupToSlug(currentTeam.versionGroup) : undefined) ?? 'national');
     const [searchTerm, setSearchTerm] = useState<string>("")
     const [typeFilters, setTypeFilters] = useState<PokemonType[]>([])
     const [genFilters, setGenFilters] = useState<number[]>([])
@@ -43,12 +43,12 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
         throw new Error("No team with that id")
     }
 
-    if (loading && !data.length) {
+    if (isPending) {
         return (<Loading />);
     }
 
     if (error) {
-        throw new Error(error)
+        throw error
     }
 
     if (!currentTeam) {

@@ -13,16 +13,16 @@ const MoveHome = () => {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [typefilters, settypefilters] = useState<PokemonType[]>([])
 
-    const { data, loading, error } = useMovesDetails();
+    const { data, isPending, error } = useMovesDetails();
 
-    if (loading) {
+    if (isPending) {
         return (
             <Loading />
         )
     }
 
     if (error) {
-        throw new Error(error)
+        throw error
     }
 
     return (

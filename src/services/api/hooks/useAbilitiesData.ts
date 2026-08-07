@@ -1,38 +1,10 @@
-import { useState, useEffect } from 'react';
-import {makeGetRequest} from "../api.service.ts";
+import {useQuery} from "@tanstack/react-query";
+import {getJson} from "../api.service.ts";
 import {ENDPOINTS} from "../constants.ts";
-import {AbilitySnapshot} from "../../../global/types.ts";
 import {parseAbilities} from "../parsers/parseAbilities.ts";
 
-export const useAbilitiesDetails = () => {
-    const [data, setData] = useState<AbilitySnapshot[][]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-
-        const fetch = async () => {
-            setLoading(true);
-            setError(null); // Reset error before making a new request
-
-            try {
-                const response = await makeGetRequest(`${ENDPOINTS.GET_ABILITY}/`, parseAbilities);
-
-                if (response.ok) {
-                    setData(response.data);
-                } else {
-                    setError(response.error || 'An error occurred while fetching Abilities');
-                }
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'An unknown error occurred');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetch();
-    }, []);
-
-    return { data, loading, error };
-
-}
+export const useAbilitiesDetails = () =>
+    useQuery({
+        queryKey: ['abilities'],
+        queryFn: () => getJson(`${ENDPOINTS.GET_ABILITY}/`, parseAbilities),
+    });

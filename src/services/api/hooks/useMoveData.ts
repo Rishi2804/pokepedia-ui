@@ -1,47 +1,11 @@
-import { useState, useEffect } from 'react';
-import {makeGetRequest} from "../api.service.ts";
+import {useQuery} from "@tanstack/react-query";
+import {getJson} from "../api.service.ts";
 import {ENDPOINTS} from "../constants.ts";
 import {parseMove} from "../parsers/parseMove.ts";
-import {MoveDetails} from "../../../global/types.ts";
 
-interface IMovesProps {
-    moveIdOrName: string | number;
-}
-
-export const useMoveDetails = ({ moveIdOrName }: IMovesProps) => {
-    const [data, setData] = useState<MoveDetails | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (!moveIdOrName) {
-            setError('No move ID or name provided');
-            setLoading(false);
-            return;
-        }
-
-        const fetch = async () => {
-            setLoading(true);
-            setError(null); // Reset error before making a new request
-
-            try {
-                const response = await makeGetRequest(`${ENDPOINTS.GET_MOVE}/${moveIdOrName}`, parseMove);
-
-                if (response.ok) {
-                    setData(response.data);  // Set the Pokémon data if successful
-                } else {
-                    setError(response.error || 'An error occurred while fetching Moves');
-                }
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'An unknown error occurred');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetch();
-    }, [moveIdOrName]);
-
-    return { data, loading, error };
-
-}
+export const useMoveDetails = (moveIdOrName: string | number) =>
+    useQuery({
+        queryKey: ['move', moveIdOrName],
+        queryFn: () => getJson(`${ENDPOINTS.GET_MOVE}/${moveIdOrName}`, parseMove),
+        enabled: !!moveIdOrName,
+    });

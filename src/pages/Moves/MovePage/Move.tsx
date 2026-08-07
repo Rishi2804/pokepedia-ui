@@ -14,20 +14,16 @@ import Loading from "../../../containers/loading/Loading.tsx";
 
 const Move = () => {
     const { id } = useParams();
-    const { data, loading, error } = useMoveDetails({moveIdOrName: id ?? 0})
+    const { data, isPending, error } = useMoveDetails(id ?? 0)
 
-    if (loading) {
+    if (isPending) {
         return (
             <Loading />
         )
     }
 
     if (error) {
-        throw new Error(error)
-    }
-
-    if (!data) {
-        return null;
+        throw error
     }
 
     const sections = ["Data", "Effects", "Descriptions", ...data.pokemonLearnable.map(list => `Learnable By ${learnMethodLabel[list.method]}`)]

@@ -11,21 +11,21 @@ import Loading from "../../../containers/loading/Loading.tsx";
 
 const AbilityHome = () => {
     const [searchTerm, setSearchTerm] = useState<string>("")
-    const { data, loading, error } = useAbilitiesDetails();
+    const { data, isPending, error } = useAbilitiesDetails();
     const navigate = useNavigate();
 
     const handleNavigate = (ability: string) => {
         navigate(`/ability/${navName(ability)}`)
     }
 
-    if (loading) {
+    if (isPending) {
         return (
             <Loading />
         )
     }
 
     if (error) {
-        throw new Error(error)
+        throw error
     }
 
 
