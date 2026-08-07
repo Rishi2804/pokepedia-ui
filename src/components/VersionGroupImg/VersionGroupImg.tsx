@@ -17,7 +17,7 @@ const VersionGroupImg: React.FC<IVersionGroupImgProps> = ({dex, sx}) => {
 
 
     return (
-        <img src={getImg()} style={{objectFit: "contain", ...sx}}/>
+        <img src={getImg()} alt="" style={{objectFit: "contain", maxWidth: "100%", maxHeight: "100%", ...sx}}/>
     )
 }
 
