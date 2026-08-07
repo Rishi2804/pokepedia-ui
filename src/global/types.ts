@@ -1,4 +1,5 @@
 import {Game, LearnMethod, MoveClass, PokedexRegion, PokemonType, VersionGroup} from "./enums.ts";
+import type {NatureName} from "./data/natures.ts";
 
 interface IDNamePair {
     id: number;
@@ -200,18 +201,34 @@ export interface CandidatesList {
 }
 
 export interface PokemonTeamMember {
+    // Identity — display-only, never sent to the Showdown engine.
     id: number;
     name: string;
+    type1: PokemonType;
+    type2: PokemonType | null;
+    gen: number;
+
+    // Showdown PokemonSet fields (sim/teams.ts), so this maps onto the engine
+    // without a lossy translation step. moveCandidates/abilityCandidates are
+    // deliberately absent — the set editor fetches those from
+    // useTeamCandidateDetails(versionSlug, id) instead of caching them per team.
+    nickname: string | null;
     shiny: boolean;
     gender: 'male' | 'female' | 'genderless';
     genderLock: boolean;
-    type1: PokemonType;
-    type2: PokemonType | null;
     teraType?: PokemonType;
-    ability: IDNamePair;
+    ability: IDNamePair | null;
     moves: (TeamMove | null)[];
-    moveCandidates: TeamMove[];
-    abilityCandidates: IDNamePair[];
+    level: number;
+    nature: NatureName;
+    item: string | null;
+    evs: StatSpread;
+    ivs: StatSpread;
+    happiness: number;
+    pokeball: string;
+    hpType?: PokemonType;
+    dynamaxLevel: number;
+    gigantamax: boolean;
 }
 
 export interface PokemonTeam {

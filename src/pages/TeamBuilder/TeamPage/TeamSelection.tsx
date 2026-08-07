@@ -6,7 +6,7 @@ import {Card, TeamNameInput} from "./styles.ts";
 import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
 import TeamView from "./components/TeamView.tsx";
 import {useTeamStore} from "../../../store/teamStore.ts";
-import {PokemonTeamMember, TeamCandidate} from "../../../global/types.ts";
+import {TeamCandidateSummary} from "../../../global/types.ts";
 import {FC, useEffect, useState} from "react";
 import Filters from "../../../components/Filters/Filters.tsx";
 import {PokemonType} from "../../../global/enums.ts";
@@ -55,22 +55,9 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
         throw new Error("Team not found")
     }
 
-    const handleAdd = (mon: TeamCandidate) => {
+    const handleAdd = (mon: TeamCandidateSummary) => {
         if (currentTeam.pokemon.length === 6) return
-        const newMember: PokemonTeamMember = {
-            id: mon.id,
-            name: mon.name,
-            shiny: false,
-            gender: mon.genderRate < 0 ? 'genderless' : mon.genderRate > 4 ? 'female' : 'male',
-            genderLock: (mon.genderRate === -1 || mon.genderRate === 0 || mon.genderRate === 8),
-            type1: mon.type1,
-            type2: mon.type2,
-            ability: mon.abilities[0],
-            moves: [null, null, null, null],
-            abilityCandidates: [...mon.abilities],
-            moveCandidates: [...mon.moves]
-        }
-        addPokemon(newMember);
+        addPokemon(mon);
     }
 
     return (

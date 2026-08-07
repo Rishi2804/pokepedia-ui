@@ -1,7 +1,8 @@
 import {create} from 'zustand';
-import {PokemonTeam, PokemonTeamMember} from "../global/types.ts";
+import {PokemonTeam, PokemonTeamMember, TeamCandidateSummary} from "../global/types.ts";
 import {VersionGroup} from "../global/enums.ts";
 import {versionGroupLabel} from "../global/labels.ts";
+import {createTeamMember} from "../pages/TeamBuilder/createTeamMember.ts";
 
 const loadTeamsFromLocalStorage = (): PokemonTeam[] => {
     const teams = localStorage.getItem('teams');
@@ -17,7 +18,7 @@ interface TeamStore {
     teams: PokemonTeam[];
     removedPokemonCache: Map<number, PokemonTeamMember>;
     changeTeamName: (name: string) => void;
-    addPokemon: (mon: PokemonTeamMember) => void;
+    addPokemon: (candidate: TeamCandidateSummary) => void;
     removePokemon: (index: number) => void;
     editPokemon: (index: number, mon: PokemonTeamMember) => void;
     setCurrentTeam: (team: PokemonTeam) => void;
@@ -39,12 +40,14 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
         return ({currentTeam: {...state.currentTeam, name: name}});
     }),
 
-    addPokemon: (mon: PokemonTeamMember) => set((state) => {
+    addPokemon: (candidate: TeamCandidateSummary) => set((state) => {
         if (!state.currentTeam) return state;
+        const mon = state.removedPokemonCache.get(candidate.id)
+            ?? createTeamMember(candidate, state.currentTeam.versionGroup);
         return ({
             currentTeam: {
                 ...state.currentTeam,
-                pokemon: [...state.currentTeam.pokemon, state.removedPokemonCache.get(mon.id) ?? mon]
+                pokemon: [...state.currentTeam.pokemon, mon]
             }
         });
     }),
