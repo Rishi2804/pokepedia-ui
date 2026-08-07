@@ -9,8 +9,8 @@ const TypeDefensesTable = () => {
     if (!currentTeam) return null;
 
     const coverages = currentTeam.pokemon.map(mon => {
-        if (mon.teraType) return getTypeDefenses(mon.teraType, null, mon.ability.id)
-        return getTypeDefenses(mon.type1, mon.type2, mon.ability.id)
+        if (mon.teraType) return getTypeDefenses(mon.teraType, null, mon.ability?.id)
+        return getTypeDefenses(mon.type1, mon.type2, mon.ability?.id)
     })
 
     const getMult = (index: number, type: PokemonType) => {
