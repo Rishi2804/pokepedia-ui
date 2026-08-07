@@ -16,12 +16,12 @@ import Learnset from "./components/Learnset/Learnset.tsx";
 import {ArrowBack, ArrowForward} from '@mui/icons-material';
 import QuickScroll from "../../components/QuickScroll/QuickScroll.tsx";
 import PokemonImages from "./components/PokemonImages/PokemonImages.tsx";
-import Loading from "../../containers/loading/Loading.tsx";
+import PokemonSkeleton from "./PokemonSkeleton.tsx";
 
 const Pokemon = () => {
     const { id } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
-    const { data, loading, error } = useSpeciesDetails({speciesIdOrName: id ?? 0})
+    const { data, isPending, error } = useSpeciesDetails(id ?? 0)
     const [i, setI] = useState<number>(0)
     const navigate = useNavigate()
 
@@ -52,19 +52,14 @@ const Pokemon = () => {
         navigate(`/pokemon/${id}`);
     }
 
-    if (loading) {
+    if (isPending) {
         return (
-            <Loading />
+            <PokemonSkeleton />
         )
     }
 
     if (error) {
-        throw new Error(error)
-    }
-
-
-    if (!data) {
-        return null
+        throw error
     }
 
     const sections = ["Data", "Base Stats", "Type Defenses", "Evolution Data", "Pokedex Entries", "Learnset", "Images"]
@@ -103,7 +98,7 @@ const Pokemon = () => {
                 <TypeDefenses
                     type1={data.pokemon[i].type1}
                     type2={data.pokemon[i].type2}
-                    abilities={data.pokemon[i].abilities.map(ability => {return{id: ability.abilityId, name: ability.abilityName}})}
+                    abilities={data.pokemon[i].abilities.map(ability => {return{id: ability.id, name: ability.name}})}
                 />
                 <EvolutionData lines={data.pokemon[i].evolutionChain} />
                 <PokedexEntries

@@ -4,6 +4,7 @@ import {FC, useEffect, useState} from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import {VersionGroup} from "../../../../global/enums.ts";
+import {learnMethodLabel, versionGroupLabel} from "../../../../global/labels.ts";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MoveList from "../../../../components/MoveList/MoveList.tsx";
@@ -35,7 +36,7 @@ const Learnset: FC<ILearnsetProps> = ({learnset}) => {
                 >
                     {
                         learnset.map((set) => set.versionGroup).map((group) => (
-                            <MenuItem value={group}>{group}</MenuItem>
+                            <MenuItem value={group}>{versionGroupLabel[group]}</MenuItem>
                         ))
                     }
                 </Select>
@@ -48,7 +49,7 @@ const Learnset: FC<ILearnsetProps> = ({learnset}) => {
                             <MoveList
                                 moves={set.moves}
                                 title={
-                                    <Typography variant="h3">{set.method}</Typography>
+                                    <Typography variant="h3">{learnMethodLabel[set.method]}</Typography>
                                 }/>
                         </Box>
                     )

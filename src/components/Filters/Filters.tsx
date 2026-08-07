@@ -7,6 +7,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Chip from "@mui/material/Chip";
 import MenuItem from "@mui/material/MenuItem";
 import {PokemonType} from "../../global/enums.ts";
+import {pokemonTypeLabel} from "../../global/labels.ts";
 
 interface IFilterProps {
     searchBoxText?: string;
@@ -60,7 +61,7 @@ const Filters: FC<IFilterProps> = ({searchBoxText, searchTerm, setSearchTerm, ty
                             renderValue={(selected) => (
                                 <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
                                     {selected.map((value) => (
-                                        <Chip key={value} label={value}/>
+                                        <Chip key={value} label={pokemonTypeLabel[value]}/>
                                     ))}
                                 </Box>
                             )}
@@ -70,7 +71,7 @@ const Filters: FC<IFilterProps> = ({searchBoxText, searchTerm, setSearchTerm, ty
                                     key={type}
                                     value={type}
                                 >
-                                    {type}
+                                    {pokemonTypeLabel[type]}
                                 </MenuItem>
                             ))}
                         </Select>

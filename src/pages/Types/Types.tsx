@@ -2,6 +2,7 @@ import MetaData from "../../components/MetaData/MetaData.tsx";
 import {Box, Grid2, Grid2 as Grid, Stack, Typography, useTheme} from "@mui/material";
 import {useEffect, useState} from "react";
 import {PokemonType} from "../../global/enums.ts";
+import {pokemonTypeLabel} from "../../global/labels.ts";
 import TypeIcon from "../../components/TypeIcon/TypeIcon.tsx";
 import {TypeCoverage, TypeDefences} from "../../global/types.ts";
 import {getTypeDefenses, getTypeStrengths} from "../../global/utils.ts";
@@ -66,7 +67,7 @@ const Types = () => {
             <Grid2 container>
                 {offense1 &&
                     <Grid2 size={{xs: 12, sm: 6}}>
-                        <Typography variant="h2" sx={{marginTop: 2}}>Damage Dealt: {types[0]}</Typography>
+                        <Typography variant="h2" sx={{marginTop: 2}}>Damage Dealt: {pokemonTypeLabel[types[0]]}</Typography>
                         <Stack spacing={2} sx={{marginTop: 1}}>
                             <MultRow mult={"2"} types={offense1.x2}/>
                             <MultRow mult={"1/2"} types={offense1.x1_2}/>
@@ -75,7 +76,7 @@ const Types = () => {
                     </Grid2>}
                 {offense2 &&
                     <Grid2 size={{xs: 12, sm: 6}}>
-                        <Typography variant="h2" sx={{marginTop: 2}}>Damage Dealt: {types[1]}</Typography>
+                        <Typography variant="h2" sx={{marginTop: 2}}>Damage Dealt: {pokemonTypeLabel[types[1]]}</Typography>
                         <Stack spacing={2} sx={{marginTop: 1}}>
                             <MultRow mult={"2"} types={offense2.x2}/>
                             <MultRow mult={"1/2"} types={offense2.x1_2}/>

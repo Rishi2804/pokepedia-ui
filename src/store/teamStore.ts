@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import {PokemonTeam, PokemonTeamMember} from "../global/types.ts";
 import {VersionGroup} from "../global/enums.ts";
+import {versionGroupLabel} from "../global/labels.ts";
 
 const loadTeamsFromLocalStorage = (): PokemonTeam[] => {
     const teams = localStorage.getItem('teams');
@@ -96,7 +97,7 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
     createNewTeam: (versionGroup: VersionGroup | null) => set({
         currentTeam: {
             id: getState().teams.length > 0 ? getState().teams[getState().teams.length-1].id + 1 : 1,
-            name: `My ${versionGroup ?? "Home"} Team`,
+            name: `My ${versionGroup ? versionGroupLabel[versionGroup] : "Home"} Team`,
             versionGroup: versionGroup,
             pokemon: []
         }

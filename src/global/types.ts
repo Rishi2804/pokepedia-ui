@@ -20,8 +20,8 @@ export interface PokedexDetails {
 }
 
 interface PokemonAbility {
-    abilityId: number;
-    abilityName: string;
+    id: number;
+    name: string;
     isHidden: boolean;
     genRemoved: number | null;
 }
@@ -52,9 +52,9 @@ export interface PokemonMoveSnapshot {
     name: string;
     type: PokemonType;
     moveClass: MoveClass;
-    power: number;
-    accuracy: number;
-    pp: number;
+    power: number | null;
+    accuracy: number | null;
+    pp: number | null;
     levelLearned: number;
 }
 
@@ -107,9 +107,9 @@ export interface MoveSnapshot {
     name: string;
     type: PokemonType;
     moveClass: MoveClass;
-    power: number;
-    accuracy: number;
-    pp: number;
+    power: number | null;
+    accuracy: number | null;
+    pp: number | null;
     gen: number;
 }
 
@@ -137,6 +137,7 @@ export interface MoveDetails {
 }
 
 export interface AbilitySnapshot {
+    id: number;
     name: string;
     gen: number;
 }

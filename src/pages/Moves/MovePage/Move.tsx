@@ -1,6 +1,7 @@
 import {useParams} from "react-router-dom";
 import {useMoveDetails} from "../../../services/api/hooks/useMoveData.ts";
 import {formatText} from "../../../global/utils.ts";
+import {learnMethodLabel} from "../../../global/labels.ts";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
 import {Box, Grid2 as Grid, Typography} from "@mui/material";
 import MoveData from "./components/MoveData/MoveData.tsx";
@@ -8,28 +9,24 @@ import MoveEffects from "./components/MoveEffects/MoveEffects.tsx";
 import MoveDescriptions from "./components/MoveDescriptions/MoveDescriptions.tsx";
 import PokemonList from "../../../components/PokemonList/PokemonList.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
-import Loading from "../../../containers/loading/Loading.tsx";
+import MoveSkeleton from "./MoveSkeleton.tsx";
 
 
 const Move = () => {
     const { id } = useParams();
-    const { data, loading, error } = useMoveDetails({moveIdOrName: id ?? 0})
+    const { data, isPending, error } = useMoveDetails(id ?? 0)
 
-    if (loading) {
+    if (isPending) {
         return (
-            <Loading />
+            <MoveSkeleton />
         )
     }
 
     if (error) {
-        throw new Error(error)
+        throw error
     }
 
-    if (!data) {
-        return null;
-    }
-
-    const sections = ["Data", "Effects", "Descriptions", ...data.pokemonLearnable.map(list => `Learnable By ${list.method}`)]
+    const sections = ["Data", "Effects", "Descriptions", ...data.pokemonLearnable.map(list => `Learnable By ${learnMethodLabel[list.method]}`)]
 
     return (
         <>
@@ -61,8 +58,8 @@ const Move = () => {
                 {
                     data.pokemonLearnable.map((list, index) => (
                         <PokemonList data={list.pokemon}
-                                     header={<Typography variant="h3" id={`Learnable By ${list.method}`}>
-                                         {`Learnable By ${list.method}`}
+                                     header={<Typography variant="h3" id={`Learnable By ${learnMethodLabel[list.method]}`}>
+                                         {`Learnable By ${learnMethodLabel[list.method]}`}
                                             </Typography> }
                                      key={index}
                         />
