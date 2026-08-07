@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import {makeGetRequest} from "../api.servies.ts";
+import {makeGetRequest} from "../api.service.ts";
 import {ENDPOINTS} from "../constants.ts";
-import {prepareForUI} from "../transformers/moveSnapTransformer.ts";
+import {parseMoves} from "../parsers/parseMoves.ts";
 import {MoveSnapshot} from "../../../global/types.ts";
 
 export const useMovesDetails = () => {
@@ -16,10 +16,10 @@ export const useMovesDetails = () => {
             setError(null); // Reset error before making a new request
 
             try {
-                const response = await makeGetRequest(`${ENDPOINTS.GET_MOVE}/`);
+                const response = await makeGetRequest(`${ENDPOINTS.GET_MOVE}/`, parseMoves);
 
                 if (response.ok) {
-                    setData(prepareForUI(response.data));  // Set the Pokémon data if successful
+                    setData(response.data);  // Set the Pokémon data if successful
                 } else {
                     setError(response.error || 'An error occurred while fetching Moves');
                 }

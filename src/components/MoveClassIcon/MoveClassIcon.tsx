@@ -12,7 +12,7 @@ const MoveClassIcon: FC<IMoveClassIconProps> = ({mClass, size}) => {
     useEffect(() => {
         const loadSvg = async () => {
             try {
-                const ReactComponent = await import(`./assets/${mClass}.svg`);
+                const ReactComponent = await import(`./assets/${mClass.toLowerCase()}.svg`);
                 setMoveClassSVG(() => ReactComponent.default);
             } catch (error) {
                 console.error("Error loading SVG:", error);

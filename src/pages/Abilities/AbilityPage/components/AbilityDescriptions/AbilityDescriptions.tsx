@@ -1,4 +1,5 @@
-import {Game, VersionGroup} from "../../../../../global/enums.ts";
+import {VersionGroup} from "../../../../../global/enums.ts";
+import {versionGroupGames} from "../../../../../global/labels.ts";
 import {FC} from "react";
 import {Grid2 as Grid, Paper, Stack, Typography} from "@mui/material";
 import GameTextEntry from "../../../../../components/GameTextEntry/GameTextEntry.tsx";
@@ -19,9 +20,7 @@ const AbilityDescriptions: FC<IAbilityDescriptionsProps> = ({entries}) => {
                 <Stack spacing={2}>
                     {
                         entries.map(entry => {
-                            const games: Game[] = entry.versionGroups
-                                .flatMap(group => group ? group.split("/") : [])
-                                .map(game => game as Game)
+                            const games = entry.versionGroups.flatMap(group => group ? versionGroupGames[group] : [])
                             return (
                                 <GameTextEntry games={games} entry={entry.description} />
                             )

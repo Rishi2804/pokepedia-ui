@@ -1,4 +1,5 @@
-import {Game, PokemonType, VersionGroup} from "../../../../../global/enums.ts";
+import {PokemonType, VersionGroup} from "../../../../../global/enums.ts";
+import {versionGroupGames} from "../../../../../global/labels.ts";
 import {FC} from "react";
 import {Grid2 as Grid, Stack, Typography} from "@mui/material";
 import {EntriesContainer} from "./styles.ts";
@@ -20,9 +21,7 @@ const MoveDescriptions: FC<IMoveDescriptionsProps> = ({type, entries}) => {
                 <Stack spacing={2}>
                 {
                     entries.map(entry => {
-                        const games: Game[] = entry.versionGroups
-                            .flatMap(group => group.split("/"))
-                            .map(game => game as Game)
+                        const games = entry.versionGroups.flatMap(group => versionGroupGames[group])
                         return (
                             <GameTextEntry games={games} entry={entry.description} />
                         )

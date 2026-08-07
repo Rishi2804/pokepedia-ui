@@ -1,6 +1,7 @@
 import {EntryBox, GameBox, GroupGameBox, TextBox} from "./styles.ts";
 import {Typography} from "@mui/material";
 import {Game} from "../../global/enums.ts";
+import {gameLabel} from "../../global/labels.ts";
 import {FC} from "react";
 
 interface IGameTextEntryProps {
@@ -15,7 +16,7 @@ const GameTextEntry: FC<IGameTextEntryProps> = ({games, entry}) => {
                 {
                     games.map((game, index) => (
                         <GameBox game={game} key={index}>
-                            <Typography variant="body2">{game}</Typography>
+                            <Typography variant="body2">{gameLabel[game]}</Typography>
                         </GameBox>
                     ))
                 }

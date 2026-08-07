@@ -2,6 +2,7 @@ import {Game, PokedexRegion} from "../../../../global/enums.ts";
 import {IDexEntry, IDexNum} from "./types.ts";
 import {DexToRegionMapping} from "./constants.ts";
 import {formatText} from "../../../../global/utils.ts";
+import {pokedexRegionLabel} from "../../../../global/labels.ts";
 
 export function categorizedDexEntries(gen: number, dexEntries: IDexEntry[], dexNumbers: IDexNum[]) {
     const categories = []
@@ -95,8 +96,8 @@ export function categorizedDexEntries(gen: number, dexEntries: IDexEntry[], dexN
         let relevantDexNums = category.dexes.map((dex) => {
             const num = dexNumbers.find((entry) => entry.dexName === dex)
             if (num) {
-                if (num.dexName.split('-').includes('kalos')) {
-                    return {name: formatText(num.dexName), number: num.dexNumber}
+                if (num.dexName.startsWith('KALOS')) {
+                    return {name: formatText(pokedexRegionLabel[num.dexName]), number: num.dexNumber}
                 } else {
                     return {name: DexToRegionMapping[num.dexName], number: num.dexNumber}
                 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import {makeGetRequest} from "../api.servies.ts";
+import {makeGetRequest} from "../api.service.ts";
 import {ENDPOINTS} from "../constants.ts";
-import {prepareForUI} from "../transformers/speciesTransformer.ts";
+import {parseSpecies} from "../parsers/parseSpecies.ts";
 import {SpeciesDetails} from "../../../global/types.ts";
 
 interface ISpeciesProps {
@@ -25,10 +25,10 @@ export const useSpeciesDetails = ({ speciesIdOrName }: ISpeciesProps) => {
             setError(null); // Reset error before making a new request
 
             try {
-                const response = await makeGetRequest(`${ENDPOINTS.GET_SPECIES_LIST}/${speciesIdOrName}`);
+                const response = await makeGetRequest(`${ENDPOINTS.GET_SPECIES_LIST}/${speciesIdOrName}`, parseSpecies);
 
                 if (response.ok) {
-                    setData(prepareForUI(response.data));  // Set the Pokémon data if successful
+                    setData(response.data);  // Set the Pokémon data if successful
                 } else {
                     setError(response.error || 'An error occurred while fetching Species details');
                 }

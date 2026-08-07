@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { makeGetRequest } from "../api.servies.ts";
+import { makeGetRequest } from "../api.service.ts";
 import { ENDPOINTS } from "../constants.ts";
-import { prepareForUI } from "../transformers/pokedexTransformer.ts";
+import { parsePokedex } from "../parsers/parsePokedex.ts";
 import {PokedexDetails} from "../../../global/types.ts";
 
 interface IPokedexProps {
@@ -26,9 +26,9 @@ export const usePokedexDetails = ({ pokedex }: IPokedexProps) => {
             setError(null);
 
             try {
-                const response = await makeGetRequest(`${ENDPOINTS.GET_POKEMON}/${pokedex}`);
+                const response = await makeGetRequest(`${ENDPOINTS.GET_POKEMON}/${pokedex}`, parsePokedex);
                 if (response.ok) {
-                    setData(prepareForUI(response.data))
+                    setData(response.data)
                 } else {
                     setError('An unknown error occurred');
                 }

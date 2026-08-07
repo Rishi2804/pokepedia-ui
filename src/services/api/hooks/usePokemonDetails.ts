@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import {makeGetRequest} from "../api.servies.ts";
+import {makeGetRequest} from "../api.service.ts";
 import {ENDPOINTS} from "../constants.ts";
-import {prepareForUI} from "../transformers/pokemonTransformer.ts";
+import {parsePokemon} from "../parsers/parsePokemon.ts";
 import {PokemonDetails} from "../../../global/types.ts";
 
 interface ISinglePokemonProps {
@@ -25,10 +25,10 @@ export const usePokemonDetails = ({ pokemonIdOrName }: ISinglePokemonProps) => {
             setError(null); // Reset error before making a new request
 
             try {
-                const response = await makeGetRequest(`${ENDPOINTS.GET_SINGLE_POKEMON}/${pokemonIdOrName}`);
+                const response = await makeGetRequest(`${ENDPOINTS.GET_SINGLE_POKEMON}/${pokemonIdOrName}`, parsePokemon);
 
                 if (response.ok) {
-                    setData(prepareForUI(response.data));  // Set the Pokémon data if successful
+                    setData(response.data);  // Set the Pokémon data if successful
                 } else {
                     setError(response.error || 'An error occurred while fetching Pokémon details');
                 }
