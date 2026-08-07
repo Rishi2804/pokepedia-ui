@@ -6,8 +6,8 @@ import {navName} from "../../../../../global/utils.ts";
 
 interface IAbilitiesProps {
     abilities: {
-        abilityId: number;
-        abilityName: string;
+        id: number;
+        name: string;
         isHidden: boolean;
         genRemoved: number | null;
     }[]
@@ -28,7 +28,7 @@ const Abilities: FC<IAbilitiesProps> = ({abilities}) => {
                     abilities.map((ability, index) => {
                         return (
                             <Stack direction="row" spacing={1} sx={{alignItems: "center"}} key={index}>
-                                <AbilityText onClick={() => handleNavigate(ability.abilityName)}>{ability.abilityName}</AbilityText>
+                                <AbilityText onClick={() => handleNavigate(ability.name)}>{ability.name}</AbilityText>
                                 {ability.genRemoved && <Typography variant="caption">(Gen {ability.genRemoved} and prior)</Typography>}
                                 {ability.isHidden && <Typography variant="caption">(Hidden Ability)</Typography>}
                             </Stack>

@@ -1,6 +1,7 @@
 import {Box, Divider, Grid2 as Grid, Stack, Typography} from "@mui/material";
 import {FC} from "react";
-import {Game, PokemonType, VersionGroup} from "../../../../../global/enums.ts";
+import {PokemonType, VersionGroup} from "../../../../../global/enums.ts";
+import {gameLabel, versionGroupGames} from "../../../../../global/labels.ts";
 import {gameToColorMap} from "../../../../Pokemon/components/PokedexEntries/constants.ts";
 import {getZMovePower, typeToZCrystal, typeToZMove} from "./utils.ts";
 
@@ -40,9 +41,7 @@ const MoveEffects: FC<IMoveEffectsProps> = ({id, type, effect, pastMoveValues, c
                     </Grid>
                     {
                         filteredHistory.map((pastVals, index) => {
-                            const gamesList: Game[][] = pastVals.versionGroups
-                                .map(group =>
-                                    group.split("/").map(game => game as Game))
+                            const gamesList = pastVals.versionGroups.map(group => versionGroupGames[group])
                             return (
                                 <Grid container key={index}>
                                     <Grid size={6} sx={{display: 'flex', flexWrap: 'wrap'}}>
@@ -53,7 +52,7 @@ const MoveEffects: FC<IMoveEffectsProps> = ({id, type, effect, pastMoveValues, c
                                                         group.map((game, index) => (
                                                             <Box key={index} sx={{display: 'flex'}}>
                                                                 <Typography
-                                                                    color={gameToColorMap[game]}>{game}</Typography>
+                                                                    color={gameToColorMap[game]}>{gameLabel[game]}</Typography>
                                                                 <Typography
                                                                     sx={{display: index < group.length - 1 ? 'block' : "none"}}>/</Typography>
                                                             </Box>

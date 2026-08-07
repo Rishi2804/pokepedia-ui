@@ -6,24 +6,21 @@ import AbilityEffects from "./components/AbilityEffects/AbilityEffects.tsx";
 import AbilityDescriptions from "./components/AbilityDescriptions/AbilityDescriptions.tsx";
 import PokemonList from "../../../components/PokemonList/PokemonList.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
-import Loading from "../../../containers/loading/Loading.tsx";
+import AbilitySkeleton from "./AbilitySkeleton.tsx";
 
 const Ability = () => {
     const { id } = useParams();
-    const { data, loading, error } = useAbilityDetails({abilityIdOrName: id ?? 0})
+    const { data, isPending, error } = useAbilityDetails(id ?? 0)
 
-    if (loading) {
+    if (isPending) {
         return (
-            <Loading />
+            <AbilitySkeleton />
         )
     }
 
     if (error) {
-        throw new Error(error)
+        throw error
     }
-
-
-    if (!data) return null
 
     const sections = ["Effects", "Descriptions", "Pokemon with Ability"]
 

@@ -1,6 +1,6 @@
 import {useTeamCandidatesDetails} from "../../../services/api/hooks/useTeamCandidatesData.ts";
 import {useNavigate, useParams} from "react-router-dom";
-import Loading from "../../../containers/loading/Loading.tsx";
+import TeamSelectionSkeleton from "./TeamSelectionSkeleton.tsx";
 import {Box, Grid2 as Grid, Paper, Typography} from "@mui/material";
 import {Card, TeamNameInput} from "./styles.ts";
 import PokemonImg from "../../../components/PokemonImg/PokemonImg.tsx";
@@ -10,7 +10,7 @@ import {PokemonTeamMember, TeamCandidate} from "../../../global/types.ts";
 import {FC, useEffect, useState} from "react";
 import Filters from "../../../components/Filters/Filters.tsx";
 import {PokemonType} from "../../../global/enums.ts";
-import {versionGroupToStringMap} from "../utils.ts";
+import {versionGroupFromSlug, versionGroupToSlug} from "../../../global/labels.ts";
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import DeleteTeamButton from "./components/DeleteTeamButton.tsx";
 import ViewTeamButton from "./components/ViewTeamButton.tsx";
@@ -24,7 +24,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
     const { currentTeam, addPokemon, changeTeamName, startEditingTeam, createNewTeam } = useTeamStore();
     const { versionGroup, id } = useParams()
     const navigate = useNavigate()
-    const { data, loading, error } = useTeamCandidatesDetails({versionString: versionGroup ?? versionGroupToStringMap.getByKey(currentTeam?.versionGroup) ?? 'national'});
+    const { data, isPending, error } = useTeamCandidatesDetails(versionGroup ?? (currentTeam?.versionGroup ? versionGroupToSlug(currentTeam.versionGroup) : undefined) ?? 'national');
     const [searchTerm, setSearchTerm] = useState<string>("")
     const [typeFilters, setTypeFilters] = useState<PokemonType[]>([])
     const [genFilters, setGenFilters] = useState<number[]>([])
@@ -33,7 +33,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
 
     useEffect(() => {
         if (versionGroup) {
-            createNewTeam(versionGroupToStringMap.getByValue(versionGroup) ?? null)
+            createNewTeam(versionGroupFromSlug(versionGroup) ?? null)
         } else if (id) {
             startEditingTeam(Number(id))
         }
@@ -43,12 +43,12 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
         throw new Error("No team with that id")
     }
 
-    if (loading && !data.length) {
-        return (<Loading />);
+    if (isPending) {
+        return (<TeamSelectionSkeleton />);
     }
 
     if (error) {
-        throw new Error(error)
+        throw error
     }
 
     if (!currentTeam) {

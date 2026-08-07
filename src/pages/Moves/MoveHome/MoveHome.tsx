@@ -6,23 +6,23 @@ import {useState} from "react";
 import {PokemonType} from "../../../global/enums.ts";
 import MoveList from "../../../components/MoveList/MoveList.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
-import Loading from "../../../containers/loading/Loading.tsx";
+import MoveHomeSkeleton from "./MoveHomeSkeleton.tsx";
 
 const MoveHome = () => {
 
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [typefilters, settypefilters] = useState<PokemonType[]>([])
 
-    const { data, loading, error } = useMovesDetails();
+    const { data, isPending, error } = useMovesDetails();
 
-    if (loading) {
+    if (isPending) {
         return (
-            <Loading />
+            <MoveHomeSkeleton />
         )
     }
 
     if (error) {
-        throw new Error(error)
+        throw error
     }
 
     return (

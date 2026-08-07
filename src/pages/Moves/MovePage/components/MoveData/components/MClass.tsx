@@ -1,6 +1,7 @@
 import {Box, Stack, Typography} from "@mui/material";
 import {InfoSection} from "../../../styles.tsx";
 import {MoveClass} from "../../../../../../global/enums.ts";
+import {moveClassLabel} from "../../../../../../global/labels.ts";
 import MoveClassIcon from "../../../../../../components/MoveClassIcon/MoveClassIcon.tsx";
 
 const MClass = ({mclass}: {mclass: MoveClass}) => {
@@ -11,7 +12,7 @@ const MClass = ({mclass}: {mclass: MoveClass}) => {
             </Box>
             <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
                 <MoveClassIcon mClass={mclass} />
-                <Typography>{mclass[0].toUpperCase() + mclass.substring(1)}</Typography>
+                <Typography>{moveClassLabel[mclass]}</Typography>
             </Stack>
         </InfoSection>
     );

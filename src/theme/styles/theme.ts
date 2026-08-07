@@ -78,4 +78,18 @@ export const getTheme = (mode: PaletteMode) => ({
         values: breakpoints
     },
     typography: typography(mode),
+    components: {
+        MuiSkeleton: {
+            defaultProps: {
+                animation: 'wave' as const,
+            },
+            styleOverrides: {
+                root: {
+                    backgroundColor: mode === 'light'
+                        ? `${COLORS.BLACK_PEARL}21`
+                        : `${COLORS.OFF_WHITE}29`,
+                },
+            },
+        },
+    },
 });
