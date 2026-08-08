@@ -1,29 +1,28 @@
-import {FC} from 'react';
-import {Box, Grid2 as Grid, SelectChangeEvent, Typography} from "@mui/material";
-import {AbilityInput, Card, GenderButton, MemberInfo, ShinyButton, StaticLabel} from "../styles.ts";
+import {FC, MouseEvent} from 'react';
+import {Box, Chip, Grid2 as Grid, IconButton, Typography} from "@mui/material";
+import {Card, GenderButton, MemberInfo, ShinyButton} from "../styles.ts";
 import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import TypeIcon from "../../../../components/TypeIcon/TypeIcon.tsx";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import GenderlessIcon from "@mui/icons-material/Transgender";
 import ShinyIcon from "@mui/icons-material/AutoAwesome";
+import CloseIcon from "@mui/icons-material/Close";
 import TeraTypeMenu from "./TeraTypeDropdown/TeraTypeMenu.tsx";
 import {PokemonType} from "../../../../global/enums.ts";
-import FormControl from "@mui/material/FormControl";
-import {NoAbilities} from "./constants.ts";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import MoveAutoComplete from "./MoveAutoComplete.tsx";
-import {PokemonTeamMember, TeamMove} from "../../../../global/types.ts";
+import {PokemonTeamMember} from "../../../../global/types.ts";
 import {useTeamStore} from "../../../../store/teamStore.ts";
+import {NATURES} from "../../../../global/data/natures.ts";
+import {PLACEHOLDER_ITEMS} from "../../../../global/data/items.ts";
 
 interface IMemberCardProps {
     i: number;
     editMode: boolean;
-    advancedOptions: boolean;
+    selectedSlot: number | null;
+    setSelectedSlot: (slot: number | null) => void;
 }
 
-const MemberCard: FC<IMemberCardProps> = ({i, editMode, advancedOptions}) => {
+const MemberCard: FC<IMemberCardProps> = ({i, editMode, selectedSlot, setSelectedSlot}) => {
 
     const { currentTeam, editPokemon, removePokemon } = useTeamStore()
     const pokemon = currentTeam?.pokemon[i];
@@ -36,16 +35,6 @@ const MemberCard: FC<IMemberCardProps> = ({i, editMode, advancedOptions}) => {
     const toggleGender = (index: number, mon: PokemonTeamMember)=> {
         editPokemon(index, {...mon, gender: mon.gender === 'male' ? 'female' : 'male'})
     }
-
-    const handleAbilityChange = (event: SelectChangeEvent<number>, index: number, mon: PokemonTeamMember) => {
-        const newAbility = mon.abilityCandidates.find(ability => ability.id === event.target.value);
-        if (newAbility) {
-            editPokemon(index, {
-                ...mon,
-                ability: newAbility,
-            })
-        }
-    };
 
     const handleTeraTypeChange = (index: number, mon: PokemonTeamMember, tera?: PokemonType)=> {
         const updatedMoves = mon.moves.map(move => {
@@ -65,30 +54,51 @@ const MemberCard: FC<IMemberCardProps> = ({i, editMode, advancedOptions}) => {
         })
     }
 
-    const handleRemove = (index: number) => {
-        if (editMode) removePokemon(index)
+    const handleRemove = (event: MouseEvent) => {
+        event.stopPropagation();
+        removePokemon(i);
+        if (selectedSlot !== null && selectedSlot >= i) setSelectedSlot(null);
     }
 
-    const handleMoveChange = (monI: number, mon: PokemonTeamMember, moveI: number, move: TeamMove | null) => {
-        if (move?.id === 851) move.type = mon.teraType ?? PokemonType.NORMAL
-        let updatedMoves = [...mon.moves];
-        updatedMoves[moveI] = move;
-        const nonNullMoves = updatedMoves.filter(move => move !== null);
-        const nullMoves = updatedMoves.filter(move => move === null);
-        updatedMoves = [...nonNullMoves, ...nullMoves];
-        editPokemon(monI, {
-            ...mon,
-            moves: updatedMoves
-        })
-    }
+    const selected = selectedSlot === i;
+    const itemName = pokemon.item ? PLACEHOLDER_ITEMS.find(item => item.slug === pokemon.item)?.name : null;
 
     return (
         <Grid size={{xs: 2}}>
-            <Card type1={pokemon.teraType ?? pokemon.type1} type2={pokemon.teraType ?? pokemon.type2} member onClick={() => handleRemove(i)} sx={{marginBottom: 1}}>
-                <PokemonImg id={pokemon.id} shiny={pokemon.shiny} female={pokemon.gender === 'female'}/>
-            </Card>
+            <Box sx={{position: 'relative', marginBottom: 1, '&:hover .member-remove-btn': {opacity: 1}}}>
+                <Card
+                    type1={pokemon.teraType ?? pokemon.type1}
+                    type2={pokemon.teraType ?? pokemon.type2}
+                    member
+                    selected={selected}
+                    elevation={selected ? 8 : 1}
+                    onClick={() => setSelectedSlot(selected ? null : i)}
+                >
+                    <PokemonImg id={pokemon.id} shiny={pokemon.shiny} female={pokemon.gender === 'female'}/>
+                </Card>
+                {
+                    editMode && (
+                        <IconButton
+                            className="member-remove-btn"
+                            size="small"
+                            onClick={handleRemove}
+                            sx={{
+                                position: 'absolute',
+                                top: -8,
+                                right: -8,
+                                opacity: 0,
+                                transition: 'opacity 0.15s',
+                                backgroundColor: 'background.paper',
+                                '&:hover': {backgroundColor: 'background.paper'}
+                            }}
+                        >
+                            <CloseIcon fontSize="small"/>
+                        </IconButton>
+                    )
+                }
+            </Box>
             <MemberInfo type1={pokemon.teraType ?? pokemon.type1} type2={pokemon.teraType ?? pokemon.type2}>
-                <Typography variant="h4" color={"#fff"}>{pokemon.name}</Typography>
+                <Typography variant="h4" color={"#fff"}>{pokemon.nickname ?? pokemon.name}</Typography>
                 <Box sx={{display: 'flex', gap: 1}}>
                     <TypeIcon type={pokemon.type1} size={32} variant={"circular"}/>
                     {pokemon.type2 && <TypeIcon type={pokemon.type2} size={32} variant={"circular"}/>}
@@ -115,40 +125,11 @@ const MemberCard: FC<IMemberCardProps> = ({i, editMode, advancedOptions}) => {
                     </ShinyButton>
                     <TeraTypeMenu teraType={pokemon.teraType} changeTeraType={(tera?: PokemonType) => handleTeraTypeChange(i, pokemon, tera)} disabled={!editMode}/>
                 </Box>
-                {
-                    advancedOptions &&
-                    <>
-                        <FormControl fullWidth sx={{display: NoAbilities.includes(currentTeam.versionGroup) ? 'none' : ''}}>
-                            <StaticLabel>Ability</StaticLabel>
-                            <Select
-                                variant="outlined"
-                                value={pokemon.ability.id}
-                                onChange={(event) => handleAbilityChange(event, i, pokemon)}
-                                input={<AbilityInput />}
-                                disabled={!editMode}
-                            >
-                                {
-                                    pokemon.abilityCandidates.map((ability) => (
-                                        <MenuItem value={ability.id} key={ability.id}>{ability.name}</MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
-                        {
-                            [...Array(4)].map((_, mI) => {
-                                return (
-                                    <MoveAutoComplete
-                                        editMode={editMode}
-                                        movesList={pokemon.moveCandidates}
-                                        label={`Move ${mI+1}`}
-                                        currentMove={pokemon.moves[mI]}
-                                        updateMove={(move: TeamMove | null) => handleMoveChange(i, pokemon, mI, move)}
-                                    />
-                                )
-                            })
-                        }
-                    </>
-                }
+                <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center'}}>
+                    {pokemon.ability && <Chip label={pokemon.ability.name} size="small"/>}
+                    <Chip label={NATURES[pokemon.nature].name} size="small"/>
+                    {itemName && <Chip label={itemName} size="small"/>}
+                </Box>
             </MemberInfo>
         </Grid>
     )

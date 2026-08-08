@@ -2,7 +2,7 @@ import {PokemonType} from "../../../global/enums.ts";
 import type {NatureName} from "../../../global/data/natures.ts";
 import {NATURES} from "../../../global/data/natures.ts";
 import type {StatKey, StatSpread} from "../../../global/types.ts";
-import type {IvModel} from "../genRules.ts";
+import type {EvModel, GenRules, IvModel} from "../genRules.ts";
 
 // ---- Gen 3+ final stat formulas ----
 // Also used by the Pokemon page's level-50 min/max range display
@@ -41,6 +41,81 @@ export function natureMultiplier(nature: NatureName, stat: StatKey): number {
     if (n.plus === stat) return 1.1;
     if (n.minus === stat) return 0.9;
     return 1;
+}
+
+// ---- Live stat computation, shared by the set editor's numbers and its bars ----
+
+// 'effortLevel' (Legends Arceus) has no verified formula in our reference source,
+// so it's left uncomputed rather than guessed. Every other model (including 'av',
+// which reuses the standard formula as the closest documented approximation —
+// Showdown doesn't simulate Let's Go battles) shares one code path.
+function rawStat(stat: StatKey, base: number, iv: number, ev: number, level: number, nature: NatureName, evModel: EvModel): number | null {
+    if (evModel === 'effortLevel') return null;
+    if (evModel === 'statExp') {
+        return stat === 'hp' ? calcHpGen12(base, iv, ev, level) : calcStatGen12(base, iv, ev, level);
+    }
+    return stat === 'hp' ? calcHp(base, iv, ev, level) : calcStat(base, iv, ev, level, natureMultiplier(nature, stat));
+}
+
+// Shedinja's HP is always 1 regardless of base stat, IVs, EVs, or level —
+// applied here so every caller (the printed number and the bar) gets it right
+// without having to know about the special case itself.
+export interface StatInput {
+    pokemonId: number;
+    stat: StatKey;
+    base: number;
+    iv: number;
+    ev: number;
+    level: number;
+    nature: NatureName;
+    evModel: EvModel;
+}
+
+export function computeFinalStat(input: StatInput): number | null {
+    if (input.pokemonId === SHEDINJA_ID && input.stat === 'hp') return 1;
+    return rawStat(input.stat, input.base, input.iv, input.ev, input.level, input.nature, input.evModel);
+}
+
+// One nature per boostable stat, used only to compute the best-case ceiling
+// below — any nature with the matching `plus` gives the same 1.1x, so the
+// specific choice doesn't matter. HP has no entry: nature never touches it.
+const BOOSTING_NATURE: Partial<Record<StatKey, NatureName>> = {
+    atk: 'adamant', def: 'bold', spa: 'modest', spd: 'calm', spe: 'timid',
+};
+
+export interface MaxStatInput {
+    pokemonId: number;
+    stat: StatKey;
+    base: number;
+    level: number;
+    rules: GenRules;
+}
+
+// The best this Pokemon's stat could be at maxed IVs/EVs and (where the format
+// allows a nature) a boosting one. This is the headroom endpoint for the set
+// editor's stat meter.
+export function maxAchievableStat({pokemonId, stat, base, level, rules}: MaxStatInput): number | null {
+    if (pokemonId === SHEDINJA_ID && stat === 'hp') return 1;
+    const iv = rules.ivModel === 'dv' ? 15 : 31;
+    const nature = rules.natures ? (BOOSTING_NATURE[stat] ?? 'serious') : 'serious';
+    return rawStat(stat, base, iv, rules.evCap, level, nature, rules.evModel);
+}
+
+// The per-stat base-stat ceiling actually present in the dex, queried directly
+// against the PokePedia DB rather than assumed: `SELECT max(hp), max(atk),
+// max(def), max(spatk), max(spdef), max(speed) FROM pokemon;` (pokepedia-api-v2,
+// 2026-08-07). A flat 255 would be wrong — HP's ceiling is 255, but the best
+// Attack in the dex is 190, not 255, so a flat reference would make even the
+// hardest-hitting Pokemon's bar top out around 75%.
+export const STAT_REFERENCE_BASE: StatSpread = {hp: 255, atk: 190, def: 250, spa: 194, spd: 250, spe: 200};
+
+// The bar's denominator: the best any real Pokemon's stat could be, at this
+// ruleset and level. Falls back to the raw reference base for 'effortLevel',
+// where rawStat has no formula to scale it by.
+export function referenceMaxStat(stat: StatKey, level: number, rules: GenRules): number {
+    const iv = rules.ivModel === 'dv' ? 15 : 31;
+    const nature = rules.natures ? (BOOSTING_NATURE[stat] ?? 'serious') : 'serious';
+    return rawStat(stat, STAT_REFERENCE_BASE[stat], iv, rules.evCap, level, nature, rules.evModel) ?? STAT_REFERENCE_BASE[stat];
 }
 
 // ---- Hidden Power ----
