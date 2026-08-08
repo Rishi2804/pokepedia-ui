@@ -14,6 +14,7 @@ import {versionGroupFromSlug, versionGroupToSlug} from "../../../global/labels.t
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import DeleteTeamButton from "./components/DeleteTeamButton.tsx";
 import ViewTeamButton from "./components/ViewTeamButton.tsx";
+import SetEditor from "./components/SetEditor/SetEditor.tsx";
 
 interface TeamSelectionProps {
     isCreateFlow?: boolean;
@@ -29,7 +30,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
     const [typeFilters, setTypeFilters] = useState<PokemonType[]>([])
     const [genFilters, setGenFilters] = useState<number[]>([])
     const [editMode, setEditMode] = useState<boolean>(!!isEditMode)
-    const [advancedOptions, setAdvancedOptions] = useState<boolean>(false)
+    const [selectedSlot, setSelectedSlot] = useState<number | null>(null)
 
     useEffect(() => {
         if (versionGroup) {
@@ -57,8 +58,12 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
 
     const handleAdd = (mon: TeamCandidateSummary) => {
         if (currentTeam.pokemon.length === 6) return
+        const newIndex = currentTeam.pokemon.length;
         addPokemon(mon);
+        setSelectedSlot(newIndex);
     }
+
+    const selectedMember = selectedSlot !== null ? currentTeam.pokemon[selectedSlot] : undefined;
 
     return (
         <>
@@ -81,58 +86,70 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
                     {!isCreateFlow && <DeleteTeamButton id={currentTeam.id}/>}
                 </Box>
             </Box>
-            <TeamView isCreateFlow={isCreateFlow} editMode={editMode} setEditMode={setEditMode} advancedOptions={advancedOptions} setAdvancedOptions={setAdvancedOptions}/>
-            <Paper sx={{ px: 4, py: 2, display: editMode ? 'block' : 'none' }}>
-                <Filters
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    typeFilters={typeFilters}
-                    setTypeFilters={setTypeFilters}
-                    genFilters={genFilters}
-                    setGenFilters={setGenFilters}
-                />
+            <TeamView isCreateFlow={isCreateFlow} editMode={editMode} setEditMode={setEditMode} selectedSlot={selectedSlot} setSelectedSlot={setSelectedSlot}/>
             {
-                data.map((list, index) => {
-                    return (
-                        <Box sx={{width: '100%', paddingBottom: 2}} key={index}>
-                            <Typography variant="h2">{list.listName}</Typography>
-                            <Grid container spacing={1}>
-                            {
-                                list.pokemon.map(mon => {
-                                    if (searchTerm) {
-                                        const regex = new RegExp(searchTerm, "i");
-                                        if (!regex.test(mon.name)) {
-                                            return null;
-                                        }
-                                    }
+                selectedMember ? (
+                    <SetEditor
+                        member={selectedMember}
+                        slot={selectedSlot as number}
+                        editMode={editMode}
+                        versionGroup={currentTeam.versionGroup}
+                        onClose={() => setSelectedSlot(null)}
+                    />
+                ) : (
+                    <Paper sx={{ px: 4, py: 2, display: editMode ? 'block' : 'none' }}>
+                        <Filters
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            typeFilters={typeFilters}
+                            setTypeFilters={setTypeFilters}
+                            genFilters={genFilters}
+                            setGenFilters={setGenFilters}
+                        />
+                    {
+                        data.map((list, index) => {
+                            return (
+                                <Box sx={{width: '100%', paddingBottom: 2}} key={index}>
+                                    <Typography variant="h2">{list.listName}</Typography>
+                                    <Grid container spacing={1}>
+                                    {
+                                        list.pokemon.map(mon => {
+                                            if (searchTerm) {
+                                                const regex = new RegExp(searchTerm, "i");
+                                                if (!regex.test(mon.name)) {
+                                                    return null;
+                                                }
+                                            }
 
-                                    if (typeFilters && typeFilters.length > 0) {
-                                        if (!(typeFilters.includes(mon.type1) || (mon.type2 && typeFilters.includes(mon.type2)))) {
-                                            return null;
-                                        }
-                                    }
+                                            if (typeFilters && typeFilters.length > 0) {
+                                                if (!(typeFilters.includes(mon.type1) || (mon.type2 && typeFilters.includes(mon.type2)))) {
+                                                    return null;
+                                                }
+                                            }
 
-                                    if (genFilters && genFilters.length > 0) {
-                                        if (!genFilters.includes(mon.gen)) {
-                                            return null;
-                                        }
-                                    }
+                                            if (genFilters && genFilters.length > 0) {
+                                                if (!genFilters.includes(mon.gen)) {
+                                                    return null;
+                                                }
+                                            }
 
-                                    return (
-                                        <Grid size={{xs: 1, sm: (12 / 15)}} key={mon.id}>
-                                            <Card type1={mon.type1} type2={mon.type2} onClick={() => handleAdd(mon)}>
-                                                <PokemonImg id={mon.id} />
-                                            </Card>
-                                        </Grid>
-                                    )
-                                })
-                            }
-                            </Grid>
-                        </Box>
-                    )
-                })
+                                            return (
+                                                <Grid size={{xs: 1, sm: (12 / 15)}} key={mon.id}>
+                                                    <Card type1={mon.type1} type2={mon.type2} onClick={() => handleAdd(mon)}>
+                                                        <PokemonImg id={mon.id} />
+                                                    </Card>
+                                                </Grid>
+                                            )
+                                        })
+                                    }
+                                    </Grid>
+                                </Box>
+                            )
+                        })
+                    }
+                    </Paper>
+                )
             }
-            </Paper>
         </>
     );
 };
