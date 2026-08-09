@@ -15,6 +15,7 @@ export function createTeamMember(candidate: TeamCandidateSummary, versionGroup: 
     return {
         id: candidate.id,
         name: candidate.name,
+        slug: candidate.slug,
         type1: candidate.type1,
         type2: candidate.type2,
         gen: candidate.gen,

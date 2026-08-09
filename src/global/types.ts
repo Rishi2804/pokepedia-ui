@@ -180,6 +180,7 @@ export type StatSpread = Record<StatKey, number>;
 export interface TeamCandidateSummary {
     id: number;
     name: string;
+    slug: string;
     type1: PokemonType;
     type2: PokemonType | null;
     gen: number;
@@ -204,6 +205,7 @@ export interface PokemonTeamMember {
     // Identity — display-only, never sent to the Showdown engine.
     id: number;
     name: string;
+    slug: string;
     type1: PokemonType;
     type2: PokemonType | null;
     gen: number;
