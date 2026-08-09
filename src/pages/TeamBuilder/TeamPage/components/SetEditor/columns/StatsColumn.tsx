@@ -44,7 +44,11 @@ const StatsColumn: FC<StatsColumnProps> = ({slot, member, candidate, rules, edit
     const remaining = rules.evTotalCap !== null ? rules.evTotalCap - evTotal : null;
 
     const setEv = (stat: StatKey, value: number) => {
-        const clamped = Math.max(0, Math.min(rules.evCap, value));
+        // With a total cap, the most this stat can take is whatever's left in
+        // the budget once its own current value is added back — otherwise
+        // spending past the cap on other stats just drove "Remaining" negative.
+        const maxForStat = remaining !== null ? Math.min(rules.evCap, remaining + member.evs[stat]) : rules.evCap;
+        const clamped = Math.max(0, Math.min(maxForStat, value));
         update({evs: {...member.evs, [stat]: clamped}});
     };
 

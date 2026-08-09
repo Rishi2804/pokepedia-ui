@@ -52,6 +52,7 @@ export interface WireTeamMove {
 export interface WireTeamCandidateSummary {
     id: number;
     name: string;
+    slug: string;
     gen: number;
     type1: string;
     type2: string | null;
@@ -103,6 +104,7 @@ export function toTeamCandidateSummary(c: WireTeamCandidateSummary): TeamCandida
     return {
         id: c.id,
         name: c.name,
+        slug: c.slug,
         gen: c.gen,
         genderRate: c.genderRate,
         type1: asEnum(PokemonType, c.type1, 'type1'),
