@@ -1,7 +1,7 @@
 import {PokemonType} from "../../../global/enums.ts";
 import type {NatureName} from "../../../global/data/natures.ts";
 import {NATURES} from "../../../global/data/natures.ts";
-import type {StatKey, StatSpread} from "../../../global/types.ts";
+import type {StatKey, StatSpread, TeamMove} from "../../../global/types.ts";
 import type {EvModel, GenRules, IvModel} from "../genRules.ts";
 
 // ---- Gen 3+ final stat formulas ----
@@ -180,6 +180,25 @@ export function hiddenPowerOptions(ivModel: IvModel): PokemonType[] {
     return ivModel === 'dv'
         ? HIDDEN_POWER_TYPES.filter(t => t !== PokemonType.DARK)
         : HIDDEN_POWER_TYPES;
+}
+
+// Verified against the live API (GET /api/v1/move/hidden-power -> id 237):
+// a single move id, the same shape as Tera Blast's 851.
+export const HIDDEN_POWER_MOVE_ID = 237;
+
+export function hiddenPowerTypeFor(ivs: StatSpread, ivModel: IvModel): PokemonType {
+    return ivModel === 'dv' ? hiddenPowerTypeGen2(ivs) : hiddenPowerType(ivs);
+}
+
+// Keeps a selected Hidden Power move's type in sync with the current IVs, the
+// same way MemberCard/DetailsColumn already keep Tera Blast's type in sync
+// with teraType. Called wherever IVs change, and when Hidden Power is newly
+// picked as a move.
+export function syncHiddenPowerMoveType(
+    moves: (TeamMove | null)[], ivs: StatSpread, ivModel: IvModel,
+): (TeamMove | null)[] {
+    const type = hiddenPowerTypeFor(ivs, ivModel);
+    return moves.map(move => (move?.id === HIDDEN_POWER_MOVE_ID ? {...move, type} : move));
 }
 
 // Picking a Hidden Power type edits the IVs/DVs to match, the way Showdown's

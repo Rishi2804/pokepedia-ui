@@ -14,7 +14,7 @@ import {NATURES, NatureName} from "../../../../../../global/data/natures.ts";
 import {useTeamStore} from "../../../../../../store/teamStore.ts";
 import {
     computeFinalStat, hiddenPowerOptions, hiddenPowerType, hiddenPowerTypeGen2,
-    hpDvFromDvs, ivsForHiddenPower, natureMultiplier, referenceMaxStat,
+    hpDvFromDvs, ivsForHiddenPower, natureMultiplier, referenceMaxStat, syncHiddenPowerMoveType,
 } from "../../../../utils/stats.ts";
 
 const STAT_ORDER: StatKey[] = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
@@ -48,11 +48,18 @@ const StatsColumn: FC<StatsColumnProps> = ({slot, member, candidate, rules, edit
         update({evs: {...member.evs, [stat]: clamped}});
     };
 
+    // Hidden Power's move type is derived from IVs, not stored independently
+    // (the same relationship Tera Blast has with teraType), so every path that
+    // changes ivs also needs to re-sync it onto any selected Hidden Power move.
+    const updateIvs = (ivs: StatSpread) => {
+        update({ivs, moves: syncHiddenPowerMoveType(member.moves, ivs, rules.ivModel)});
+    };
+
     const setIv = (stat: StatKey, value: number) => {
         const clamped = Math.max(0, Math.min(ivCap, value));
         let ivs = {...member.ivs, [stat]: clamped};
         if (isDvModel && stat !== 'hp') ivs = {...ivs, hp: hpDvFromDvs(ivs)};
-        update({ivs});
+        updateIvs(ivs);
     };
 
     const applyIvPreset = (preset: IvPreset) => {
@@ -60,7 +67,7 @@ const StatsColumn: FC<StatsColumnProps> = ({slot, member, candidate, rules, edit
         if (preset === 'noAtk' || preset === 'noAtkNoSpe') ivs.atk = 0;
         if (preset === 'noSpe' || preset === 'noAtkNoSpe') ivs.spe = 0;
         if (isDvModel) ivs.hp = hpDvFromDvs(ivs);
-        update({ivs});
+        updateIvs(ivs);
     };
 
     const hpOptions = rules.hiddenPower ? hiddenPowerOptions(rules.ivModel) : [];
@@ -192,7 +199,7 @@ const StatsColumn: FC<StatsColumnProps> = ({slot, member, candidate, rules, edit
                         <Select
                             variant="outlined"
                             value={currentHpType ?? ''}
-                            onChange={e => update({ivs: ivsForHiddenPower(e.target.value as PokemonType, rules.ivModel)})}
+                            onChange={e => updateIvs(ivsForHiddenPower(e.target.value as PokemonType, rules.ivModel))}
                             input={<AbilityInput/>}
                             disabled={!editMode}
                         >

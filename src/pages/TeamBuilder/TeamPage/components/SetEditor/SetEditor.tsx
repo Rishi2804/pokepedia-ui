@@ -62,7 +62,7 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, on
                     <DetailsColumn slot={slot} member={member} candidate={candidate} rules={rules} editMode={editMode} itemGen={itemGen}/>
                 </Grid>
                 <Grid size={{xs: 12, sm: 6}}>
-                    <MovesColumn slot={slot} member={member} candidate={candidate} editMode={editMode}/>
+                    <MovesColumn slot={slot} member={member} candidate={candidate} rules={rules} editMode={editMode}/>
                 </Grid>
                 <Grid size={{xs: 12}}>
                     <StatsColumn slot={slot} member={member} candidate={candidate} rules={rules} editMode={editMode}/>
