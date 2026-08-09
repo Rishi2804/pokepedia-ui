@@ -43,6 +43,38 @@ export function natureMultiplier(nature: NatureName, stat: StatKey): number {
     return 1;
 }
 
+// ---- Unit conversion for Showdown's paste format ----
+// Showdown's exportSet/parseExportedTeamLine (sim/teams.ts) has no gen branching
+// at all: EVs/IVs are always written and read on the modern 0-252/0-31 scale,
+// for every generation.
+//
+// DV<->IV is an exact 2x relationship, verified against Showdown's own decode
+// (team-validator.ts: `atkDV = Math.floor(ivs.atk / 2)`) and its Hidden-Power-DV
+// override, which literally writes `HPdvs[stat] * 2`. Round-trips exactly.
+//
+// Stat Exp<->EV has no such bijection. There is deliberately no separate "AVs"
+// field anywhere in Showdown's source (confirmed by grep) — LGPE Awakening
+// Values reuse `evs` directly, unconverted, which is also how rawStat above
+// already treats them. Stat Exp is the one real mismatch: both formulas'
+// contribution terms (`floor(sqrt(x)/4)` vs `floor(x/4)`) converge to the same
+// ceiling (`sqrt(65535) ≈ 256 ≈` the 252 cap), so `ev = round(sqrt(statExp))`
+// preserves the competitive *effect*, not the raw number.
+export function dvToShowdownIv(dv: number): number {
+    return dv * 2;
+}
+
+export function showdownIvToDv(iv: number): number {
+    return Math.floor(iv / 2);
+}
+
+export function statExpToShowdownEv(statExp: number): number {
+    return Math.min(252, Math.round(Math.sqrt(statExp)));
+}
+
+export function showdownEvToStatExp(ev: number): number {
+    return Math.min(65535, ev * ev);
+}
+
 // ---- Live stat computation, shared by the set editor's numbers and its bars ----
 
 // 'effortLevel' (Legends Arceus) has no verified formula in our reference source,
