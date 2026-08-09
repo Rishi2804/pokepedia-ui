@@ -19,6 +19,7 @@ interface TeamStore {
     removedPokemonCache: Map<number, PokemonTeamMember>;
     changeTeamName: (name: string) => void;
     addPokemon: (candidate: TeamCandidateSummary) => void;
+    duplicatePokemon: (index: number) => void;
     removePokemon: (index: number) => void;
     editPokemon: (index: number, mon: PokemonTeamMember) => void;
     setCurrentTeam: (team: PokemonTeam) => void;
@@ -50,6 +51,18 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
                 pokemon: [...state.currentTeam.pokemon, mon]
             }
         });
+    }),
+
+    duplicatePokemon: (index: number) => set((state) => {
+        if (!state.currentTeam) return state;
+        const mon = state.currentTeam.pokemon[index];
+        if (!mon || state.currentTeam.pokemon.length >= 6) return state;
+        return {
+            currentTeam: {
+                ...state.currentTeam,
+                pokemon: [...state.currentTeam.pokemon, {...mon}],
+            },
+        };
     }),
 
     removePokemon: (index: number) => set((state) => {
