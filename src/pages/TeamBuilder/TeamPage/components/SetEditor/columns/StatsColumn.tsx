@@ -9,13 +9,12 @@ import StatMeter from "../StatMeter.tsx";
 import {PokemonTeamMember, StatKey, StatSpread, TeamCandidate} from "../../../../../../global/types.ts";
 import {PokemonType} from "../../../../../../global/enums.ts";
 import {COLORS} from "../../../../../../theme/styles/colors.ts";
-import {TypeToCardColor} from "../../../../../../global/utils.ts";
 import {GenRules} from "../../../../genRules.ts";
 import {NATURES, NatureName} from "../../../../../../global/data/natures.ts";
 import {useTeamStore} from "../../../../../../store/teamStore.ts";
 import {
     computeFinalStat, hiddenPowerOptions, hiddenPowerType, hiddenPowerTypeGen2,
-    hpDvFromDvs, ivsForHiddenPower, maxAchievableStat, natureMultiplier, referenceMaxStat,
+    hpDvFromDvs, ivsForHiddenPower, natureMultiplier, referenceMaxStat,
 } from "../../../../utils/stats.ts";
 
 const STAT_ORDER: StatKey[] = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
@@ -92,7 +91,6 @@ const StatsColumn: FC<StatsColumnProps> = ({slot, member, candidate, rules, edit
                     iv: member.ivs[stat], ev: member.evs[stat],
                     level: member.level, nature: member.nature, evModel: rules.evModel,
                 });
-                const maxAch = maxAchievableStat({pokemonId: member.id, stat, base, level: member.level, rules});
                 const refMax = referenceMaxStat(stat, member.level, rules);
 
                 return (
@@ -105,7 +103,7 @@ const StatsColumn: FC<StatsColumnProps> = ({slot, member, candidate, rules, edit
                             {mod < 1 && <ArrowDropDownIcon sx={{color: COLORS.RED}} titleAccess="Hindered by nature"/>}
                         </Box>
                         <Typography sx={{width: W.base, flexShrink: 0}}>{base}</Typography>
-                        <StatMeter type1={candidate.type1} type2={candidate.type2} base={base} final={value} maxAchievable={maxAch} referenceMax={refMax}/>
+                        <StatMeter type1={candidate.type1} type2={candidate.type2} base={base} final={value} referenceMax={refMax}/>
                         <TextField
                             size="small"
                             type="number"
@@ -139,17 +137,6 @@ const StatsColumn: FC<StatsColumnProps> = ({slot, member, candidate, rules, edit
                     </Box>
                 );
             })}
-
-            <Box sx={{display: 'flex', alignItems: 'center', gap: 2, marginBottom: 1}}>
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 0.5}}>
-                    <Box sx={{width: 14, height: 14, borderRadius: '3px', backgroundColor: TypeToCardColor[candidate.type1]}}/>
-                    <Typography variant="caption">Current stat</Typography>
-                </Box>
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 0.5}}>
-                    <Box sx={{width: 14, height: 14, borderRadius: '3px', backgroundColor: TypeToCardColor[candidate.type1], opacity: 0.35}}/>
-                    <Typography variant="caption">Potential with max investment</Typography>
-                </Box>
-            </Box>
 
             {remaining !== null && (
                 <Typography variant="body2" sx={{marginTop: 2, marginBottom: 1}}>

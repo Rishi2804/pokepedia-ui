@@ -76,30 +76,13 @@ export function computeFinalStat(input: StatInput): number | null {
     return rawStat(input.stat, input.base, input.iv, input.ev, input.level, input.nature, input.evModel);
 }
 
-// One nature per boostable stat, used only to compute the best-case ceiling
-// below — any nature with the matching `plus` gives the same 1.1x, so the
-// specific choice doesn't matter. HP has no entry: nature never touches it.
+// One nature per boostable stat, used only to compute referenceMaxStat's
+// best-case ceiling below — any nature with the matching `plus` gives the
+// same 1.1x, so the specific choice doesn't matter. HP has no entry: nature
+// never touches it.
 const BOOSTING_NATURE: Partial<Record<StatKey, NatureName>> = {
     atk: 'adamant', def: 'bold', spa: 'modest', spd: 'calm', spe: 'timid',
 };
-
-export interface MaxStatInput {
-    pokemonId: number;
-    stat: StatKey;
-    base: number;
-    level: number;
-    rules: GenRules;
-}
-
-// The best this Pokemon's stat could be at maxed IVs/EVs and (where the format
-// allows a nature) a boosting one. This is the headroom endpoint for the set
-// editor's stat meter.
-export function maxAchievableStat({pokemonId, stat, base, level, rules}: MaxStatInput): number | null {
-    if (pokemonId === SHEDINJA_ID && stat === 'hp') return 1;
-    const iv = rules.ivModel === 'dv' ? 15 : 31;
-    const nature = rules.natures ? (BOOSTING_NATURE[stat] ?? 'serious') : 'serious';
-    return rawStat(stat, base, iv, rules.evCap, level, nature, rules.evModel);
-}
 
 // The per-stat base-stat ceiling actually present in the dex, queried directly
 // against the PokePedia DB rather than assumed: `SELECT max(hp), max(atk),
