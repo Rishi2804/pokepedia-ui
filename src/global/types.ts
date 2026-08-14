@@ -1,4 +1,5 @@
 import {Game, LearnMethod, MoveClass, PokedexRegion, PokemonType, VersionGroup} from "./enums.ts";
+import type {NatureName} from "./data/natures.ts";
 
 interface IDNamePair {
     id: number;
@@ -171,38 +172,65 @@ export interface TeamMove {
     moveClass: MoveClass;
 }
 
-export interface TeamCandidate {
+// Showdown's stat keys, used for base stats, EVs, and IVs alike so the team
+// builder's model maps onto Showdown's PokemonSet without translation.
+export type StatKey = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
+export type StatSpread = Record<StatKey, number>;
+
+export interface TeamCandidateSummary {
     id: number;
     name: string;
+    slug: string;
     type1: PokemonType;
     type2: PokemonType | null;
     gen: number;
     genderRate: number;
+}
+
+export interface TeamCandidate extends TeamCandidateSummary {
     abilities: {
         id: number;
         name: string;
     }[];
     moves: TeamMove[];
+    baseStats: StatSpread;
 }
 
 export interface CandidatesList {
     listName: string;
-    pokemon: TeamCandidate[]
+    pokemon: TeamCandidateSummary[]
 }
 
 export interface PokemonTeamMember {
+    // Identity — display-only, never sent to the Showdown engine.
     id: number;
     name: string;
+    slug: string;
+    type1: PokemonType;
+    type2: PokemonType | null;
+    gen: number;
+
+    // Showdown PokemonSet fields (sim/teams.ts), so this maps onto the engine
+    // without a lossy translation step. moveCandidates/abilityCandidates are
+    // deliberately absent — the set editor fetches those from
+    // useTeamCandidateDetails(versionSlug, id) instead of caching them per team.
+    nickname: string | null;
     shiny: boolean;
     gender: 'male' | 'female' | 'genderless';
     genderLock: boolean;
-    type1: PokemonType;
-    type2: PokemonType | null;
     teraType?: PokemonType;
-    ability: IDNamePair;
+    ability: IDNamePair | null;
     moves: (TeamMove | null)[];
-    moveCandidates: TeamMove[];
-    abilityCandidates: IDNamePair[];
+    level: number;
+    nature: NatureName;
+    item: string | null;
+    evs: StatSpread;
+    ivs: StatSpread;
+    happiness: number;
+    pokeball: string;
+    hpType?: PokemonType;
+    dynamaxLevel: number;
+    gigantamax: boolean;
 }
 
 export interface PokemonTeam {

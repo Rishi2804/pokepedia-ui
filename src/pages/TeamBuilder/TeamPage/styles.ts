@@ -8,7 +8,8 @@ import InputLabel from "@mui/material/InputLabel";
 interface CardProps {
     type1: PokemonType | null,
     type2: PokemonType | null,
-    member?: boolean
+    member?: boolean,
+    selected?: boolean
 }
 
 export const TeamNameInput = styled(TextField)(({ theme }) => ({
@@ -26,7 +27,7 @@ export const TeamNameInput = styled(TextField)(({ theme }) => ({
     }
 }))
 
-export const Card = styled(Paper)<CardProps>(({ type1, type2, member }) => ({
+export const Card = styled(Paper)<CardProps>(({ theme, type1, type2, member, selected }) => ({
     borderColor: type2 ? TypeToCardBorder[type2] : type1 ? TypeToCardBorder[type1] : "#67A090",
     backgroundColor: type1 ? TypeToCardColor[type1] : "#67A090",
     borderWidth: member ? 5 : 3,
@@ -36,6 +37,8 @@ export const Card = styled(Paper)<CardProps>(({ type1, type2, member }) => ({
     padding: 1,
     flexDirection: "column",
     textAlign: "center",
+    outline: selected ? `3px solid ${theme.palette.primaryBorder}` : "none",
+    outlineOffset: 2,
     '&:hover': {
         cursor: "pointer",
     }

@@ -12,11 +12,11 @@ interface TeamViewProps {
     isCreateFlow?: boolean;
     editMode: boolean;
     setEditMode: (mode: boolean) => void;
-    advancedOptions: boolean;
-    setAdvancedOptions: (mode: boolean) => void;
+    selectedSlot: number | null;
+    setSelectedSlot: (slot: number | null) => void;
 }
 
-const TeamView: FC<TeamViewProps> = ({isCreateFlow, editMode, setEditMode, advancedOptions, setAdvancedOptions}) => {
+const TeamView: FC<TeamViewProps> = ({isCreateFlow, editMode, setEditMode, selectedSlot, setSelectedSlot}) => {
     const { currentTeam } = useTeamStore();
     const [showAnalysis, setShowAnalysis] = useState<boolean>(false)
 
@@ -29,7 +29,7 @@ const TeamView: FC<TeamViewProps> = ({isCreateFlow, editMode, setEditMode, advan
                     [...Array(6)].map((_, i) => {
                         if (currentTeam.pokemon.length >= i + 1) {
                             return (
-                                <MemberCard i={i} editMode={editMode} advancedOptions={advancedOptions}/>
+                                <MemberCard key={i} i={i} editMode={editMode} selectedSlot={selectedSlot} setSelectedSlot={setSelectedSlot}/>
                             )
                         }
 
@@ -50,8 +50,6 @@ const TeamView: FC<TeamViewProps> = ({isCreateFlow, editMode, setEditMode, advan
                 isCreateFlow={isCreateFlow}
                 editMode={editMode}
                 setEditMode={setEditMode}
-                advancedOptions={advancedOptions}
-                setAdvancedOptions={setAdvancedOptions}
                 showAnalysis={showAnalysis}
                 setShowAnalysis={setShowAnalysis}
             />
@@ -59,7 +57,7 @@ const TeamView: FC<TeamViewProps> = ({isCreateFlow, editMode, setEditMode, advan
                 showAnalysis && (
                     <>
                         <TypeDefensesTable />
-                        {advancedOptions && <TypeCoverageTable />}
+                        <TypeCoverageTable />
                     </>
                 )
             }
