@@ -121,6 +121,18 @@ export interface RequestView {
     };
 }
 
+/** Derived server-side from the raw protocol event (see the server's
+ * view.ts classifyLine), not sniffed from the formatted English text - the
+ * text alone doesn't reliably say what kind of event produced it. */
+export type LogKind =
+    | 'turn' | 'move' | 'damage' | 'heal' | 'faint' | 'status'
+    | 'boost' | 'weather' | 'switch' | 'ability' | 'item' | 'win' | 'system';
+
+export interface LogEntry {
+    text: string;
+    kind: LogKind;
+}
+
 export interface BattleView {
     seat: SideID;
     phase: BattlePhase;
@@ -187,7 +199,7 @@ export type ServerMessage =
     | { t: 'created'; code: string; seat: SideID; seatToken: string; format: string }
     | { t: 'joined'; code: string; seat: SideID; seatToken: string; format: string }
     | { t: 'roomState'; phase: RoomPhase; players: Partial<Record<SideID, string>> }
-    | { t: 'update'; log: string[]; view: BattleView }
+    | { t: 'update'; log: LogEntry[]; view: BattleView }
     /** Raw per-seat sim protocol lines, gated behind a server-side dev flag.
      * Not part of the contract the UI renders against. */
     | { t: 'debug'; lines: string[] }

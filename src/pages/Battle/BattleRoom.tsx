@@ -1,53 +1,33 @@
-import {Alert, Box, Button, Chip, LinearProgress, Typography} from "@mui/material";
-import {FC, useCallback, useEffect, useState} from "react";
+import {Alert, Box, Button, Chip, LinearProgress, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
+import {FC} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import MetaData from "../../components/MetaData/MetaData.tsx";
-import {BATTLE_WS_URL} from "../../services/battle/constants.ts";
-import type {BattleView, RoomPhase, ServerMessage, SideID} from "../../services/battle/protocol.ts";
-import {clearBattleSession, loadBattleSession} from "../../services/battle/session.ts";
-import {useBattleSocket} from "../../services/battle/useBattleSocket.ts";
+import type {LogSpeed} from "../../services/battle/useBattleView.ts";
+import {useBattleView} from "../../services/battle/useBattleView.ts";
+import BattleLog from "./components/BattleLog/BattleLog.tsx";
+import Controls from "./components/Controls/Controls.tsx";
+import TeamPreview from "./components/TeamPreview/TeamPreview.tsx";
 import {FormPaper} from "./styles.ts";
 
 /**
- * Route /battle/:code. Owns the connection + resume handshake and renders a
- * minimal status view - enough to prove the room/team-preview pipeline
- * works end to end (Phase 3's scope). The themed battle scene that replaces
- * this rendering, driven by the same BattleView, is Phase 4/5.
+ * Route /battle/:code. All connection/resume/reveal state lives in
+ * useBattleView - this switches on view.phase and hands the current
+ * request off to whichever control surface owns it (TeamPreview for
+ * team preview, Controls for move/switch). Still unstyled - the themed
+ * battle scene driven by the same BattleView is Phase 5.
  */
 const BattleRoom: FC = () => {
     const {code} = useParams<{ code: string }>();
     const navigate = useNavigate();
-    const [seatToken] = useState(() => loadBattleSession());
-    const [roomState, setRoomState] = useState<{ phase: RoomPhase; players: Partial<Record<SideID, string>> } | null>(null);
-    const [view, setView] = useState<BattleView | null>(null);
-    const [log, setLog] = useState<string[]>([]);
-    const [error, setError] = useState<string | null>(null);
+    const {
+        status, sessionValid, roomState, view, log, isRevealing, error, dismissError,
+        canChoose, sendChoice, speed, setSpeed, skipReveal, leave,
+    } = useBattleView(code);
 
-    const sessionValid = !!code && seatToken?.code === code;
-
-    const handleMessage = useCallback((message: ServerMessage) => {
-        if (message.t === 'roomState') {
-            setRoomState({phase: message.phase, players: message.players});
-        } else if (message.t === 'update') {
-            setView(message.view);
-            setLog(prev => [...prev, ...message.log]);
-        } else if (message.t === 'end') {
-            setView(message.view);
-        } else if (message.t === 'error') {
-            setError(`${message.code}: ${message.message}`);
-            if (message.code === 'invalid_seat_token' || message.code === 'room_not_found') {
-                clearBattleSession();
-            }
-        }
-    }, []);
-
-    const {status, send} = useBattleSocket(sessionValid ? BATTLE_WS_URL : null, handleMessage);
-
-    useEffect(() => {
-        if (status === 'open' && sessionValid && seatToken && code) {
-            send({t: 'resume', code, seatToken: seatToken.seatToken});
-        }
-    }, [status, sessionValid, seatToken, code, send]);
+    const handleLeave = () => {
+        leave();
+        navigate('/battle');
+    };
 
     if (!sessionValid) {
         return (
@@ -75,9 +55,13 @@ const BattleRoom: FC = () => {
 
             {status === 'connecting' && <LinearProgress sx={{marginBottom: 3}}/>}
 
-            {error && <FormPaper sx={{marginBottom: 3}}><Alert severity="error">{error}</Alert></FormPaper>}
+            {error && (
+                <FormPaper sx={{marginBottom: 3}}>
+                    <Alert severity="error" onClose={dismissError}>{error.code}: {error.message}</Alert>
+                </FormPaper>
+            )}
 
-            {roomState && (
+            {roomState && !view && (
                 <FormPaper sx={{marginBottom: 3}}>
                     <Typography variant="h4" sx={{marginBottom: 1}}>Room phase: {roomState.phase}</Typography>
                     <Box sx={{display: 'flex', gap: 1}}>
@@ -88,35 +72,59 @@ const BattleRoom: FC = () => {
             )}
 
             {view && (
-                <FormPaper sx={{marginBottom: 3}}>
-                    <Typography variant="h4" sx={{marginBottom: 1}}>
-                        Battle phase: {view.phase} — Turn {view.turn} — {view.format}
-                    </Typography>
-                    <Typography variant="body1">
-                        {view.me.name}'s team: {view.me.team.map(p => `${p.name} (${p.hpPercent}%)`).join(', ')}
-                    </Typography>
-                    <Typography variant="body1">
-                        {view.foe.name || 'Opponent'}'s team: {view.foe.team.map(p => `${p.name} (${p.hpPercent}%)`).join(', ') || 'not yet revealed'}
-                    </Typography>
-                    {view.request && (
-                        <Typography variant="body2" color="text.secondary" sx={{marginTop: 1}}>
-                            Waiting on your choice: {view.request.kind}
+                <>
+                    <FormPaper sx={{marginBottom: 3}}>
+                        <Typography variant="h4" sx={{marginBottom: 1}}>
+                            {view.phase === 'teampreview' ? 'Team Preview' : `Turn ${view.turn}`} — {view.format}
                         </Typography>
-                    )}
-                    {view.winner && (
-                        <Typography variant="h5" sx={{marginTop: 2}}>
-                            {view.winner === 'tie' ? "It's a tie!" : view.winner === 'me' ? 'You won!' : 'You lost.'}
+                        <Typography variant="body1">
+                            {view.me.name}'s team: {view.me.team.map(p => `${p.name} (${p.hpPercent}%)`).join(', ')}
                         </Typography>
+                        <Typography variant="body1">
+                            {view.foe.name || 'Opponent'}'s team: {view.foe.team.map(p => `${p.name} (${p.hpPercent}%)`).join(', ') || 'not yet revealed'}
+                        </Typography>
+                        {view.winner && (
+                            <Typography variant="h5" sx={{marginTop: 2}}>
+                                {view.winner === 'tie' ? "It's a tie!" : view.winner === 'me' ? 'You won!' : 'You lost.'}
+                            </Typography>
+                        )}
+                    </FormPaper>
+
+                    {view.phase === 'teampreview' && view.request?.kind === 'teampreview' && (
+                        <FormPaper sx={{marginBottom: 3}}>
+                            <TeamPreview team={view.me.team} teamPreviewSize={view.request.teamPreviewSize} onChoose={sendChoice}/>
+                        </FormPaper>
                     )}
-                </FormPaper>
+
+                    {view.phase === 'battle' && view.request && (
+                        <FormPaper sx={{marginBottom: 3}}>
+                            <Controls request={view.request} disabled={!canChoose} onChoose={sendChoice}/>
+                        </FormPaper>
+                    )}
+
+                    {view.phase === 'ended' && (
+                        <FormPaper sx={{marginBottom: 3}}>
+                            <Button variant="contained" onClick={handleLeave}>Leave</Button>
+                        </FormPaper>
+                    )}
+                </>
             )}
 
             {log.length > 0 && (
                 <FormPaper>
-                    <Typography variant="h4" sx={{marginBottom: 1}}>Log</Typography>
-                    <Box sx={{maxHeight: 300, overflowY: 'auto', fontFamily: 'monospace', fontSize: 13}}>
-                        {log.map((line, i) => <div key={i}>{line}</div>)}
+                    <Box sx={{display: 'flex', justifyContent: 'flex-end', marginBottom: 1}}>
+                        <ToggleButtonGroup
+                            size="small"
+                            value={speed}
+                            exclusive
+                            onChange={(_, next) => next && setSpeed(next as LogSpeed)}
+                        >
+                            <ToggleButton value="instant">Instant</ToggleButton>
+                            <ToggleButton value="fast">Fast</ToggleButton>
+                            <ToggleButton value="normal">Normal</ToggleButton>
+                        </ToggleButtonGroup>
                     </Box>
+                    <BattleLog entries={log} isRevealing={isRevealing} onSkip={skipReveal}/>
                 </FormPaper>
             )}
         </Box>
