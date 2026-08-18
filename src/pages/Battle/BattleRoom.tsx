@@ -4,8 +4,10 @@ import {useNavigate, useParams} from "react-router-dom";
 import MetaData from "../../components/MetaData/MetaData.tsx";
 import type {LogSpeed} from "../../services/battle/useBattleView.ts";
 import {useBattleView} from "../../services/battle/useBattleView.ts";
+import BattleField from "./components/BattleField/BattleField.tsx";
 import BattleLog from "./components/BattleLog/BattleLog.tsx";
 import Controls from "./components/Controls/Controls.tsx";
+import SideBar from "./components/SideBar/SideBar.tsx";
 import TeamPreview from "./components/TeamPreview/TeamPreview.tsx";
 import {FormPaper} from "./styles.ts";
 
@@ -13,8 +15,7 @@ import {FormPaper} from "./styles.ts";
  * Route /battle/:code. All connection/resume/reveal state lives in
  * useBattleView - this switches on view.phase and hands the current
  * request off to whichever control surface owns it (TeamPreview for
- * team preview, Controls for move/switch). Still unstyled - the themed
- * battle scene driven by the same BattleView is Phase 5.
+ * team preview, Controls for move/switch).
  */
 const BattleRoom: FC = () => {
     const {code} = useParams<{ code: string }>();
@@ -73,18 +74,12 @@ const BattleRoom: FC = () => {
 
             {view && (
                 <>
-                    <FormPaper sx={{marginBottom: 3}}>
-                        <Typography variant="h4" sx={{marginBottom: 1}}>
-                            {view.phase === 'teampreview' ? 'Team Preview' : `Turn ${view.turn}`} — {view.format}
-                        </Typography>
-                        <Typography variant="body1">
-                            {view.me.name}'s team: {view.me.team.map(p => `${p.name} (${p.hpPercent}%)`).join(', ')}
-                        </Typography>
-                        <Typography variant="body1">
-                            {view.foe.name || 'Opponent'}'s team: {view.foe.team.map(p => `${p.name} (${p.hpPercent}%)`).join(', ') || 'not yet revealed'}
+                    <FormPaper sx={{marginBottom: 3, textAlign: 'center'}}>
+                        <Typography variant="h4">
+                            {view.phase === 'teampreview' ? 'Team Preview' : view.format}
                         </Typography>
                         {view.winner && (
-                            <Typography variant="h5" sx={{marginTop: 2}}>
+                            <Typography variant="h5" sx={{marginTop: 1}}>
                                 {view.winner === 'tie' ? "It's a tie!" : view.winner === 'me' ? 'You won!' : 'You lost.'}
                             </Typography>
                         )}
@@ -93,6 +88,24 @@ const BattleRoom: FC = () => {
                     {view.phase === 'teampreview' && view.request?.kind === 'teampreview' && (
                         <FormPaper sx={{marginBottom: 3}}>
                             <TeamPreview team={view.me.team} teamPreviewSize={view.request.teamPreviewSize} onChoose={sendChoice}/>
+                        </FormPaper>
+                    )}
+
+                    {view.phase !== 'teampreview' && (
+                        <FormPaper sx={{marginBottom: 3}}>
+                            <Typography variant="body2" color="text.secondary" sx={{marginBottom: 0.5}}>
+                                {view.foe.name || 'Opponent'}
+                            </Typography>
+                            <SideBar team={view.foe.team} teamSize={view.foe.teamSize} conditions={view.foe.conditions}/>
+
+                            <Box sx={{marginY: 1.5}}>
+                                <BattleField field={view.field} me={view.me} foe={view.foe} turn={view.turn}/>
+                            </Box>
+
+                            <Typography variant="body2" color="text.secondary" sx={{marginBottom: 0.5}}>
+                                {view.me.name}
+                            </Typography>
+                            <SideBar team={view.me.team} teamSize={view.me.teamSize} conditions={view.me.conditions}/>
                         </FormPaper>
                     )}
 

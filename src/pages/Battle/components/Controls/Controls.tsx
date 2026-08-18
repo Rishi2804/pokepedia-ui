@@ -1,7 +1,12 @@
 import {Box, Button, Typography} from "@mui/material";
 import {FC, useState} from "react";
+import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
+import {TypeToCardBorder, TypeToCardColor} from "../../../../global/utils.ts";
 import type {Choice, RequestView} from "../../../../services/battle/protocol.ts";
-import {ButtonGrid} from "./styles.ts";
+import MoveClassIcon from "../../../../components/MoveClassIcon/MoveClassIcon.tsx";
+import TypeIcon from "../../../../components/TypeIcon/TypeIcon.tsx";
+import {toMoveClass, toPokemonType} from "../typeHelpers.ts";
+import {ButtonGrid, MoveButton, SwitchButton, SwitchThumb} from "./styles.ts";
 
 interface SpecialFlags {
     tera?: boolean;
@@ -66,16 +71,25 @@ const Controls: FC<ControlsProps> = ({request, disabled, onChoose}) => {
                         </Box>
                     )}
                     <ButtonGrid>
-                        {request.moves.map(move => (
-                            <Button
-                                key={move.index}
-                                variant="outlined"
-                                disabled={disabled || move.disabled}
-                                onClick={() => onChoose({kind: 'move', index: move.index, ...special})}
-                            >
-                                {move.name} ({move.pp}/{move.maxpp})
-                            </Button>
-                        ))}
+                        {request.moves.map(move => {
+                            const pokemonType = toPokemonType(move.type);
+                            return (
+                                <MoveButton
+                                    key={move.index}
+                                    typeColor={TypeToCardColor[pokemonType]}
+                                    borderColor={TypeToCardBorder[pokemonType]}
+                                    disabled={disabled || move.disabled}
+                                    onClick={() => onChoose({kind: 'move', index: move.index, ...special})}
+                                >
+                                    <Box sx={{display: 'flex', alignItems: 'center', gap: 0.75, width: '100%'}}>
+                                        <TypeIcon type={pokemonType} variant="circular" size={18}/>
+                                        <MoveClassIcon mClass={toMoveClass(move.category)} size={16}/>
+                                        <Typography variant="body2" sx={{fontWeight: 700, flex: 1}}>{move.name}</Typography>
+                                    </Box>
+                                    <Typography variant="caption" sx={{opacity: 0.85}}>{move.pp}/{move.maxpp} PP</Typography>
+                                </MoveButton>
+                            );
+                        })}
                     </ButtonGrid>
                 </Box>
             )}
@@ -84,14 +98,18 @@ const Controls: FC<ControlsProps> = ({request, disabled, onChoose}) => {
                     <Typography variant="h5" sx={{marginBottom: 1}}>{request.forceSwitch ? 'Switch in' : 'Switch'}</Typography>
                     <ButtonGrid>
                         {request.canSwitch.map(mon => (
-                            <Button
+                            <SwitchButton
                                 key={mon.index}
-                                variant="outlined"
                                 disabled={disabled || mon.fainted || mon.active}
                                 onClick={() => onChoose({kind: 'switch', index: mon.index})}
                             >
-                                {mon.name}{mon.fainted ? ' (fainted)' : mon.active ? ' (active)' : ''}
-                            </Button>
+                                <SwitchThumb>
+                                    {mon.spriteId !== null && <PokemonImg id={mon.spriteId}/>}
+                                </SwitchThumb>
+                                <Typography variant="body2">
+                                    {mon.name}{mon.fainted ? ' (fainted)' : mon.active ? ' (active)' : ''}
+                                </Typography>
+                            </SwitchButton>
                         ))}
                     </ButtonGrid>
                 </Box>
