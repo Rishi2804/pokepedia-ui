@@ -6,7 +6,7 @@ import {versionGroupLabel} from "../../global/labels.ts";
 import {getGenRules} from "../TeamBuilder/genRules.ts";
 import {VersionToGen} from "../TeamBuilder/TeamPage/constants.ts";
 import {BATTLE_WS_URL} from "../../services/battle/constants.ts";
-import type {ClientMessage, ServerMessage, SupportedGen} from "../../services/battle/protocol.ts";
+import type {BattleFormatKey, ClientMessage, ServerMessage, SupportedGen} from "../../services/battle/protocol.ts";
 import {toShowdownTeam, toVisualMeta} from "../../services/battle/toShowdownTeam.ts";
 import {useBattleSocket} from "../../services/battle/useBattleSocket.ts";
 import {saveBattleSession, loadBattleSession, clearBattleSession} from "../../services/battle/session.ts";
@@ -65,17 +65,20 @@ const BattleHome: FC = () => {
         }
     }, [status, connecting, send]);
 
-    const derivedGen = useMemo<SupportedGen | null>(() => {
+    // A "Home" team isn't pinned to one game, so it plays National Dex AG -
+    // every Pokemon from every gen, with Megas, Z-Moves and Tera all at once.
+    // Version-pinned teams keep their own gen's Anything Goes.
+    const derivedFormatKey = useMemo<BattleFormatKey | null>(() => {
         if (!selection) return null;
-        const gen = selection.versionGroup ? VersionToGen[selection.versionGroup] : 9;
-        return gen as SupportedGen;
+        if (!selection.versionGroup) return 'nationaldex';
+        return VersionToGen[selection.versionGroup] as SupportedGen;
     }, [selection]);
 
     const canSubmit = !!selection && selection.pokemon.length > 0 && name.trim().length > 0 &&
         (mode === 'create' || joinCode.trim().length > 0);
 
     const handleSubmit = () => {
-        if (!selection || !derivedGen) return;
+        if (!selection || !derivedFormatKey) return;
         const trimmedName = name.trim();
         localStorage.setItem(PLAYER_NAME_KEY, trimmedName);
 
@@ -84,7 +87,7 @@ const BattleHome: FC = () => {
         const visualMeta = toVisualMeta(selection.pokemon);
 
         pendingMessageRef.current = mode === 'create'
-            ? {t: 'create', gen: derivedGen, name: trimmedName, team, visualMeta}
+            ? {t: 'create', formatKey: derivedFormatKey, name: trimmedName, team, visualMeta}
             : {t: 'join', code: joinCode.trim().toUpperCase(), name: trimmedName, team, visualMeta};
 
         setError(null);
@@ -154,10 +157,11 @@ const BattleHome: FC = () => {
                 <Typography variant="h4" sx={{marginBottom: 1}}>Choose your team</Typography>
                 <TeamPicker onSelect={setSelection}/>
 
-                {mode === 'create' && selection && derivedGen && (
+                {mode === 'create' && selection && derivedFormatKey && (
                     <Typography variant="body2" color="text.secondary" sx={{marginTop: 2}}>
-                        This will be a Gen {derivedGen} Anything Goes battle
-                        {selection.versionGroup ? ` (${versionGroupLabel[selection.versionGroup]})` : ' (Home)'}.
+                        {derivedFormatKey === 'nationaldex'
+                            ? 'This will be a National Dex Anything Goes battle (Home) — every Pokémon from every generation, with Mega Evolution, Z-Moves and Terastallization all available.'
+                            : `This will be a Gen ${derivedFormatKey} Anything Goes battle${selection.versionGroup ? ` (${versionGroupLabel[selection.versionGroup]})` : ''}.`}
                     </Typography>
                 )}
 

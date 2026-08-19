@@ -2,6 +2,7 @@ import {Alert, Box, Button, Chip, ToggleButton, ToggleButtonGroup, Typography} f
 import {FC} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import MetaData from "../../components/MetaData/MetaData.tsx";
+import {formatLabel} from "../../services/battle/formatLabel.ts";
 import type {LogSpeed} from "../../services/battle/useBattleView.ts";
 import {useBattleView} from "../../services/battle/useBattleView.ts";
 import BattleField from "./components/BattleField/BattleField.tsx";
@@ -88,7 +89,7 @@ const BattleRoom: FC = () => {
                 <>
                     <FormPaper sx={{marginBottom: 3, textAlign: 'center'}}>
                         <Typography variant="h4">
-                            {view.phase === 'teampreview' ? 'Team Preview' : view.format}
+                            {view.phase === 'teampreview' ? 'Team Preview' : formatLabel(view.format)}
                         </Typography>
                         {view.winner && (
                             <Typography variant="h5" sx={{marginTop: 1}}>

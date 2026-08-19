@@ -10,6 +10,12 @@ import type {StatSpread} from "../../global/types.ts";
 
 export type SupportedGen = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
+/** What a room plays under. Usually just a generation, but the "Home"/national
+ * team isn't pinned to one game, so it gets National Dex AG instead - every
+ * Pokemon from every gen, with Mega Evolution, Z-Moves and Terastallization
+ * all available at once. Mirrors BattleFormatKey in the server's formats.ts. */
+export type BattleFormatKey = SupportedGen | 'nationaldex';
+
 export type SideID = 'p1' | 'p2';
 export type RoomPhase = 'waiting' | 'validating' | 'battle' | 'ended';
 
@@ -183,7 +189,9 @@ export interface PokemonSet {
 }
 
 export type ClientMessage =
-    | { t: 'create'; gen: SupportedGen; name: string; team: PokemonSet[]; visualMeta: VisualMetaMap }
+    // `formatKey` is what the room should play under (a gen, or 'nationaldex'),
+    // not the resolved Showdown format id - that comes back as `format` below.
+    | { t: 'create'; formatKey: BattleFormatKey; name: string; team: PokemonSet[]; visualMeta: VisualMetaMap }
     | { t: 'join'; code: string; name: string; team: PokemonSet[]; visualMeta: VisualMetaMap }
     | { t: 'resume'; code: string; seatToken: string }
     | { t: 'choose'; rqid: number; choice: Choice }

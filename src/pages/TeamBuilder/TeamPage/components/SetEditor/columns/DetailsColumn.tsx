@@ -11,7 +11,8 @@ import {ColumnPaper} from "../styles.ts";
 import {PokemonTeamMember, TeamCandidate} from "../../../../../../global/types.ts";
 import {PokemonType} from "../../../../../../global/enums.ts";
 import {GenRules} from "../../../../genRules.ts";
-import {itemsForGen} from "../../../../../../global/data/items.ts";
+import {itemsFor} from "../../../../../../global/data/items.ts";
+import type {BattleFormatKey} from "../../../../../../services/battle/protocol.ts";
 import {useTeamStore} from "../../../../../../store/teamStore.ts";
 
 interface DetailsColumnProps {
@@ -20,10 +21,10 @@ interface DetailsColumnProps {
     candidate: TeamCandidate;
     rules: GenRules;
     editMode: boolean;
-    itemGen: number;
+    formatKey: BattleFormatKey;
 }
 
-const DetailsColumn: FC<DetailsColumnProps> = ({slot, member, candidate, rules, editMode, itemGen}) => {
+const DetailsColumn: FC<DetailsColumnProps> = ({slot, member, candidate, rules, editMode, formatKey}) => {
     const {editPokemon} = useTeamStore();
     const update = (patch: Partial<PokemonTeamMember>) => editPokemon(slot, {...member, ...patch});
 
@@ -39,7 +40,7 @@ const DetailsColumn: FC<DetailsColumnProps> = ({slot, member, candidate, rules, 
         update({teraType: tera, moves});
     };
 
-    const items = itemsForGen(itemGen);
+    const items = itemsFor(formatKey);
 
     return (
         <ColumnPaper elevation={2}>
