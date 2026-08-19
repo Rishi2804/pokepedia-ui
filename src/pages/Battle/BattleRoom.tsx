@@ -1,4 +1,4 @@
-import {Alert, Box, Button, Chip, LinearProgress, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
+import {Alert, Box, Button, Chip, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {FC} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import MetaData from "../../components/MetaData/MetaData.tsx";
@@ -9,7 +9,8 @@ import BattleLog from "./components/BattleLog/BattleLog.tsx";
 import Controls from "./components/Controls/Controls.tsx";
 import SideBar from "./components/SideBar/SideBar.tsx";
 import TeamPreview from "./components/TeamPreview/TeamPreview.tsx";
-import {FormPaper} from "./styles.ts";
+import BattleRoomSkeleton from "./BattleRoomSkeleton.tsx";
+import {BattleLayout, FormPaper, WideFormPaper} from "./styles.ts";
 
 /**
  * Route /battle/:code. All connection/resume/reveal state lives in
@@ -22,7 +23,7 @@ const BattleRoom: FC = () => {
     const navigate = useNavigate();
     const {
         status, sessionValid, roomState, view, log, isRevealing, error, dismissError,
-        canChoose, sendChoice, speed, setSpeed, skipReveal, leave,
+        canChoose, sendChoice, speed, setSpeed, skipReveal, leave, rematch,
     } = useBattleView(code);
 
     const handleLeave = () => {
@@ -46,6 +47,19 @@ const BattleRoom: FC = () => {
         );
     }
 
+    // Nothing to render yet - covers both the WebSocket still connecting and
+    // the brief gap after it opens before the server's first roomState/view
+    // arrives. An error this early (e.g. an expired seat token) still needs
+    // to reach the user, so it skips the skeleton rather than hiding behind it.
+    if (!roomState && !view && !error) {
+        return (
+            <>
+                <MetaData pageTitle={`Battle ${code} | PokePedia`}/>
+                <BattleRoomSkeleton/>
+            </>
+        );
+    }
+
     return (
         <Box sx={{paddingY: 3}}>
             <MetaData pageTitle={`Battle ${code} | PokePedia`}/>
@@ -53,8 +67,6 @@ const BattleRoom: FC = () => {
             <Typography variant="body2" color="text.secondary" sx={{textAlign: "center", marginBottom: 3}}>
                 Connection: {status}
             </Typography>
-
-            {status === 'connecting' && <LinearProgress sx={{marginBottom: 3}}/>}
 
             {error && (
                 <FormPaper sx={{marginBottom: 3}}>
@@ -92,53 +104,55 @@ const BattleRoom: FC = () => {
                     )}
 
                     {view.phase !== 'teampreview' && (
-                        <FormPaper sx={{marginBottom: 3}}>
-                            <Typography variant="body2" color="text.secondary" sx={{marginBottom: 0.5}}>
-                                {view.foe.name || 'Opponent'}
-                            </Typography>
-                            <SideBar team={view.foe.team} teamSize={view.foe.teamSize} conditions={view.foe.conditions}/>
+                        <BattleLayout>
+                            <WideFormPaper>
+                                <Typography variant="body2" color="text.secondary" sx={{marginBottom: 0.5}}>
+                                    {view.foe.name || 'Opponent'}
+                                </Typography>
+                                <SideBar team={view.foe.team} teamSize={view.foe.teamSize} conditions={view.foe.conditions}/>
 
-                            <Box sx={{marginY: 1.5}}>
-                                <BattleField field={view.field} me={view.me} foe={view.foe} turn={view.turn}/>
-                            </Box>
+                                <Box sx={{marginY: 1.5}}>
+                                    <BattleField field={view.field} me={view.me} foe={view.foe} turn={view.turn}/>
+                                </Box>
 
-                            <Typography variant="body2" color="text.secondary" sx={{marginBottom: 0.5}}>
-                                {view.me.name}
-                            </Typography>
-                            <SideBar team={view.me.team} teamSize={view.me.teamSize} conditions={view.me.conditions}/>
-                        </FormPaper>
-                    )}
+                                <Typography variant="body2" color="text.secondary" sx={{marginBottom: 0.5}}>
+                                    {view.me.name}
+                                </Typography>
+                                <SideBar team={view.me.team} teamSize={view.me.teamSize} conditions={view.me.conditions}/>
+                            </WideFormPaper>
 
-                    {view.phase === 'battle' && view.request && (
-                        <FormPaper sx={{marginBottom: 3}}>
-                            <Controls request={view.request} disabled={!canChoose} onChoose={sendChoice}/>
-                        </FormPaper>
-                    )}
+                            <WideFormPaper>
+                                {view.phase === 'battle' && view.request && (
+                                    <Controls request={view.request} disabled={!canChoose} onChoose={sendChoice}/>
+                                )}
+                                {view.phase === 'ended' && (
+                                    <Box sx={{display: 'flex', gap: 2, justifyContent: 'center'}}>
+                                        <Button variant="contained" onClick={rematch}>Rematch</Button>
+                                        <Button variant="outlined" onClick={handleLeave}>Leave</Button>
+                                    </Box>
+                                )}
+                            </WideFormPaper>
 
-                    {view.phase === 'ended' && (
-                        <FormPaper sx={{marginBottom: 3}}>
-                            <Button variant="contained" onClick={handleLeave}>Leave</Button>
-                        </FormPaper>
+                            {log.length > 0 && (
+                                <WideFormPaper>
+                                    <Box sx={{display: 'flex', justifyContent: 'flex-end', marginBottom: 1}}>
+                                        <ToggleButtonGroup
+                                            size="small"
+                                            value={speed}
+                                            exclusive
+                                            onChange={(_, next) => next && setSpeed(next as LogSpeed)}
+                                        >
+                                            <ToggleButton value="instant">Instant</ToggleButton>
+                                            <ToggleButton value="fast">Fast</ToggleButton>
+                                            <ToggleButton value="normal">Normal</ToggleButton>
+                                        </ToggleButtonGroup>
+                                    </Box>
+                                    <BattleLog entries={log} isRevealing={isRevealing} onSkip={skipReveal}/>
+                                </WideFormPaper>
+                            )}
+                        </BattleLayout>
                     )}
                 </>
-            )}
-
-            {log.length > 0 && (
-                <FormPaper>
-                    <Box sx={{display: 'flex', justifyContent: 'flex-end', marginBottom: 1}}>
-                        <ToggleButtonGroup
-                            size="small"
-                            value={speed}
-                            exclusive
-                            onChange={(_, next) => next && setSpeed(next as LogSpeed)}
-                        >
-                            <ToggleButton value="instant">Instant</ToggleButton>
-                            <ToggleButton value="fast">Fast</ToggleButton>
-                            <ToggleButton value="normal">Normal</ToggleButton>
-                        </ToggleButtonGroup>
-                    </Box>
-                    <BattleLog entries={log} isRevealing={isRevealing} onSkip={skipReveal}/>
-                </FormPaper>
             )}
         </Box>
     );

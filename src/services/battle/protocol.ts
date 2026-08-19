@@ -204,7 +204,7 @@ export type ServerMessage =
      * Not part of the contract the UI renders against. */
     | { t: 'debug'; lines: string[] }
     | { t: 'error'; code: ErrorCode; message: string; problems?: string[] }
-    | { t: 'end'; winner: SideID | 'tie' | null; view: BattleView };
+    | { t: 'end'; winner: SideID | 'tie' | null; log: LogEntry[]; view: BattleView };
 
 export type ErrorCode =
     | 'invalid_message'
@@ -215,4 +215,5 @@ export type ErrorCode =
     | 'team_invalid'
     | 'not_your_turn'
     | 'invalid_choice'
+    | 'rematch_unavailable'
     | 'internal_error';

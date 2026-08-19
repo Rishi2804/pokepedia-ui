@@ -20,7 +20,10 @@ export const Scene = styled(Box, {
         overflow: 'hidden',
         border: `1px solid ${theme.palette.primaryBorder}`,
         backgroundImage: gradient ? `${gradient}, ${base}` : base,
-        borderBottom: `6px solid ${terrainColor ?? 'transparent'}`,
+        // Only swap in the thicker terrain accent when a terrain is active -
+        // falling back to 'transparent' here (instead of matching the other
+        // three sides' border color) made the bottom edge look cut off.
+        borderBottom: terrainColor ? `6px solid ${terrainColor}` : `1px solid ${theme.palette.primaryBorder}`,
         transition: 'background-image 0.6s ease, border-bottom-color 0.6s ease',
     };
 });

@@ -42,6 +42,7 @@ export interface UseBattleViewResult {
     setSpeed: (speed: LogSpeed) => void;
     skipReveal: () => void;
     leave: () => void;
+    rematch: () => void;
 }
 
 /**
@@ -80,7 +81,13 @@ export function useBattleView(code: string | undefined): UseBattleViewResult {
 
     // Reveals the first queued batch's log lines one at a time on an
     // interval, then swaps `view` to that batch's view and moves on to
-    // whatever's next in the queue (if anything arrived meanwhile).
+    // whatever's next in the queue (if anything arrived meanwhile). The
+    // very first batch a fresh mount ever sees is either the real start of
+    // the battle or - on resume - the seat's whole log history replayed in
+    // one shot (see seat.ts's attach()); pacing that out at the user's
+    // chosen speed would make every reload sit through the entire battle
+    // again, so it's revealed instantly instead. Only batches after that
+    // (genuinely new turns) get paced.
     const processQueue = useCallback(() => {
         const batch = queueRef.current[0];
         if (!batch) {
@@ -88,6 +95,8 @@ export function useBattleView(code: string | undefined): UseBattleViewResult {
             return;
         }
         setIsRevealing(true);
+
+        const interval = nextLogIdRef.current === 0 ? 0 : SPEED_INTERVAL_MS[speedRef.current];
 
         const revealNext = (index: number) => {
             if (index >= batch.log.length) {
@@ -98,7 +107,7 @@ export function useBattleView(code: string | undefined): UseBattleViewResult {
             }
             const entry = batch.log[index];
             setLog(prev => [...prev, {...entry, id: nextLogIdRef.current++}]);
-            revealTimerRef.current = setTimeout(() => revealNext(index + 1), SPEED_INTERVAL_MS[speedRef.current]);
+            revealTimerRef.current = setTimeout(() => revealNext(index + 1), interval);
         };
         revealNext(0);
     }, []);
@@ -123,8 +132,13 @@ export function useBattleView(code: string | undefined): UseBattleViewResult {
             return;
         }
         if (message.t === 'update' || message.t === 'end') {
+            // A rematch starts a brand new engine with its own rqid counter
+            // starting back at 1 - without this, a stale respondedRqid from
+            // the previous battle could coincidentally match a live one and
+            // leave team preview looking unresponsive.
+            if (message.view.phase === 'teampreview') setRespondedRqid(null);
             const wasEmpty = queueRef.current.length === 0;
-            queueRef.current.push({log: message.t === 'update' ? message.log : [], view: message.view});
+            queueRef.current.push({log: message.log, view: message.view});
             if (wasEmpty) processQueue();
             return;
         }
@@ -165,8 +179,12 @@ export function useBattleView(code: string | undefined): UseBattleViewResult {
         clearBattleSession();
     }, [send]);
 
+    const rematch = useCallback(() => {
+        send({t: 'rematch'});
+    }, [send]);
+
     return {
         status, sessionValid, roomState, view, log, isRevealing, error, dismissError,
-        canChoose, sendChoice, speed, setSpeed, skipReveal, leave,
+        canChoose, sendChoice, speed, setSpeed, skipReveal, leave, rematch,
     };
 }
