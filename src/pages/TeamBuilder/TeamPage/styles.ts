@@ -143,37 +143,44 @@ export const TeraButton = styled(Button)({
     padding: 0,
 })
 
-export const StaticLabel = styled(InputLabel)({
-    color: COLORS.WHITE,
+// text.primary rather than a literal: COLORS.WHITE is the light theme's own
+// paper background (theme.ts), so hardcoding it rendered white-on-white in
+// light mode. The dark palette defines text.primary AS COLORS.WHITE, so dark
+// mode is unchanged by this. Same reasoning for AbilityInput and MoveInput.
+export const StaticLabel = styled(InputLabel)(({theme}) => ({
+    color: theme.palette.text.primary,
     fontSize: '18px',
     '&.Mui-focused': {
-        color: COLORS.WHITE,
+        color: theme.palette.text.primary,
     },
-})
+}))
 
 export const AbilityInput = styled(InputBase)(({theme}) => ({
     'label + &': {
         marginTop: theme.spacing(1.5),
     },
     '& .MuiInputBase-input': {
-        border: `1px solid ${COLORS.WHITE}`,
+        border: `1px solid ${theme.palette.text.primary}`,
         fontSize: '18px',
         fontWeight: 600,
-        color: COLORS.WHITE,
+        color: theme.palette.text.primary,
         boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
     },
     '& .MuiSvgIcon-root': {
-        color: COLORS.WHITE,
+        color: theme.palette.text.primary,
     },
     '&.Mui-disabled .MuiInputBase-input': {
-        '-webkit-text-fill-color': COLORS.WHITE,
+        '-webkit-text-fill-color': theme.palette.text.primary,
     },
 }))
 
-export const MoveInput = styled('input')<{ type?: PokemonType }>(({ type }) => ({
+// A filled slot paints a saturated type colour behind the text, so white stays
+// correct there in both themes; only the empty (untyped, transparent) slot sits
+// on the paper background and has to follow the theme.
+export const MoveInput = styled('input')<{ type?: PokemonType }>(({ type, theme }) => ({
     backgroundColor: type ? TypeToCardColor[type] : 'transparent',
-    border: `${type ? "3px" : "1px"} solid ${type ? TypeToCardBorder[type] : COLORS.WHITE}`,
-    color: COLORS.WHITE,
+    border: `${type ? "3px" : "1px"} solid ${type ? TypeToCardBorder[type] : theme.palette.text.primary}`,
+    color: type ? COLORS.WHITE : theme.palette.text.primary,
     borderRadius: 3,
     width: '100%',
     height: 39,
