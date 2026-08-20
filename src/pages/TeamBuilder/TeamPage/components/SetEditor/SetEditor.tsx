@@ -13,6 +13,7 @@ import {versionGroupToSlug} from "../../../../../global/labels.ts";
 import {PokemonTeamMember, TeamCandidateSummary} from "../../../../../global/types.ts";
 import {VersionGroup} from "../../../../../global/enums.ts";
 import {getGenRules} from "../../../genRules.ts";
+import type {BattleFormatKey, SupportedGen} from "../../../../../services/battle/protocol.ts";
 import {VersionToGen} from "../../constants.ts";
 import {exportSet, importSet, parseSpeciesName, resolveSpecies} from "../../../utils/showdownText.ts";
 import {useTeamStore} from "../../../../../store/teamStore.ts";
@@ -46,9 +47,10 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
     if (error) throw error;
 
     const rules = getGenRules(versionGroup);
-    // National/home teams aren't pinned to one game's item pool, so they get
-    // the most current gen's items, matching getGenRules' own null handling.
-    const itemGen = versionGroup ? VersionToGen[versionGroup] : 9;
+    // National/home teams aren't pinned to one game's item pool, so they battle
+    // in (and draw items from) National Dex - which is the only place Mega
+    // Stones and Z-Crystals are legal alongside gen 9 mechanics.
+    const formatKey: BattleFormatKey = versionGroup ? VersionToGen[versionGroup] as SupportedGen : 'nationaldex';
 
     const handleImportSet = async (text: string): Promise<string[]> => {
         const speciesName = parseSpeciesName(text);
@@ -108,7 +110,7 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
             </EditorHeader>
             <Grid container spacing={2}>
                 <Grid size={{xs: 12, sm: 6}}>
-                    <DetailsColumn slot={slot} member={member} candidate={candidate} rules={rules} editMode={editMode} itemGen={itemGen}/>
+                    <DetailsColumn slot={slot} member={member} candidate={candidate} rules={rules} editMode={editMode} formatKey={formatKey}/>
                 </Grid>
                 <Grid size={{xs: 12, sm: 6}}>
                     <MovesColumn slot={slot} member={member} candidate={candidate} rules={rules} editMode={editMode}/>

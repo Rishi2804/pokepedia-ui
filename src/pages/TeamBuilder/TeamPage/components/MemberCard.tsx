@@ -14,6 +14,7 @@ import {PokemonTeamMember} from "../../../../global/types.ts";
 import {useTeamStore} from "../../../../store/teamStore.ts";
 import {NATURES} from "../../../../global/data/natures.ts";
 import {PLACEHOLDER_ITEMS} from "../../../../global/data/items.ts";
+import {getGenRules} from "../../genRules.ts";
 
 interface IMemberCardProps {
     i: number;
@@ -27,6 +28,10 @@ const MemberCard: FC<IMemberCardProps> = ({i, editMode, selectedSlot, setSelecte
     const { currentTeam, editPokemon, removePokemon } = useTeamStore()
     const pokemon = currentTeam?.pokemon[i];
     if (!pokemon) return null;
+
+    // Same per-game rules the set editor uses (SetEditor.tsx), so the card and
+    // the editor can't disagree about whether a mechanic exists in this game.
+    const rules = getGenRules(currentTeam?.versionGroup ?? null);
 
     const toggleShiny = (index: number, mon: PokemonTeamMember, shiny: boolean) => {
         editPokemon(index, {...mon, shiny})
@@ -123,7 +128,9 @@ const MemberCard: FC<IMemberCardProps> = ({i, editMode, selectedSlot, setSelecte
                     >
                         <ShinyIcon sx={{width: 20, height: 20}}/>
                     </ShinyButton>
-                    <TeraTypeMenu teraType={pokemon.teraType} changeTeraType={(tera?: PokemonType) => handleTeraTypeChange(i, pokemon, tera)} disabled={!editMode}/>
+                    {rules.tera && (
+                        <TeraTypeMenu teraType={pokemon.teraType} changeTeraType={(tera?: PokemonType) => handleTeraTypeChange(i, pokemon, tera)} disabled={!editMode}/>
+                    )}
                 </Box>
                 <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center'}}>
                     {pokemon.ability && <Chip label={pokemon.ability.name} size="small"/>}
