@@ -80,10 +80,7 @@ export interface PokemonDetails {
     genderRate: number;
     stats: Stats;
     forms: string[] | null;
-    dexEntries: {
-        game: Game;
-        entry: string;
-    }[];
+    descriptions: DexEntry[];
     dexNumbers: {
         dexName: PokedexRegion;
         dexNumber: number;
@@ -98,9 +95,18 @@ export interface SpeciesDetails {
     pokemon: PokemonDetails[];
 }
 
-interface GroupedDescription {
-    versionGroups: VersionGroup[];
-    description: string;
+// The shape move and ability descriptions use, grouped by the API: `games` is
+// the set of games sharing this exact wording, in release order.
+export interface Description {
+    games: Game[];
+    text: string;
+}
+
+// One Pokedex entry for one game. The API sends these ungrouped, in release
+// order; PokedexEntries collapses runs of identical text within a generation.
+export interface DexEntry {
+    game: Game;
+    text: string;
 }
 
 export interface MoveSnapshot {
@@ -130,7 +136,7 @@ export interface MoveDetails {
         versionGroups: VersionGroup[];
     }[];
     effect: string;
-    descriptions: GroupedDescription[];
+    descriptions: Description[];
     pokemonLearnable: {
         method: LearnMethod;
         pokemon: PokemonSnapshot[]
@@ -147,7 +153,7 @@ export interface AbilityDetails {
     name: string;
     gen: number;
     effect: string;
-    descriptions: GroupedDescription[];
+    descriptions: Description[];
     pokemon: PokemonSnapshot[]
 }
 

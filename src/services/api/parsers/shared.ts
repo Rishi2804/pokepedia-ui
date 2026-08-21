@@ -1,5 +1,5 @@
-import {PokemonSnapshot, StatSpread, TeamCandidate, TeamCandidateSummary, TeamMove} from "../../../global/types.ts";
-import {MoveClass, PokemonType, VersionGroup} from "../../../global/enums.ts";
+import {Description, PokemonSnapshot, StatSpread, TeamCandidate, TeamCandidateSummary, TeamMove} from "../../../global/types.ts";
+import {Game, MoveClass, PokemonType} from "../../../global/enums.ts";
 import {asEnum, asNullableEnum} from "../parse.ts";
 
 export interface WirePokemonSnap {
@@ -23,14 +23,16 @@ export function toPokemonSnapshot(mon: WirePokemonSnap): PokemonSnapshot {
 }
 
 export interface WireDescription {
-    versionGroups: string[];
-    description: string;
+    games: string[];
+    text: string;
 }
 
-export function parseDescriptions(descriptions: WireDescription[]) {
+// Shared by pokemon, move and ability parsers — all three endpoints send the
+// same shape, already grouped by text and ordered by release date server-side.
+export function parseDescriptions(descriptions: WireDescription[]): Description[] {
     return descriptions.map(d => ({
-        versionGroups: d.versionGroups.map(vg => asEnum(VersionGroup, vg, 'versionGroups')),
-        description: d.description,
+        games: d.games.map(g => asEnum(Game, g, 'games')),
+        text: d.text,
     }));
 }
 

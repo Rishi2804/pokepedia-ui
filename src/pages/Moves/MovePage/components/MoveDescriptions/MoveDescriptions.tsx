@@ -1,5 +1,5 @@
-import {PokemonType, VersionGroup} from "../../../../../global/enums.ts";
-import {versionGroupGames} from "../../../../../global/labels.ts";
+import {PokemonType} from "../../../../../global/enums.ts";
+import {Description} from "../../../../../global/types.ts";
 import {FC} from "react";
 import {Grid2 as Grid, Stack, Typography} from "@mui/material";
 import {EntriesContainer} from "./styles.ts";
@@ -7,10 +7,7 @@ import GameTextEntry from "../../../../../components/GameTextEntry/GameTextEntry
 
 interface IMoveDescriptionsProps {
     type: PokemonType;
-    entries: {
-        versionGroups: VersionGroup[];
-        description: string;
-    }[]
+    entries: Description[];
 }
 
 const MoveDescriptions: FC<IMoveDescriptionsProps> = ({type, entries}) => {
@@ -20,12 +17,11 @@ const MoveDescriptions: FC<IMoveDescriptionsProps> = ({type, entries}) => {
             <EntriesContainer type={type}>
                 <Stack spacing={2}>
                 {
-                    entries.map(entry => {
-                        const games = entry.versionGroups.flatMap(group => versionGroupGames[group])
-                        return (
-                            <GameTextEntry games={games} entry={entry.description} />
-                        )
-                    })
+                    // The API already groups identical text across games, so the
+                    // entries map straight onto GameTextEntry.
+                    entries.map((entry, i) => (
+                        <GameTextEntry key={i} games={entry.games} entry={entry.text} />
+                    ))
                 }
                 </Stack>
             </EntriesContainer>
