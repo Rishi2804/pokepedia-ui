@@ -4,7 +4,6 @@ import {NATURES} from "../../../global/data/natures.ts";
 import type {StatKey, StatSpread, TeamMove} from "../../../global/types.ts";
 import type {EvModel, GenRules, IvModel} from "../genRules.ts";
 
-// ---- Gen 3+ final stat formulas ----
 // Also used by the Pokemon page's level-50 min/max range display
 // (src/pages/Pokemon/components/BaseStats/components/StatSection.tsx),
 // which previously duplicated these inline.
@@ -17,7 +16,7 @@ export function calcStat(base: number, iv: number, ev: number, level: number, na
     return Math.floor((Math.floor(0.01 * (2 * base + iv + Math.floor(0.25 * ev)) * level) + 5) * natureMultiplier);
 }
 
-// ---- Gen 1-2: stat exp (0-65535) stands in for EVs; there is no nature yet ----
+// Gen 1-2: stat exp (0-65535) stands in for EVs; there is no nature yet.
 
 export function calcHpGen12(base: number, dv: number, statExp: number, level: number): number {
     return Math.floor(((base + dv) * 2 + Math.floor(Math.sqrt(statExp) / 4)) * level / 100) + level + 10;
@@ -43,22 +42,19 @@ export function natureMultiplier(nature: NatureName, stat: StatKey): number {
     return 1;
 }
 
-// ---- Unit conversion for Showdown's paste format ----
-// Showdown's exportSet/parseExportedTeamLine (sim/teams.ts) has no gen branching
-// at all: EVs/IVs are always written and read on the modern 0-252/0-31 scale,
-// for every generation.
+// Showdown's exportSet (sim/teams.ts) always reads/writes EVs/IVs on the
+// modern 0-252/0-31 scale, with no gen branching.
 //
-// DV<->IV is an exact 2x relationship, verified against Showdown's own decode
-// (team-validator.ts: `atkDV = Math.floor(ivs.atk / 2)`) and its Hidden-Power-DV
-// override, which literally writes `HPdvs[stat] * 2`. Round-trips exactly.
+// DV<->IV is an exact 2x relationship (team-validator.ts: `atkDV =
+// Math.floor(ivs.atk / 2)`, and its Hidden-Power-DV override writes
+// `HPdvs[stat] * 2`) — round-trips exactly.
 //
-// Stat Exp<->EV has no such bijection. There is deliberately no separate "AVs"
-// field anywhere in Showdown's source (confirmed by grep) — LGPE Awakening
-// Values reuse `evs` directly, unconverted, which is also how rawStat above
-// already treats them. Stat Exp is the one real mismatch: both formulas'
-// contribution terms (`floor(sqrt(x)/4)` vs `floor(x/4)`) converge to the same
-// ceiling (`sqrt(65535) ≈ 256 ≈` the 252 cap), so `ev = round(sqrt(statExp))`
-// preserves the competitive *effect*, not the raw number.
+// Stat Exp<->EV has no such bijection (there's no separate "AVs" field in
+// Showdown's source — LGPE Awakening Values reuse `evs` directly). Both
+// formulas' contribution terms (`floor(sqrt(x)/4)` vs `floor(x/4)`) converge
+// to the same ceiling (`sqrt(65535) ≈ 256 ≈` the 252 cap), so
+// `ev = round(sqrt(statExp))` preserves the competitive effect, not the raw
+// number.
 export function dvToShowdownIv(dv: number): number {
     return dv * 2;
 }
@@ -75,7 +71,7 @@ export function showdownEvToStatExp(ev: number): number {
     return Math.min(65535, ev * ev);
 }
 
-// ---- Live stat computation, shared by the set editor's numbers and its bars ----
+// Live stat computation, shared by the set editor's numbers and its bars.
 
 // 'effortLevel' (Legends Arceus) has no verified formula in our reference source,
 // so it's left uncomputed rather than guessed. Every other model (including 'av',
@@ -133,7 +129,6 @@ export function referenceMaxStat(stat: StatKey, level: number, rules: GenRules):
     return rawStat(stat, STAT_REFERENCE_BASE[stat], iv, rules.evCap, level, nature, rules.evModel) ?? STAT_REFERENCE_BASE[stat];
 }
 
-// ---- Hidden Power ----
 // The type formulas and the IV/DV tables below are taken directly from Pokemon
 // Showdown (sim/dex.ts's getHiddenPower, and data/typechart.ts's HPivs/HPdvs)
 // rather than re-derived: the obvious "maximize the number of set bits"

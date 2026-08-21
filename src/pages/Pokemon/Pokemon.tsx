@@ -33,7 +33,6 @@ const Pokemon = () => {
         }
     }, [id, searchParams]);
 
-    // Effect to handle navigation based on species data
     useEffect(() => {
         if (id && !isNaN(Number(id)) && data?.pokemon && data?.name) {
             setI(0);
@@ -103,7 +102,7 @@ const Pokemon = () => {
                 <EvolutionData lines={data.pokemon[i].evolutionChain} />
                 <PokedexEntries
                     gen={data.pokemon[i].gen}
-                    dexEntries={data.pokemon[i].dexEntries}
+                    dexEntries={data.pokemon[i].descriptions}
                     dexNumbers={data.pokemon[i].dexNumbers}
                     type1={data.pokemon[i].type1}
                     type2={data.pokemon[i].type2}

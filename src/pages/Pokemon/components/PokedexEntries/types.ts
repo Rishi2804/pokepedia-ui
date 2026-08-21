@@ -1,9 +1,4 @@
-import {Game, PokedexRegion} from "../../../../global/enums.ts";
-
-export interface IDexEntry {
-    game: Game;
-    entry: string;
-}
+import {PokedexRegion} from "../../../../global/enums.ts";
 
 export interface IDexNum {
     dexName: PokedexRegion;

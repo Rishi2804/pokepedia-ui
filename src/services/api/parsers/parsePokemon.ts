@@ -26,7 +26,7 @@ export interface WirePokemonDetails {
     genderRate: number;
     stats: { hp: number; atk: number; def: number; spatk: number; spdef: number; speed: number; bst: number };
     forms: string[] | null;
-    dexEntries: { game: string; entry: string }[];
+    descriptions: { game: string; text: string }[];
     dexNumbers: { dexName: string; dexNumber: number }[];
     evolutionChain: {
         id: number;
@@ -55,9 +55,9 @@ export function parsePokemon(json: unknown): PokemonDetails {
         ...wire,
         type1: asEnum(PokemonType, wire.type1, 'type1'),
         type2: asNullableEnum(PokemonType, wire.type2, 'type2'),
-        dexEntries: wire.dexEntries.map(entry => ({
-            game: asEnum(Game, entry.game, 'game'),
-            entry: entry.entry,
+        descriptions: wire.descriptions.map(d => ({
+            game: asEnum(Game, d.game, 'game'),
+            text: d.text,
         })),
         dexNumbers: wire.dexNumbers.map(entry => ({
             dexName: asEnum(PokedexRegion, entry.dexName, 'dexName'),

@@ -23,7 +23,6 @@ export const GroupGameBox = styled(Box)(() => ({
     width: '12%',
     display: 'flex',
     flexDirection: 'column',
-    // alignItems: 'center',
     justifyContent: 'center',
     borderTopLeftRadius: 13,
     borderBottomLeftRadius: 13,

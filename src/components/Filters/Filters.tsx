@@ -34,8 +34,8 @@ const Filters: FC<IFilterProps> = ({searchBoxText, searchTerm, setSearchTerm, ty
         const { value } = event.target;
         setGenFilters?.(
             Array.isArray(value)
-                ? value.map((v) => (typeof v === 'string' ? Number(v) : v)) // Convert string values to numbers
-                : [Number(value)] // Convert single string value to a number and wrap it in an array
+                ? value.map((v) => (typeof v === 'string' ? Number(v) : v))
+                : [Number(value)]
         );
     };
 

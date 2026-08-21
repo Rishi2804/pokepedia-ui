@@ -5,14 +5,10 @@ export type ConnectionStatus = 'connecting' | 'open' | 'closed';
 
 /**
  * Hand-rolled instead of react-use-websocket: the create/join/resume
- * handshake wants explicit control over exactly when a socket opens and
- * what happens to it across a route change, and that's small enough here
- * that a dependency isn't worth it.
- *
- * `url: null` defers connecting - callers that need something ready first
- * (a chosen team, a resume token read from sessionStorage) pass null until
- * then. `onMessage` is read through a ref so passing a new inline callback
- * on every render doesn't tear down and reopen the socket.
+ * handshake needs explicit control over when a socket opens/closes.
+ * `url: null` defers connecting until a caller has what it needs (a chosen
+ * team, a resume token). `onMessage` is read through a ref so a new inline
+ * callback each render doesn't tear down and reopen the socket.
  */
 export const useBattleSocket = (url: string | null, onMessage: (message: ServerMessage) => void) => {
     const [status, setStatus] = useState<ConnectionStatus>('connecting');

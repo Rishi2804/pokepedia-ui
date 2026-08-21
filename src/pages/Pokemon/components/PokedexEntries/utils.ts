@@ -1,10 +1,11 @@
 import {Game, PokedexRegion} from "../../../../global/enums.ts";
-import {IDexEntry, IDexNum} from "./types.ts";
+import {IDexNum} from "./types.ts";
+import {DexEntry} from "../../../../global/types.ts";
 import {DexToRegionMapping} from "./constants.ts";
 import {formatText} from "../../../../global/utils.ts";
 import {pokedexRegionLabel} from "../../../../global/labels.ts";
 
-export function categorizedDexEntries(gen: number, dexEntries: IDexEntry[], dexNumbers: IDexNum[]) {
+export function categorizedDexEntries(gen: number, dexEntries: DexEntry[], dexNumbers: IDexNum[]) {
     const categories = []
     if (gen <= 1) {
         categories.push({
@@ -73,15 +74,18 @@ export function categorizedDexEntries(gen: number, dexEntries: IDexEntry[], dexN
     return categories.map((category) => {
         const revelvantDexEntries = dexEntries.filter((entry) => category.games.includes(entry.game))
 
-        const groupedEntries: { games: Game[]; entry: string }[] = [];
-        let currentGroup: { games: Game[]; entry: string } | null = null;
+        // The API sends one entry per game, in release order. Collapse adjacent
+        // entries with identical text into one group; non-adjacent entries that
+        // happen to share text (e.g. across generations) stay separate.
+        const groupedEntries: { games: Game[]; text: string }[] = [];
+        let currentGroup: { games: Game[]; text: string } | null = null;
 
         revelvantDexEntries.forEach((entry, index) => {
-            if (currentGroup === null || currentGroup.entry !== entry.entry) {
+            if (currentGroup === null || currentGroup.text !== entry.text) {
                 if (currentGroup !== null) {
                     groupedEntries.push(currentGroup);
                 }
-                currentGroup = { games: [entry.game], entry: entry.entry };
+                currentGroup = { games: [entry.game], text: entry.text };
             } else {
                 currentGroup.games.push(entry.game);
             }
@@ -90,7 +94,6 @@ export function categorizedDexEntries(gen: number, dexEntries: IDexEntry[], dexN
                 groupedEntries.push(currentGroup);
             }
         });
-
 
 
         let relevantDexNums = category.dexes.map((dex) => {
