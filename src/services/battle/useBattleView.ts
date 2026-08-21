@@ -46,13 +46,10 @@ export interface UseBattleViewResult {
 }
 
 /**
- * The whole of the client's battle logic: owns the connection + resume
- * handshake (moved out of BattleRoom.tsx unchanged from Phase 3), and
- * layers a paced reveal on top of the server's `{log, view}` batches so the
- * log reads out a few lines at a time instead of a whole turn appearing at
- * once. A BattleView is a full snapshot, not a delta, so "pacing" just
- * means delaying when the displayed view swaps to the next one - nothing
- * here simulates anything the server hasn't already resolved.
+ * Owns the connection/resume handshake and paces the reveal of the server's
+ * `{log, view}` batches so a turn's log lines appear a few at a time. A
+ * BattleView is a full snapshot, not a delta, so pacing just delays when the
+ * displayed view swaps to the next one.
  */
 export function useBattleView(code: string | undefined): UseBattleViewResult {
     const [seatToken] = useState(() => loadBattleSession());

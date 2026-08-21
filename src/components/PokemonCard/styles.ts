@@ -3,7 +3,6 @@ import { styled } from "@mui/system";
 import {PokemonType} from "../../global/enums.ts";
 import {TypeToCardBorder, TypeToCardColor} from "../../global/utils.ts";
 
-// Define the types for the custom props
 interface CardProps {
     type1: PokemonType,
     type2: PokemonType | null,
@@ -43,8 +42,8 @@ export const NameText = styled(Typography)(() => ({
     overflow: "scroll",
     maxWidth: "100%",
     '&::-webkit-scrollbar': {
-        display: 'none', // Webkit browsers (Chrome, Safari, etc.)
+        display: 'none',
     },
-    '-ms-overflow-style': 'none', // Internet Explorer 10+
-    'scrollbar-width': 'none', // Firefox
+    '-ms-overflow-style': 'none',
+    'scrollbar-width': 'none',
 }))

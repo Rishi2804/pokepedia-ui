@@ -33,7 +33,6 @@ const Pokemon = () => {
         }
     }, [id, searchParams]);
 
-    // Effect to handle navigation based on species data
     useEffect(() => {
         if (id && !isNaN(Number(id)) && data?.pokemon && data?.name) {
             setI(0);
