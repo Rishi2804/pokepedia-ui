@@ -1,5 +1,5 @@
 import {PokemonType} from "./enums.ts";
-import {TypeCoverage, TypeDefences} from "./types.ts";
+import {SearchHit, TypeCoverage, TypeDefences} from "./types.ts";
 
 export function formatText(name: string): string {
     if (name === 'jangmo-o' || name === 'hakamo-o' || name === 'kommo-o') {
@@ -13,6 +13,19 @@ export function formatText(name: string): string {
 
 export function navName(name: string): string {
     return name.toLowerCase().replace(/ /g, "-");
+}
+
+// Pokemon navigate by numeric id (the backend resolves variant ids >=10000
+// to their species internally); moves and abilities navigate by slug.
+export function searchHitPath(hit: SearchHit): string {
+    switch (hit.type) {
+        case "pokemon":
+            return `/pokemon/${hit.id}`;
+        case "move":
+            return `/move/${navName(hit.name)}`;
+        case "ability":
+            return `/ability/${navName(hit.name)}`;
+    }
 }
 
 export const TypeToColor: Record<PokemonType, string> = {

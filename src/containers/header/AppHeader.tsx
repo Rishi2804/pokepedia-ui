@@ -2,6 +2,7 @@ import {Header, LightDarkSwitch, MenuButton} from "./styles.ts";
 import {Box, Toolbar, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useThemeContext} from "../../theme/context/ThemeContext.tsx";
+import SearchBar from "../../components/SearchBar/SearchBar.tsx";
 
 const AppHeader: React.FC = () => {
     const navigate = useNavigate();
@@ -41,6 +42,7 @@ const AppHeader: React.FC = () => {
                     }
                 </Box>
             </Toolbar>
+            <SearchBar />
             <Box>
                 <LightDarkSwitch
                     onChange={toggleTheme}

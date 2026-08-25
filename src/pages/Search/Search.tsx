@@ -4,7 +4,7 @@ import {Alert, Box, Typography} from "@mui/material";
 import MetaData from "../../components/MetaData/MetaData.tsx";
 import {useSearchResults} from "../../services/api/hooks/useSearch.ts";
 import {SearchEntityType, SearchHit} from "../../global/types.ts";
-import {navName} from "../../global/utils.ts";
+import {searchHitPath} from "../../global/utils.ts";
 import SearchSkeleton from "./SearchSkeleton.tsx";
 import {GroupSection, HitMeta, HitRow, ShowAllLink} from "./styles.ts";
 
@@ -39,19 +39,6 @@ function describeHit(hit: SearchHit): string {
         }
         case "ability":
             return `Gen ${hit.gen}`;
-    }
-}
-
-// Pokemon navigate by numeric id (the backend resolves variant ids >=10000
-// to their species internally); moves and abilities navigate by slug.
-function hitPath(hit: SearchHit): string {
-    switch (hit.type) {
-        case "pokemon":
-            return `/pokemon/${hit.id}`;
-        case "move":
-            return `/move/${navName(hit.name)}`;
-        case "ability":
-            return `/ability/${navName(hit.name)}`;
     }
 }
 
@@ -115,7 +102,7 @@ const Search = () => {
                     </Typography>
                     <Box sx={{display: "flex", flexDirection: "column", gap: 1}}>
                         {group.hits.map(hit => (
-                            <HitRow key={hit.id} onClick={() => navigate(hitPath(hit))}>
+                            <HitRow key={hit.id} onClick={() => navigate(searchHitPath(hit))}>
                                 <Typography variant="h5">{hit.name}</Typography>
                                 <HitMeta variant="body2">{describeHit(hit)}</HitMeta>
                             </HitRow>
