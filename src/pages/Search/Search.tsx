@@ -1,9 +1,14 @@
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {useState} from "react";
-import {Alert, Box, Typography} from "@mui/material";
+import {Alert, Box, Grid2 as Grid, Typography} from "@mui/material";
 import MetaData from "../../components/MetaData/MetaData.tsx";
+import PokemonList from "../../components/PokemonList/PokemonList.tsx";
+import MoveList from "../../components/MoveList/MoveList.tsx";
+import {AbilityContainer, AbilityText} from "../Abilities/AbilityHome/styles.ts";
 import {useSearchResults} from "../../services/api/hooks/useSearch.ts";
-import {SearchEntityType, SearchHit} from "../../global/types.ts";
+import {asEnum, asNullableEnum} from "../../services/api/parse.ts";
+import {MoveClass, PokemonType} from "../../global/enums.ts";
+import {MoveSnapshot, PokemonSnapshot, SearchEntityType, SearchHit} from "../../global/types.ts";
 import {searchHitPath} from "../../global/utils.ts";
 import SearchSkeleton from "./SearchSkeleton.tsx";
 import {GroupSection, HitMeta, HitRow, ShowAllLink} from "./styles.ts";
@@ -14,32 +19,32 @@ const GROUP_LABELS: Record<SearchEntityType, string> = {
     ability: "Abilities",
 };
 
-// meta shape varies by entity type and isn't typed beyond Record<string,
-// unknown> — see the SearchHit comment in global/types.ts.
-function capitalize(s: string): string {
-    return s.charAt(0).toUpperCase() + s.slice(1);
+// Degraded (Postgres fallback) hits carry no meta at all, so they can't
+// build a full snapshot — those groups fall back to a plain text row below.
+function toPokemonSnapshot(hit: SearchHit): PokemonSnapshot | null {
+    if (!hit.meta) return null;
+    return {
+        dexNumber: Number(hit.meta.dex_number),
+        speciesId: Number(hit.meta.species_id),
+        pokemonId: hit.id,
+        name: hit.name,
+        type1: asEnum(PokemonType, hit.meta.type1, "meta.type1"),
+        type2: asNullableEnum(PokemonType, hit.meta.type2 ?? null, "meta.type2"),
+    };
 }
 
-function describeHit(hit: SearchHit): string {
-    const meta = hit.meta ?? {};
-    switch (hit.type) {
-        case "pokemon": {
-            const types = [meta.type1, meta.type2]
-                .filter((t): t is string => typeof t === "string")
-                .map(capitalize)
-                .join(" / ");
-            const bst = typeof meta.bst === "number" ? `BST ${meta.bst}` : null;
-            return [types, bst].filter(Boolean).join(" · ");
-        }
-        case "move": {
-            const type = typeof meta.move_type === "string" ? capitalize(meta.move_type) : null;
-            const moveClass = typeof meta.move_class === "string" ? capitalize(meta.move_class) : null;
-            const power = typeof meta.power === "number" ? `${meta.power} power` : "-- power";
-            return [type, moveClass, power].filter(Boolean).join(" · ");
-        }
-        case "ability":
-            return `Gen ${hit.gen}`;
-    }
+function toMoveSnapshot(hit: SearchHit): MoveSnapshot | null {
+    if (!hit.meta) return null;
+    return {
+        id: hit.id,
+        name: hit.name,
+        type: asEnum(PokemonType, hit.meta.move_type, "meta.move_type"),
+        moveClass: asEnum(MoveClass, hit.meta.move_class, "meta.move_class"),
+        power: typeof hit.meta.power === "number" ? hit.meta.power : null,
+        accuracy: typeof hit.meta.accuracy === "number" ? hit.meta.accuracy : null,
+        pp: typeof hit.meta.pp === "number" ? hit.meta.pp : null,
+        gen: hit.gen,
+    };
 }
 
 const EXPANDED_SIZE = 50;
@@ -73,6 +78,13 @@ const Search = () => {
 
     const totalHits = data.groups.reduce((sum, g) => sum + g.total, 0);
 
+    const showAll = (group: { hits: SearchHit[]; total: number }) =>
+        group.hits.length < group.total && size < EXPANDED_SIZE && (
+            <ShowAllLink onClick={() => setSize(EXPANDED_SIZE)}>
+                Show all {group.total}
+            </ShowAllLink>
+        );
+
     return (
         <>
             <MetaData pageTitle={`${query} | Search | PokePedia`}/>
@@ -95,26 +107,67 @@ const Search = () => {
                 </Typography>
             )}
 
-            {data.groups.map(group => (
-                <GroupSection key={group.type}>
-                    <Typography variant="h2" sx={{paddingBottom: 2}}>
-                        {GROUP_LABELS[group.type]} ({group.total})
-                    </Typography>
-                    <Box sx={{display: "flex", flexDirection: "column", gap: 1}}>
-                        {group.hits.map(hit => (
-                            <HitRow key={hit.id} onClick={() => navigate(searchHitPath(hit))}>
-                                <Typography variant="h5">{hit.name}</Typography>
-                                <HitMeta variant="body2">{describeHit(hit)}</HitMeta>
-                            </HitRow>
-                        ))}
-                    </Box>
-                    {group.hits.length < group.total && size < EXPANDED_SIZE && (
-                        <ShowAllLink onClick={() => setSize(EXPANDED_SIZE)}>
-                            Show all {group.total}
-                        </ShowAllLink>
-                    )}
-                </GroupSection>
-            ))}
+            {data.groups.map(group => {
+                if (group.type === "pokemon" && !data.degraded) {
+                    const pokemon = group.hits.map(toPokemonSnapshot).filter((p): p is PokemonSnapshot => p !== null);
+                    return (
+                        <GroupSection key={group.type}>
+                            <PokemonList data={pokemon} header={`${GROUP_LABELS.pokemon} (${group.total})`}/>
+                            {showAll(group)}
+                        </GroupSection>
+                    );
+                }
+
+                if (group.type === "move" && !data.degraded) {
+                    const moves = group.hits.map(toMoveSnapshot).filter((m): m is MoveSnapshot => m !== null);
+                    return (
+                        <GroupSection key={group.type}>
+                            <MoveList moves={moves} title={`${GROUP_LABELS.move} (${group.total})`}/>
+                            {showAll(group)}
+                        </GroupSection>
+                    );
+                }
+
+                if (group.type === "ability" && !data.degraded) {
+                    return (
+                        <GroupSection key={group.type}>
+                            <Typography variant="h2" sx={{marginBottom: 2}}>
+                                {GROUP_LABELS.ability} ({group.total})
+                            </Typography>
+                            <Grid container spacing={2} sx={{marginBottom: 3}}>
+                                {group.hits.map(hit => (
+                                    <Grid size={3} key={hit.id}>
+                                        <AbilityContainer>
+                                            <AbilityText onClick={() => navigate(searchHitPath(hit))}>
+                                                {hit.name}
+                                            </AbilityText>
+                                        </AbilityContainer>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                            {showAll(group)}
+                        </GroupSection>
+                    );
+                }
+
+                // Degraded fallback: no meta to build a real card from.
+                return (
+                    <GroupSection key={group.type}>
+                        <Typography variant="h2" sx={{paddingBottom: 2}}>
+                            {GROUP_LABELS[group.type]} ({group.total})
+                        </Typography>
+                        <Box sx={{display: "flex", flexDirection: "column", gap: 1}}>
+                            {group.hits.map(hit => (
+                                <HitRow key={hit.id} onClick={() => navigate(searchHitPath(hit))}>
+                                    <Typography variant="h5">{hit.name}</Typography>
+                                    <HitMeta variant="body2">Gen {hit.gen}</HitMeta>
+                                </HitRow>
+                            ))}
+                        </Box>
+                        {showAll(group)}
+                    </GroupSection>
+                );
+            })}
         </>
     );
 };
