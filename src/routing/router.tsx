@@ -14,6 +14,7 @@ import TeamSelection from "../pages/TeamBuilder/TeamPage/TeamSelection.tsx";
 import Types from "../pages/Types/Types.tsx";
 import BattleHome from "../pages/Battle/BattleHome.tsx";
 import BattleRoom from "../pages/Battle/BattleRoom.tsx";
+import Search from "../pages/Search/Search.tsx";
 
 export const router = createBrowserRouter([{
         element: <Layout/>,
@@ -87,6 +88,11 @@ export const router = createBrowserRouter([{
                 path: "/battle/:code",
                 errorElement: <ErrorPage />,
                 element: <BattleRoom />
+            },
+            {
+                path: "/search",
+                errorElement: <ErrorPage />,
+                element: <Search />
             }
         ]
 }])
