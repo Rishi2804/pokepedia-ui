@@ -149,6 +149,32 @@ export interface AbilitySnapshot {
     gen: number;
 }
 
+// The type discriminator is a plain literal union, not a wrapped enum like
+// PokemonType/Game: it's used to pick a UI section, not translated to a
+// display label, and the wire value is already lowercase ("pokemon"), which
+// doesn't fit asEnum's key-equals-value assumption.
+export type SearchEntityType = "pokemon" | "move" | "ability";
+
+export interface SearchHit {
+    type: SearchEntityType;
+    id: number;
+    name: string;
+    gen: number;
+    meta?: Record<string, unknown>;
+}
+
+export interface SearchGroup {
+    type: SearchEntityType;
+    total: number;
+    hits: SearchHit[];
+}
+
+export interface SearchResults {
+    query: string;
+    degraded: boolean;
+    groups: SearchGroup[];
+}
+
 export interface AbilityDetails {
     name: string;
     gen: number;
