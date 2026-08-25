@@ -1,4 +1,4 @@
-import {FC, KeyboardEvent, useRef, useState} from "react";
+import {FC, KeyboardEvent, useState} from "react";
 import {useAutocomplete} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useDebouncedValue} from "../../hooks/useDebouncedValue.ts";
@@ -17,18 +17,10 @@ const SearchBar: FC = () => {
     const navigate = useNavigate();
     const [inputValue, setInputValue] = useState("");
     const debouncedValue = useDebouncedValue(inputValue, 200);
-    // Set by onChange when Enter selects a highlighted suggestion, so the
-    // same keypress doesn't also fall through to the full-results-page
-    // navigation below.
-    const justSelectedRef = useRef(false);
 
     const {data} = useSearchSuggest(debouncedValue);
     const options = data ?? [];
 
-    // Blur after navigating: keepPreviousData means useSearchSuggest keeps
-    // showing the last successful list once the query clears to empty (a
-    // cleared/disabled query never resolves to replace it), so without this
-    // the dropdown stays open over whatever page we just navigated to.
     const blurInput = () => {
         if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur();
@@ -56,16 +48,12 @@ const SearchBar: FC = () => {
         getOptionLabel: (option) => option.name,
         filterOptions: (x) => x, // options are already server-ranked
         inputValue,
-        // Only "input" is the user actually typing. MUI also fires this with
-        // "reset"/"selectOption" to sync displayed text to the chosen
-        // option's label after a selection, which would overwrite the
-        // setInputValue("") below with the option's own name.
+        // Ignore MUI's own "reset"/"selectOption" syncs, only real typing.
         onInputChange: (_, newValue, reason) => {
             if (reason === "input") setInputValue(newValue);
         },
         onChange: (_, value) => {
             if (value) {
-                justSelectedRef.current = true;
                 setInputValue("");
                 blurInput();
                 navigate(searchHitPath(value));
@@ -74,15 +62,13 @@ const SearchBar: FC = () => {
         clearOnBlur: false,
     });
 
-    const {onKeyDown: autocompleteKeyDown, ...inputProps} = getInputProps();
-
+    // Enter always searches, regardless of what's hover-highlighted.
+    // getRootProps() (not getInputProps()) owns Enter-selects-highlighted,
+    // and it'd still fire via bubbling without stopPropagation.
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-        autocompleteKeyDown?.(event);
         if (event.key === "Enter") {
-            if (justSelectedRef.current) {
-                justSelectedRef.current = false;
-                return;
-            }
+            event.stopPropagation();
+            event.preventDefault();
             goToResultsPage(inputValue);
         }
     };
@@ -90,11 +76,12 @@ const SearchBar: FC = () => {
     return (
         <Container {...getRootProps()}>
             <SearchInput
-                {...inputProps}
+                {...getInputProps()}
                 onKeyDown={handleKeyDown}
                 placeholder="Search Pokémon, moves, abilities…"
             />
-            {popupOpen && options.length > 0 && (
+            {/* inputValue check: a cleared/disabled query keeps stale options via keepPreviousData */}
+            {popupOpen && inputValue.trim() !== "" && options.length > 0 && (
                 <Dropdown {...getListboxProps()}>
                     {(groupedOptions as SearchHit[]).map((option, index) => {
                         const {key, ...optionProps} = getOptionProps({option, index});

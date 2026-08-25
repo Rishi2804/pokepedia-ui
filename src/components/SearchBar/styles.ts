@@ -1,10 +1,16 @@
 import {styled} from "@mui/system";
 import {Box} from "@mui/material";
 
-export const Container = styled(Box)({
+export const Container = styled(Box)(({theme}) => ({
     position: "relative",
     width: 320,
-});
+    [theme.breakpoints.down('md')]: {
+        width: 200,
+    },
+    [theme.breakpoints.down('xs')]: {
+        width: 140,
+    },
+}));
 
 export const SearchInput = styled("input")(({theme}) => ({
     width: "100%",
