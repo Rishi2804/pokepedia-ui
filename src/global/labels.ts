@@ -59,6 +59,7 @@ export const gameLabel: Record<Game, string> = {
     [Game.LEGENDS_ARCEUS]: "Legends: Arceus",
     [Game.SCARLET]: "Scarlet",
     [Game.VIOLET]: "Violet",
+    [Game.LEGENDS_ZA]: "Legends: Z-A",
 };
 
 export const versionGroupLabel: Record<VersionGroup, string> = {
@@ -117,6 +118,8 @@ export const pokedexRegionLabel: Record<PokedexRegion, string> = {
     [PokedexRegion.PALDEA]: "paldea",
     [PokedexRegion.KITAKAMI]: "kitakami",
     [PokedexRegion.BLUEBERRY]: "blueberry",
+    [PokedexRegion.LUMIOSE]: "lumiose",
+    [PokedexRegion.HYPERSPACE]: "hyperspace",
 };
 
 export const learnMethodLabel: Record<LearnMethod, string> = {

@@ -56,7 +56,8 @@ export enum Game {
     SHINING_PEARL = "SHINING_PEARL",
     LEGENDS_ARCEUS = "LEGENDS_ARCEUS",
     SCARLET = "SCARLET",
-    VIOLET = "VIOLET"
+    VIOLET = "VIOLET",
+    LEGENDS_ZA = "LEGENDS_ZA"
 }
 
 export enum VersionGroup {
@@ -114,7 +115,9 @@ export enum PokedexRegion {
     HISUI = "HISUI",
     PALDEA = "PALDEA",
     KITAKAMI = "KITAKAMI",
-    BLUEBERRY = "BLUEBERRY"
+    BLUEBERRY = "BLUEBERRY",
+    LUMIOSE = "LUMIOSE",
+    HYPERSPACE = "HYPERSPACE"
 }
 
 export enum LearnMethod {

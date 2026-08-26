@@ -17,5 +17,6 @@ export const VersionToHeaderText: Record<PokedexVersion, string> = {
     [PokedexVersion.SWORD_SHIELD]: "Sword & Shield",
     [PokedexVersion.BRILLIANT_DIAMOND_AND_SHINING_PEARL]: "Brilliant Diamond & Shining Pearl",
     [PokedexVersion.LEGENDS_ARCEUS]: "Legends: Arceus",
-    [PokedexVersion.SCARLET_VIOLET]: "Scarlet & Violet"
+    [PokedexVersion.SCARLET_VIOLET]: "Scarlet & Violet",
+    [PokedexVersion.LEGENDS_ZA]: "Legends: Z-A"
 };

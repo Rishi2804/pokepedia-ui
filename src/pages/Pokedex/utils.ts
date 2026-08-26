@@ -66,6 +66,10 @@ export const VersionToRegion: Record<PokedexVersion, PokedexRegion[]> = {
         PokedexRegion.PALDEA,
         PokedexRegion.KITAKAMI,
         PokedexRegion.BLUEBERRY
+    ],
+    [PokedexVersion.LEGENDS_ZA]: [
+        PokedexRegion.LUMIOSE,
+        PokedexRegion.HYPERSPACE
     ]
 };
 
@@ -87,5 +91,6 @@ export const VersionToImage: Record<PokedexVersion, string> = {
     [PokedexVersion.SWORD_SHIELD]: "swsh.png",
     [PokedexVersion.BRILLIANT_DIAMOND_AND_SHINING_PEARL]: "bdsp.png",
     [PokedexVersion.LEGENDS_ARCEUS]: "arceus.png",
-    [PokedexVersion.SCARLET_VIOLET]: "sv.png"
+    [PokedexVersion.SCARLET_VIOLET]: "sv.png",
+    [PokedexVersion.LEGENDS_ZA]: "lza.png"
 };

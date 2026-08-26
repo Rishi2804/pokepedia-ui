@@ -16,5 +16,6 @@ export enum PokedexVersion {
     SWORD_SHIELD = "sword-shield",
     BRILLIANT_DIAMOND_AND_SHINING_PEARL = "brilliant-diamond-shining-pearl",
     LEGENDS_ARCEUS = "legends-arceus",
-    SCARLET_VIOLET = "scarlet-violet"
+    SCARLET_VIOLET = "scarlet-violet",
+    LEGENDS_ZA = "legends-za"
 }
