@@ -24,7 +24,7 @@ const TypeDefenses: FC<IDexNumberProps> = ({type1, type2, abilities}) => {
         const filteredList = abilities.filter(ability => {
             return Object.keys(abilityImmunities).includes(String(ability.id));
         });
-        if (filteredList.length < abilities.length) {
+        if (filteredList.length < abilities.length || filteredList.length === 0) {
             filteredList.unshift({id: 0, name: "Regular"});
         }
         setI(0);
