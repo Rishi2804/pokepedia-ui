@@ -66,6 +66,18 @@ const LA: GenRules = {
     happiness: false, pokeball: false,
 };
 
+// LA-style: no abilities/items/natures, effort-level EVs. Chosen deliberately
+// even though Legends: Z-A DOES have held items in the form of Mega Stones
+// (see pokepedia-battle/src/formats.ts's ZA_MEGA_STONE_IDS) -- items: false
+// excludes those from the builder for now. Revisit if that turns out wrong;
+// it's a one-word change.
+const ZA: GenRules = {
+    abilities: false, items: false, natures: false,
+    evModel: 'effortLevel', evLabel: 'Effort Level', evCap: 10, evTotalCap: null,
+    ivModel: 'iv', hiddenPower: false, tera: false, dynamax: false,
+    happiness: false, pokeball: false,
+};
+
 const SV: GenRules = {
     ...GEN_6_7,
     hiddenPower: false, tera: true,
@@ -73,7 +85,8 @@ const SV: GenRules = {
 
 // One entry per VersionGroup rather than deriving from TeamPage/constants.ts's
 // gen number — several version groups share a gen number (SWSH/BDSP/LA are all
-// gen 8) but have unrelated rule sets, so the gen number alone can't select one.
+// gen 8, and SV/ZA are both gen 9) but have unrelated rule sets, so the gen
+// number alone can't select one.
 const GEN_RULES: Record<VersionGroup, GenRules> = {
     [VersionGroup.RED_BLUE]: GEN_1,
     [VersionGroup.YELLOW]: GEN_1,
@@ -96,6 +109,7 @@ const GEN_RULES: Record<VersionGroup, GenRules> = {
     [VersionGroup.BRILLIANT_DIAMOND_AND_SHINING_PEARL]: BDSP,
     [VersionGroup.LEGENDS_ARCEUS]: LA,
     [VersionGroup.SCARLET_VIOLET]: SV,
+    [VersionGroup.LEGENDS_ZA]: ZA,
 };
 
 // A null versionGroup means the "Home"/national team (see teamStore.createNewTeam)

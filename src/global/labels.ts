@@ -84,6 +84,7 @@ export const versionGroupLabel: Record<VersionGroup, string> = {
     [VersionGroup.BRILLIANT_DIAMOND_AND_SHINING_PEARL]: "Brilliant Diamond/Shining Pearl",
     [VersionGroup.LEGENDS_ARCEUS]: "Legends: Arceus",
     [VersionGroup.SCARLET_VIOLET]: "Scarlet/Violet",
+    [VersionGroup.LEGENDS_ZA]: "Legends: Z-A",
 };
 
 export const pokedexRegionLabel: Record<PokedexRegion, string> = {
@@ -161,6 +162,7 @@ export const versionGroupGames: Record<VersionGroup, Game[]> = {
     [VersionGroup.BRILLIANT_DIAMOND_AND_SHINING_PEARL]: [Game.BRILLIANT_DIAMOND, Game.SHINING_PEARL],
     [VersionGroup.LEGENDS_ARCEUS]: [Game.LEGENDS_ARCEUS],
     [VersionGroup.SCARLET_VIOLET]: [Game.SCARLET, Game.VIOLET],
+    [VersionGroup.LEGENDS_ZA]: [Game.LEGENDS_ZA],
 };
 
 // Replaces the BiDirectionalMap in pages/TeamBuilder/utils.ts; round-trips every VersionGroup member.
