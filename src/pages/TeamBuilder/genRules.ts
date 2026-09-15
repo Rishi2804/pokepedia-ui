@@ -66,14 +66,10 @@ const LA: GenRules = {
     happiness: false, pokeball: false,
 };
 
-// LA-style: no abilities/items/natures, effort-level EVs. Chosen deliberately
-// even though Legends: Z-A DOES have held items in the form of Mega Stones
-// (see pokepedia-battle/src/formats.ts's ZA_MEGA_STONE_IDS) -- items: false
-// excludes those from the builder for now. Revisit if that turns out wrong;
-// it's a one-word change.
+
 const ZA: GenRules = {
-    abilities: false, items: false, natures: false,
-    evModel: 'effortLevel', evLabel: 'Effort Level', evCap: 10, evTotalCap: null,
+    abilities: false, items: true, natures: true,
+    evModel: 'ev252', evLabel: 'EVs', evCap: 252, evTotalCap: 510,
     ivModel: 'iv', hiddenPower: false, tera: false, dynamax: false,
     happiness: false, pokeball: false,
 };
