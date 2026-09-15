@@ -66,6 +66,14 @@ const LA: GenRules = {
     happiness: false, pokeball: false,
 };
 
+
+const ZA: GenRules = {
+    abilities: false, items: true, natures: true,
+    evModel: 'ev252', evLabel: 'EVs', evCap: 252, evTotalCap: 510,
+    ivModel: 'iv', hiddenPower: false, tera: false, dynamax: false,
+    happiness: false, pokeball: false,
+};
+
 const SV: GenRules = {
     ...GEN_6_7,
     hiddenPower: false, tera: true,
@@ -73,7 +81,8 @@ const SV: GenRules = {
 
 // One entry per VersionGroup rather than deriving from TeamPage/constants.ts's
 // gen number — several version groups share a gen number (SWSH/BDSP/LA are all
-// gen 8) but have unrelated rule sets, so the gen number alone can't select one.
+// gen 8, and SV/ZA are both gen 9) but have unrelated rule sets, so the gen
+// number alone can't select one.
 const GEN_RULES: Record<VersionGroup, GenRules> = {
     [VersionGroup.RED_BLUE]: GEN_1,
     [VersionGroup.YELLOW]: GEN_1,
@@ -96,6 +105,7 @@ const GEN_RULES: Record<VersionGroup, GenRules> = {
     [VersionGroup.BRILLIANT_DIAMOND_AND_SHINING_PEARL]: BDSP,
     [VersionGroup.LEGENDS_ARCEUS]: LA,
     [VersionGroup.SCARLET_VIOLET]: SV,
+    [VersionGroup.LEGENDS_ZA]: ZA,
 };
 
 // A null versionGroup means the "Home"/national team (see teamStore.createNewTeam)

@@ -22,7 +22,9 @@ export const DexToRegionMapping: Partial<Record<PokedexRegion, string>> = {
     [PokedexRegion.HISUI]: 'Hisui',
     [PokedexRegion.PALDEA]: 'Paldea',
     [PokedexRegion.KITAKAMI]: 'Kitakami',
-    [PokedexRegion.BLUEBERRY]: 'Blueberry'
+    [PokedexRegion.BLUEBERRY]: 'Blueberry',
+    [PokedexRegion.LUMIOSE]: 'Lumiose',
+    [PokedexRegion.HYPERSPACE]: 'Hyperspace'
 }
 
 
@@ -55,12 +57,14 @@ export const regionToColorMap: Record<string, string> = {
     "Alola SM": "#dc9887",
     "Alola USUM": "#dc9887",
     "Galar": "#be80bc",
-    "Isle of Armor": "#be80bc",
-    "Crown Tundra": "#be80bc",
+    "Isle of Armor": "#fde060",
+    "Crown Tundra": "#67ca9c",
     "Hisui": "#8092a7",
     "Paldea": "#e4c28a",
     "Kitakami": "#75c1ba",
     "Blueberry": "#6386a4",
+    "Lumiose": "#83c7e0",
+    "Hyperspace": "#858585",
 }
 
 export const gameToColorMap: Record<Game, string> = {
@@ -101,6 +105,7 @@ export const gameToColorMap: Record<Game, string> = {
     [Game.LEGENDS_ARCEUS]: "#3e5878",
     [Game.SCARLET]: "#e0503f",
     [Game.VIOLET]: "#7939b1",
+    [Game.LEGENDS_ZA]: "#31ca56",
 }
 
 export const gameToTextColor: Record<Game, string> = {
@@ -141,4 +146,5 @@ export const gameToTextColor: Record<Game, string> = {
     [Game.LEGENDS_ARCEUS]: "white",
     [Game.SCARLET]: "white",
     [Game.VIOLET]: "white",
+    [Game.LEGENDS_ZA]: "white",
 }

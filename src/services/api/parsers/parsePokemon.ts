@@ -2,6 +2,9 @@ import {PokemonDetails, PokemonMoveSnapshot} from "../../../global/types.ts";
 import {Game, LearnMethod, MoveClass, PokedexRegion, PokemonType, VersionGroup} from "../../../global/enums.ts";
 import {asEnum, asNullableEnum} from "../parse.ts";
 
+// The last five fields are Legends: Arceus/Z-A-only extras -- absent from
+// the wire payload entirely (dto.MoveInfo's `omitempty`) for every other
+// game. See PokemonMoveSnapshot in global/types.ts.
 interface WireMove {
     id: number;
     name: string;
@@ -11,6 +14,11 @@ interface WireMove {
     accuracy: number | null;
     pp: number | null;
     levelLearned: number;
+    secondLevel?: number | null;
+    powerStrong?: number | null;
+    powerAgile?: number | null;
+    accuracyStrong?: number | null;
+    cooldown?: number | null;
 }
 
 export interface WirePokemonDetails {

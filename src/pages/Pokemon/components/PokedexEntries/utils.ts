@@ -65,8 +65,8 @@ export function categorizedDexEntries(gen: number, dexEntries: DexEntry[], dexNu
     }
     if (gen <= 9) {
         categories.push({
-            games: [Game.SCARLET, Game.VIOLET],
-            dexes: [PokedexRegion.PALDEA, PokedexRegion.KITAKAMI, PokedexRegion.BLUEBERRY],
+            games: [Game.SCARLET, Game.VIOLET, Game.LEGENDS_ZA],
+            dexes: [PokedexRegion.PALDEA, PokedexRegion.KITAKAMI, PokedexRegion.BLUEBERRY, PokedexRegion.LUMIOSE, PokedexRegion.HYPERSPACE],
             gen: 9
         })
     }

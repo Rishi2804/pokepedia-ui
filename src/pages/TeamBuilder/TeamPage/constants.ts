@@ -21,5 +21,6 @@ export const VersionToGen: Record<VersionGroup, number> = {
     [VersionGroup.SWORD_SHIELD]: 8,
     [VersionGroup.BRILLIANT_DIAMOND_AND_SHINING_PEARL]: 8,
     [VersionGroup.LEGENDS_ARCEUS]: 8,
-    [VersionGroup.SCARLET_VIOLET]: 9
+    [VersionGroup.SCARLET_VIOLET]: 9,
+    [VersionGroup.LEGENDS_ZA]: 9
 }

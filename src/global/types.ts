@@ -48,6 +48,13 @@ interface Evolution {
     altForm: number;
 }
 
+// The last five fields are Legends: Arceus/Z-A-only extras, always absent
+// for every other game -- see 000010_legends_move_values.up.sql. Legends:
+// Arceus populates secondLevel (Mastery), powerStrong/powerAgile (Strong/
+// Agile Style power), and accuracyStrong (Strong Style's own accuracy --
+// Agile Style has no accuracy column of its own on Bulbapedia, it shares
+// `accuracy` above). Legends: Z-A populates secondLevel ("Plus" level) and
+// cooldown in place of pp, leaving the other three absent.
 export interface PokemonMoveSnapshot {
     id: number;
     name: string;
@@ -57,6 +64,11 @@ export interface PokemonMoveSnapshot {
     accuracy: number | null;
     pp: number | null;
     levelLearned: number;
+    secondLevel?: number | null;
+    powerStrong?: number | null;
+    powerAgile?: number | null;
+    accuracyStrong?: number | null;
+    cooldown?: number | null;
 }
 
 export interface Moveset {

@@ -77,5 +77,9 @@ export const VersionToRegion: Record<VersionGroup, PokedexRegion[]> = {
         PokedexRegion.PALDEA,
         PokedexRegion.KITAKAMI,
         PokedexRegion.BLUEBERRY
+    ],
+    [VersionGroup.LEGENDS_ZA]: [
+        PokedexRegion.LUMIOSE,
+        PokedexRegion.HYPERSPACE
     ]
 };
