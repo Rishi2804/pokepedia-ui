@@ -106,7 +106,10 @@ export interface RequestMoveView {
 export interface RequestSwitchView {
     index: number;
     name: string;
+    speciesForme: string;
     spriteId: number | null;
+    shiny: boolean;
+    female: boolean;
     fainted: boolean;
     active: boolean;
 }

@@ -9,6 +9,12 @@ export function toShowdownId(slug: string): string {
     return slug.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+// Forward direction of resolveSlugFromShowdownName below - the override's id
+// when our slug doesn't normalize onto Showdown's own directly.
+export function showdownIdFromSlug(slug: string): string {
+    return SLUG_TO_SHOWDOWN_ID[slug]?.id ?? toShowdownId(slug);
+}
+
 // The 46 slugs that don't resolve by normalizing alone, hand-written from
 // Showdown's real `forme`/`baseSpecies` fields (../pokemon-showdown/data/pokedex.ts),
 // cross-referenced by dex number — NOT derived by a "guess the base form"

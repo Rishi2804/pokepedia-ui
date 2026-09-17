@@ -4,6 +4,7 @@ import {Box, Button, Typography} from "@mui/material";
 import {FC, useState} from "react";
 import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import type {Choice, SlotView} from "../../../../services/battle/protocol.ts";
+import {useFormeImageId} from "../../../../services/battle/useFormeImageId.ts";
 import {SlotRow, SlotThumb} from "./styles.ts";
 
 interface TeamPreviewProps {
@@ -64,6 +65,7 @@ interface TeamPreviewSlotProps {
 
 const TeamPreviewSlot: FC<TeamPreviewSlotProps> = ({id, mon, position, willBring}) => {
     const {attributes, listeners, setNodeRef, transform, transition} = useSortable({id});
+    const formeImageId = useFormeImageId();
 
     return (
         <SlotRow
@@ -78,7 +80,7 @@ const TeamPreviewSlot: FC<TeamPreviewSlotProps> = ({id, mon, position, willBring
         >
             <Typography variant="body1" sx={{width: 24}}>{position}</Typography>
             <SlotThumb>
-                <PokemonImg id={mon.spriteId ?? 0} shiny={mon.shiny} female={mon.female}/>
+                <PokemonImg id={formeImageId(mon.speciesForme, mon.spriteId) ?? 0} shiny={mon.shiny} female={mon.female}/>
             </SlotThumb>
             <Typography variant="body1">{mon.name}</Typography>
         </SlotRow>

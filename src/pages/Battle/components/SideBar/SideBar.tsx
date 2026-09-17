@@ -2,6 +2,7 @@ import {Box} from "@mui/material";
 import {FC} from "react";
 import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import type {SideConditionView, SlotView} from "../../../../services/battle/protocol.ts";
+import {useFormeImageId} from "../../../../services/battle/useFormeImageId.ts";
 import {Pill} from "../sharedStyles.ts";
 import {STATUS_COLOR} from "../statusTheme.ts";
 import {BlankPip, Pip} from "./styles.ts";
@@ -18,6 +19,7 @@ interface SideBarProps {
 // pips rather than guessed at, since there's nothing server-side to guess
 // from either.
 const SideBar: FC<SideBarProps> = ({team, teamSize, conditions, align = 'left'}) => {
+    const formeImageId = useFormeImageId();
     const unrevealed = Math.max(0, teamSize - team.length);
 
     return (
@@ -25,7 +27,7 @@ const SideBar: FC<SideBarProps> = ({team, teamSize, conditions, align = 'left'})
             <Box sx={{display: 'flex', gap: 0.75, flexDirection: align === 'right' ? 'row-reverse' : 'row'}}>
                 {team.map((mon, i) => (
                     <Pip key={`${mon.ident}-${i}`} ringColor={mon.status ? STATUS_COLOR[mon.status] : null} fainted={mon.fainted} title={mon.name}>
-                        {mon.spriteId !== null && <PokemonImg id={mon.spriteId} shiny={mon.shiny} female={mon.female}/>}
+                        <PokemonImg id={formeImageId(mon.speciesForme, mon.spriteId) ?? 0} shiny={mon.shiny} female={mon.female}/>
                     </Pip>
                 ))}
                 {Array.from({length: unrevealed}, (_, i) => <BlankPip key={`blank-${i}`}/>)}

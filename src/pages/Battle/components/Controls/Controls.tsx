@@ -2,6 +2,7 @@ import {Box, Button, Typography} from "@mui/material";
 import {FC, useEffect, useState} from "react";
 import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import {TypeToCardBorder, TypeToCardColor} from "../../../../global/utils.ts";
+import {useFormeImageId} from "../../../../services/battle/useFormeImageId.ts";
 import type {Choice, RequestView} from "../../../../services/battle/protocol.ts";
 import MoveClassIcon from "../../../../components/MoveClassIcon/MoveClassIcon.tsx";
 import TypeIcon from "../../../../components/TypeIcon/TypeIcon.tsx";
@@ -28,6 +29,7 @@ interface ControlsProps {
 // click into a semantic Choice.
 const Controls: FC<ControlsProps> = ({request, disabled, onChoose}) => {
     const [special, setSpecial] = useState<SpecialFlags>({});
+    const formeImageId = useFormeImageId();
 
     // special is per-request, not persistent: without this, a toggle like
     // Mega Evolve stays stuck on for every later move once the server stops
@@ -110,7 +112,7 @@ const Controls: FC<ControlsProps> = ({request, disabled, onChoose}) => {
                                 onClick={() => onChoose({kind: 'switch', index: mon.index})}
                             >
                                 <SwitchThumb>
-                                    {mon.spriteId !== null && <PokemonImg id={mon.spriteId}/>}
+                                    <PokemonImg id={formeImageId(mon.speciesForme, mon.spriteId) ?? 0} shiny={mon.shiny} female={mon.female}/>
                                 </SwitchThumb>
                                 <Typography variant="body2">
                                     {mon.name}{mon.fainted ? ' (fainted)' : mon.active ? ' (active)' : ''}
