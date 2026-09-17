@@ -1,5 +1,5 @@
 import {Box, Button, Typography} from "@mui/material";
-import {FC, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import {TypeToCardBorder, TypeToCardColor} from "../../../../global/utils.ts";
 import type {Choice, RequestView} from "../../../../services/battle/protocol.ts";
@@ -28,6 +28,12 @@ interface ControlsProps {
 // click into a semantic Choice.
 const Controls: FC<ControlsProps> = ({request, disabled, onChoose}) => {
     const [special, setSpecial] = useState<SpecialFlags>({});
+
+    // special is per-request, not persistent: without this, a toggle like
+    // Mega Evolve stays stuck on for every later move once the server stops
+    // offering it (e.g. already used), silently attaching mega: true to a
+    // choice the button for is no longer even visible.
+    useEffect(() => setSpecial({}), [request.rqid]);
 
     if (request.kind === 'wait') {
         return <Typography color="text.secondary">Waiting for opponent…</Typography>;

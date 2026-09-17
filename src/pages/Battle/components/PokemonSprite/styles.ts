@@ -3,15 +3,15 @@ import {Box, styled} from "@mui/material";
 interface SpriteFrameProps {
     size: number;
     fainted: boolean;
-    flip: boolean;
+    pixelated: boolean;
 }
 
 // Remounted by the parent (keyed on the active Pokemon's ident) whenever a
 // switch happens, so this animation replays on every switch-in for free -
 // no imperative animation triggering needed.
 export const SpriteFrame = styled(Box, {
-    shouldForwardProp: prop => prop !== 'size' && prop !== 'fainted' && prop !== 'flip',
-})<SpriteFrameProps>(({size, fainted, flip}) => ({
+    shouldForwardProp: prop => prop !== 'size' && prop !== 'fainted' && prop !== 'pixelated',
+})<SpriteFrameProps>(({size, fainted, pixelated}) => ({
     width: size,
     height: size,
     animation: 'battle-sprite-in 0.35s ease-out',
@@ -26,6 +26,6 @@ export const SpriteFrame = styled(Box, {
         width: '100%',
         height: '100%',
         objectFit: 'contain',
-        transform: flip ? 'scaleX(-1)' : 'none',
+        imageRendering: pixelated ? 'pixelated' : 'auto',
     },
 }));
