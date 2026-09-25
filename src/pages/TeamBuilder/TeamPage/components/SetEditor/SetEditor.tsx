@@ -49,8 +49,14 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
     const rules = getGenRules(versionGroup);
     // National/home teams aren't pinned to one game's item pool, so they battle
     // in (and draw items from) National Dex - which is the only place Mega
-    // Stones and Z-Crystals are legal alongside gen 9 mechanics.
-    const formatKey: BattleFormatKey = versionGroup ? VersionToGen[versionGroup] as SupportedGen : 'nationaldex';
+    // Stones and Z-Crystals are legal alongside gen 9 mechanics. Legends: Z-A
+    // gets its own key so itemsFor offers its Mega Stones without pulling in
+    // the rest of the National Dex pool - see items.ts's itemsFor.
+    const formatKey: BattleFormatKey = !versionGroup
+        ? 'nationaldex'
+        : versionGroup === VersionGroup.LEGENDS_ZA
+        ? 'legendsza'
+        : VersionToGen[versionGroup] as SupportedGen;
 
     const handleImportSet = async (text: string): Promise<string[]> => {
         const speciesName = parseSpeciesName(text);
