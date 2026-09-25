@@ -21,6 +21,8 @@ import {getGenRules} from "../genRules.ts";
 import {useQueryClient} from "@tanstack/react-query";
 import {teamCandidateQuery} from "../../../services/api/hooks/useTeamCandidateData.ts";
 import {exportTeam, importSet, parseSpeciesName, resolveSpecies, splitTeamText} from "../utils/showdownText.ts";
+import {resolveBattleOnlyBase, toShowdownId} from "../../../global/data/showdownSpecies.ts";
+import {BATTLE_ONLY_FORMES} from "../../../global/data/battleOnlyFormes.ts";
 
 interface TeamSelectionProps {
     isCreateFlow?: boolean;
@@ -65,15 +67,22 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
         throw new Error("Team not found")
     }
 
+    const allCandidates: TeamCandidateSummary[] = data.flatMap(group => group.pokemon);
+    const rules = getGenRules(currentTeam.versionGroup);
+
+    // The roster keeps showing whatever forme was picked, Mega included -
+    // only the item is pre-filled here. The actual submitted species/item
+    // (and the ability/stat pool the editor works against) get redirected to
+    // the base species elsewhere - see SetEditor.tsx and toShowdownTeam.ts's
+    // toShowdownSet, since a battle-only forme can never legally be a team's
+    // submitted species (showdownSpecies.ts's resolveBattleOnlyBase).
     const handleAdd = (mon: TeamCandidateSummary) => {
         if (currentTeam.pokemon.length === 6) return
         const newIndex = currentTeam.pokemon.length;
-        addPokemon(mon);
+        const entry = BATTLE_ONLY_FORMES[toShowdownId(mon.slug)];
+        addPokemon(mon, entry?.requiredItem?.slug);
         setSelectedSlot(newIndex);
     }
-
-    const allCandidates: TeamCandidateSummary[] = data.flatMap(group => group.pokemon);
-    const rules = getGenRules(currentTeam.versionGroup);
 
     const handleCopy = () => {
         if (selectedSlot === null || currentTeam.pokemon.length >= 6) return;
@@ -94,15 +103,39 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
         const newMembers: PokemonTeamMember[] = [];
         for (const block of blocks) {
             const speciesName = parseSpeciesName(block);
-            const resolved = resolveSpecies(speciesName, allCandidates);
+            const pickedCandidate = resolveSpecies(speciesName, allCandidates);
+            const battleOnly = resolveBattleOnlyBase(speciesName, allCandidates);
+            const resolved = battleOnly?.candidate ?? pickedCandidate;
             if (!resolved) {
                 errors.push(`"${speciesName}" isn't available in this version group.`);
                 continue;
             }
             try {
+                // Fetched against the base species so importSet resolves
+                // ability/moves against its real pool (Mega Emboar's own
+                // ability list is just "Mold Breaker", never something a
+                // player actually picks - see toShowdownTeam.ts). The
+                // roster keeps showing whatever forme was pasted, so the
+                // identity fields get restored to it afterward.
                 const detail = await queryClient.fetchQuery(teamCandidateQuery(versionSlug, resolved.id));
                 const {member, errors: setErrors} = importSet(block, detail, currentTeam.versionGroup, rules);
                 errors.push(...setErrors);
+                if (member && battleOnly) {
+                    if (pickedCandidate) {
+                        member.id = pickedCandidate.id;
+                        member.slug = pickedCandidate.slug;
+                        member.name = pickedCandidate.name;
+                        member.type1 = pickedCandidate.type1;
+                        member.type2 = pickedCandidate.type2;
+                        member.gen = pickedCandidate.gen;
+                    }
+                    if (battleOnly.requiredItem) {
+                        if (member.item && member.item !== battleOnly.requiredItem.slug) {
+                            errors.push(`${speciesName} transforms in-battle with ${battleOnly.requiredItem.name}, please fix its item.`);
+                        }
+                        member.item = battleOnly.requiredItem.slug;
+                    }
+                }
                 if (member) newMembers.push(member);
             } catch {
                 errors.push(`Couldn't load data for ${resolved.name}.`);

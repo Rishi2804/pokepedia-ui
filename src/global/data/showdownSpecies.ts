@@ -1,4 +1,5 @@
 import {TeamCandidateSummary} from "../types.ts";
+import {BATTLE_ONLY_FORMES} from "./battleOnlyFormes.ts";
 
 // Matches Showdown's own toID (sim/dex-data.ts): lowercase, strip everything
 // that isn't a-z0-9. Our DB stores PokeAPI-style slugs (e.g. "raichu-alola"),
@@ -100,4 +101,30 @@ export function resolveSlugFromShowdownName(name: string, candidates: TeamCandid
     const exact = candidates.find(c => toShowdownId(c.slug) === target);
     if (exact) return exact;
     return candidates.find(c => SLUG_TO_SHOWDOWN_ID[c.slug]?.id === target);
+}
+
+/**
+ * A "battle-only" forme (Mega/Primal/Crowned/Zen/... - anything
+ * sim/team-validator.ts would refuse to accept as a submitted species) can
+ * never legally be a team's species; only its base species + the right item
+ * can. Resolves a candidate's own slug (add-from-picker) or a raw pasted
+ * Showdown name (import) to {the base candidate to actually submit, the item
+ * that reaching this forme requires - if any}. Returns undefined for any
+ * ordinary, always-selectable forme (Rotom-Wash, Raichu-Alola, ...), which
+ * were never added to BATTLE_ONLY_FORMES in the first place.
+ *
+ * Two species (Necrozma-Ultra, Zygarde-Complete/-Mega) have more than one
+ * legal base forme, disambiguated in a real battle by which move is chosen -
+ * this always picks BATTLE_ONLY_FORMES' first entry as a reasonable default;
+ * picking the other variant means picking that candidate directly instead.
+ */
+export function resolveBattleOnlyBase(
+    nameOrSlug: string,
+    candidates: TeamCandidateSummary[]
+): { candidate: TeamCandidateSummary; requiredItem?: { slug: string; name: string } } | undefined {
+    const entry = BATTLE_ONLY_FORMES[toShowdownId(nameOrSlug)];
+    if (!entry) return undefined;
+    const base = resolveSlugFromShowdownName(entry.baseNames[0], candidates);
+    if (!base) return undefined;
+    return {candidate: base, requiredItem: entry.requiredItem};
 }
