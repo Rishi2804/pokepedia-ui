@@ -3,6 +3,7 @@ import {FC, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import MetaData from "../../components/MetaData/MetaData.tsx";
 import {versionGroupLabel} from "../../global/labels.ts";
+import {VersionGroup} from "../../global/enums.ts";
 import {getGenRules} from "../TeamBuilder/genRules.ts";
 import {VersionToGen} from "../TeamBuilder/TeamPage/constants.ts";
 import {BATTLE_WS_URL} from "../../services/battle/constants.ts";
@@ -71,6 +72,7 @@ const BattleHome: FC = () => {
     const derivedFormatKey = useMemo<BattleFormatKey | null>(() => {
         if (!selection) return null;
         if (!selection.versionGroup) return 'nationaldex';
+        if (selection.versionGroup === VersionGroup.LEGENDS_ZA) return 'legendsza';
         return VersionToGen[selection.versionGroup] as SupportedGen;
     }, [selection]);
 
@@ -161,6 +163,8 @@ const BattleHome: FC = () => {
                     <Typography variant="body2" color="text.secondary" sx={{marginTop: 2}}>
                         {derivedFormatKey === 'nationaldex'
                             ? 'This will be a National Dex Anything Goes battle (Home) — every Pokémon from every generation, with Mega Evolution, Z-Moves and Terastallization all available.'
+                            : derivedFormatKey === 'legendsza'
+                            ? 'This will be a Legends: Z-A battle — Mega Evolution is available, Terastallization is not.'
                             : `This will be a Gen ${derivedFormatKey} Anything Goes battle${selection.versionGroup ? ` (${versionGroupLabel[selection.versionGroup]})` : ''}.`}
                     </Typography>
                 )}
