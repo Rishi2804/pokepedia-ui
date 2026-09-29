@@ -16,6 +16,7 @@ import {getGenRules} from "../../../genRules.ts";
 import type {BattleFormatKey, SupportedGen} from "../../../../../services/battle/protocol.ts";
 import {VersionToGen} from "../../constants.ts";
 import {exportSet, importSet, parseSpeciesName, resolveSpecies} from "../../../utils/showdownText.ts";
+import {resolveBattleOnlyBase} from "../../../../../global/data/showdownSpecies.ts";
 import {useTeamStore} from "../../../../../store/teamStore.ts";
 import {EditorHeader} from "./styles.ts";
 import SetEditorSkeleton from "./SetEditorSkeleton.tsx";
@@ -41,7 +42,14 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
     const queryClient = useQueryClient();
     const [showImportExport, setShowImportExport] = useState(false);
     const versionSlug = versionGroup ? versionGroupToSlug(versionGroup) : 'national';
-    const {data: candidate, isPending, error} = useTeamCandidateDetails(versionSlug, member.id);
+    // The header/sprite above keep showing member's own identity (Mega
+    // included), but the ability/move/stat columns below need the BASE
+    // species' real pool - Mega Emboar's own "ability" is just its fixed
+    // in-battle one (Mold Breaker), never something a player picks; the
+    // ability you choose here is for the pre-Mega Emboar, same as real
+    // Showdown's own team builder.
+    const memberBattleOnly = resolveBattleOnlyBase(member.slug, candidates);
+    const {data: candidate, isPending, error} = useTeamCandidateDetails(versionSlug, memberBattleOnly?.candidate.id ?? member.id);
 
     if (isPending) return <SetEditorSkeleton/>;
     if (error) throw error;
@@ -49,12 +57,23 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
     const rules = getGenRules(versionGroup);
     // National/home teams aren't pinned to one game's item pool, so they battle
     // in (and draw items from) National Dex - which is the only place Mega
-    // Stones and Z-Crystals are legal alongside gen 9 mechanics.
-    const formatKey: BattleFormatKey = versionGroup ? VersionToGen[versionGroup] as SupportedGen : 'nationaldex';
+    // Stones and Z-Crystals are legal alongside gen 9 mechanics. Legends: Z-A
+    // gets its own key so itemsFor offers its Mega Stones without pulling in
+    // the rest of the National Dex pool - see items.ts's itemsFor.
+    const formatKey: BattleFormatKey = !versionGroup
+        ? 'nationaldex'
+        : versionGroup === VersionGroup.LEGENDS_ZA
+        ? 'legendsza'
+        : VersionToGen[versionGroup] as SupportedGen;
 
+    // A battle-only forme (Mega/Primal/Zen/...) can never legally be a
+    // team's species - see showdownSpecies.ts's resolveBattleOnlyBase - so a
+    // pasted set naming one imports against its base species instead, with
+    // the required item enforced the way Showdown itself phrases it.
     const handleImportSet = async (text: string): Promise<string[]> => {
         const speciesName = parseSpeciesName(text);
-        const resolved = resolveSpecies(speciesName, candidates);
+        const battleOnly = resolveBattleOnlyBase(speciesName, candidates);
+        const resolved = battleOnly?.candidate ?? resolveSpecies(speciesName, candidates);
         if (!resolved) return [`"${speciesName}" isn't available in this version group.`];
         let detail;
         try {
@@ -63,6 +82,12 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
             return [`Couldn't load data for ${resolved.name}.`];
         }
         const {member: imported, errors} = importSet(text, detail, versionGroup, rules);
+        if (imported && battleOnly?.requiredItem) {
+            if (imported.item && imported.item !== battleOnly.requiredItem.slug) {
+                errors.push(`${speciesName} transforms in-battle with ${battleOnly.requiredItem.name}, please fix its item.`);
+            }
+            imported.item = battleOnly.requiredItem.slug;
+        }
         if (imported) editPokemon(slot, imported);
         return errors;
     };

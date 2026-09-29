@@ -1,6 +1,8 @@
 import {PLACEHOLDER_ITEMS} from "../../global/data/items.ts";
 import {NATURES} from "../../global/data/natures.ts";
 import {showdownNameFromSlug, toShowdownId} from "../../global/data/showdownSpecies.ts";
+import {DEFAULT_ABILITIES} from "../../global/data/defaultAbilities.ts";
+import {BATTLE_ONLY_FORMES} from "../../global/data/battleOnlyFormes.ts";
 import {pokemonTypeLabel} from "../../global/labels.ts";
 import type {PokemonTeamMember, StatSpread} from "../../global/types.ts";
 import type {GenRules} from "../../pages/TeamBuilder/genRules.ts";
@@ -41,15 +43,29 @@ export function toShowdownSet(member: PokemonTeamMember, rules: GenRules): Pokem
     // Falls back to our own display name for teams saved before `slug` was
     // added to PokemonTeamMember - same fallback showdownText.ts's exportSet
     // uses, since neither has a migration for pre-existing localStorage data.
-    const speciesName = member.slug ? showdownNameFromSlug(member.slug) : member.name;
-    const itemName = member.item ? PLACEHOLDER_ITEMS.find(i => i.slug === member.item)?.name : undefined;
+    const pickedName = member.slug ? showdownNameFromSlug(member.slug) : member.name;
+
+    // Safety net, not the primary fix (that's the add/import-time redirect in
+    // showdownSpecies.ts's resolveBattleOnlyBase) - a member saved before that
+    // redirect existed still has a battle-only species/no item on disk, and
+    // this is the one place every team member funnels through regardless of
+    // how or when it was created, so it's where stale data gets corrected too.
+    const battleOnly = BATTLE_ONLY_FORMES[toShowdownId(pickedName)];
+    const speciesName = battleOnly ? battleOnly.baseNames[0] : pickedName;
+    const itemName = battleOnly?.requiredItem?.name
+        ?? (member.item ? PLACEHOLDER_ITEMS.find(i => i.slug === member.item)?.name : undefined);
     const hasHiddenPower = member.moves.some(m => m?.id === HIDDEN_POWER_MOVE_ID);
 
     const set: PokemonSet = {
         name: member.nickname ?? speciesName,
         species: speciesName,
         item: itemName ?? '',
-        ability: member.ability?.name ?? '',
+        // @pkmn/sim's TeamValidator doesn't auto-fill a blank ability itself
+        // (confirmed empirically - it errors and leaves "No Ability" as the
+        // submitted value), and some version groups never show an ability
+        // picker at all (genRules.ts's abilities: false) - see
+        // defaultAbilities.ts for why this needs its own fallback.
+        ability: member.ability?.name ?? DEFAULT_ABILITIES[toShowdownId(speciesName)]?.name ?? '',
         moves: member.moves.filter(m => m !== null).map(m => m.name),
         nature: NATURES[member.nature].name,
         gender: showdownGender(member.gender),

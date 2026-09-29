@@ -12,14 +12,12 @@ interface BattleFieldProps {
     me: SideView;
     foe: SideView;
     turn: number;
+    gen: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 }
 
-// The whole themed scene: a weather/terrain-keyed backdrop with the two
-// active Pokemon placed in opposite corners (foe upper-right, mine
-// lower-left, per the battle plan's Phase 5 layout). Both sprites are the
-// same front-facing HOME render - PokemonSprite's `flip` mirrors mine so
-// the two face each other despite neither having a real back sprite.
-const BattleField: FC<BattleFieldProps> = ({field, me, foe, turn}) => {
+// Foe upper-right, mine lower-left. Real Showdown front/back sprites make
+// the two sides face each other with no mirroring needed.
+const BattleField: FC<BattleFieldProps> = ({field, me, foe, turn, gen}) => {
     const gradient = field.weather ? WEATHER_GRADIENT[field.weather.id] ?? null : null;
     const terrainColor = field.terrain ? TERRAIN_COLOR[field.terrain.id] ?? null : null;
 
@@ -33,10 +31,12 @@ const BattleField: FC<BattleFieldProps> = ({field, me, foe, turn}) => {
                             <StatBar slot={foe.active} boosts={foe.active.boosts} volatiles={foe.active.volatiles} align="right"/>
                             <PokemonSprite
                                 key={foe.active.ident}
-                                spriteId={foe.active.spriteId}
+                                speciesForme={foe.active.speciesForme}
+                                side="p2"
                                 shiny={foe.active.shiny}
-                                female={foe.active.female}
+                                gender={foe.active.gender}
                                 fainted={foe.active.fainted}
+                                gen={gen}
                                 size={110}
                             />
                         </>
@@ -47,12 +47,13 @@ const BattleField: FC<BattleFieldProps> = ({field, me, foe, turn}) => {
                         <>
                             <PokemonSprite
                                 key={me.active.ident}
-                                spriteId={me.active.spriteId}
+                                speciesForme={me.active.speciesForme}
+                                side="p1"
                                 shiny={me.active.shiny}
-                                female={me.active.female}
+                                gender={me.active.gender}
                                 fainted={me.active.fainted}
+                                gen={gen}
                                 size={130}
-                                flip
                             />
                             <StatBar slot={me.active} boosts={me.active.boosts} volatiles={me.active.volatiles} align="left"/>
                         </>

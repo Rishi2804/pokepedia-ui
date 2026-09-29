@@ -1,28 +1,23 @@
 import {FC} from "react";
-import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
+import {battleSprite} from "../../../../services/battle/showdownSprite.ts";
 import {SpriteFrame} from "./styles.ts";
 
 interface PokemonSpriteProps {
-    spriteId: number | null;
+    speciesForme: string;
+    side: 'p1' | 'p2';
     shiny: boolean;
-    female: boolean;
+    gender: 'M' | 'F' | 'N';
     fainted: boolean;
+    gen: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
     size?: number;
-    /** Mirrors the render so the two sides face each other - see the battle
-     * plan's Phase 5 note (no back sprites exist, so both sides use the
-     * same front-facing HOME render). */
-    flip?: boolean;
 }
 
-// No sprite-resolution logic lives here - spriteId is already resolved
-// server-side (view.ts's spriteIdFor). A null id just renders nothing
-// rather than guessing a placeholder.
-const PokemonSprite: FC<PokemonSpriteProps> = ({spriteId, shiny, female, fainted, size = 120, flip = false}) => {
-    if (spriteId === null) return null;
+const PokemonSprite: FC<PokemonSpriteProps> = ({speciesForme, side, shiny, gender, fainted, gen, size = 120}) => {
+    const sprite = battleSprite(speciesForme, {side, shiny, gender, gen});
 
     return (
-        <SpriteFrame size={size} fainted={fainted} flip={flip}>
-            <PokemonImg id={spriteId} shiny={shiny} female={female}/>
+        <SpriteFrame size={size} fainted={fainted} pixelated={sprite.pixelated}>
+            <img src={sprite.url} alt={speciesForme} width={sprite.w} height={sprite.h}/>
         </SpriteFrame>
     );
 };

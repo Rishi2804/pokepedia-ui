@@ -14,7 +14,7 @@ export type SupportedGen = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
  * team isn't pinned to one game, so it gets National Dex AG instead - every
  * Pokemon from every gen, with Mega Evolution, Z-Moves and Terastallization
  * all available at once. Mirrors BattleFormatKey in the server's formats.ts. */
-export type BattleFormatKey = SupportedGen | 'nationaldex';
+export type BattleFormatKey = SupportedGen | 'nationaldex' | 'legendsza';
 
 export type SideID = 'p1' | 'p2';
 export type RoomPhase = 'waiting' | 'validating' | 'battle' | 'ended';
@@ -101,12 +101,16 @@ export interface RequestMoveView {
     pp: number;
     maxpp: number;
     disabled: boolean;
+    zMove: string | null;
 }
 
 export interface RequestSwitchView {
     index: number;
     name: string;
+    speciesForme: string;
     spriteId: number | null;
+    shiny: boolean;
+    female: boolean;
     fainted: boolean;
     active: boolean;
 }

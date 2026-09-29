@@ -177,9 +177,16 @@ export const PLACEHOLDER_ITEMS: PlaceholderItem[] = [
 ];
 
 // A "Home"/national team isn't pinned to one game, so it gets everything;
-// a version-pinned team gets only what that gen actually allows.
+// a version-pinned team gets only what that gen actually allows. Legends: Z-A
+// is a gen-9 game plus its own Mega Stones - normal gen-9 items (old Megas
+// and Z-Crystals already drop out on their own maxGen: 7) plus the natDexOnly
+// stones, but NOT the rest of the National Dex pool.
 export function itemsFor(key: BattleFormatKey): PlaceholderItem[] {
     if (key === 'nationaldex') return PLACEHOLDER_ITEMS;
+    if (key === 'legendsza') {
+        return PLACEHOLDER_ITEMS.filter(item =>
+            item.natDexOnly || (item.gen <= 9 && (item.maxGen ?? 9) >= 9));
+    }
     return PLACEHOLDER_ITEMS.filter(item =>
         !item.natDexOnly && item.gen <= key && (item.maxGen ?? 9) >= key);
 }

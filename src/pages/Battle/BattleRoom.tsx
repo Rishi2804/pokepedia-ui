@@ -113,7 +113,7 @@ const BattleRoom: FC = () => {
                                 <SideBar team={view.foe.team} teamSize={view.foe.teamSize} conditions={view.foe.conditions}/>
 
                                 <Box sx={{marginY: 1.5}}>
-                                    <BattleField field={view.field} me={view.me} foe={view.foe} turn={view.turn}/>
+                                    <BattleField field={view.field} me={view.me} foe={view.foe} turn={view.turn} gen={view.gen as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}/>
                                 </Box>
 
                                 <Typography variant="body2" color="text.secondary" sx={{marginBottom: 0.5}}>
