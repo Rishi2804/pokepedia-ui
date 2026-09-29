@@ -1,4 +1,4 @@
-import {Description, PokemonSnapshot, StatSpread, TeamCandidate, TeamCandidateSummary, TeamMove} from "../../../global/types.ts";
+import {CandidateMove, Description, PokemonSnapshot, StatSpread, TeamCandidate, TeamCandidateSummary, TeamMove} from "../../../global/types.ts";
 import {Game, MoveClass, PokemonType} from "../../../global/enums.ts";
 import {asEnum, asNullableEnum} from "../parse.ts";
 
@@ -51,6 +51,14 @@ export interface WireTeamMove {
     moveClass: string;
 }
 
+export interface WireCandidateMove extends WireTeamMove {
+    power: number | null;
+    accuracy: number | null;
+    pp: number | null;
+    cooldown: number | null;
+    description?: string;
+}
+
 export interface WireTeamCandidateSummary {
     id: number;
     name: string;
@@ -74,7 +82,7 @@ export interface WireStats {
 export interface WireTeamCandidate extends WireTeamCandidateSummary {
     stats: WireStats;
     abilities: { id: number; name: string }[];
-    moves: WireTeamMove[];
+    moves: WireCandidateMove[];
 }
 
 export function toTeamMove(m: WireTeamMove): TeamMove {
@@ -83,6 +91,17 @@ export function toTeamMove(m: WireTeamMove): TeamMove {
         name: m.name,
         type: asEnum(PokemonType, m.type, 'type'),
         moveClass: asEnum(MoveClass, m.moveClass, 'moveClass'),
+    };
+}
+
+export function toCandidateMove(m: WireCandidateMove): CandidateMove {
+    return {
+        ...toTeamMove(m),
+        power: m.power,
+        accuracy: m.accuracy,
+        pp: m.pp,
+        cooldown: m.cooldown,
+        description: m.description,
     };
 }
 
@@ -119,6 +138,6 @@ export function toTeamCandidate(c: WireTeamCandidate): TeamCandidate {
         ...toTeamCandidateSummary(c),
         baseStats: toStatSpread(c.stats),
         abilities: c.abilities,
-        moves: c.moves.map(toTeamMove),
+        moves: c.moves.map(toCandidateMove),
     };
 }

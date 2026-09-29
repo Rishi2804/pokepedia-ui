@@ -5,6 +5,7 @@ import {NATURES, NatureName} from "../../../global/data/natures.ts";
 import {PLACEHOLDER_ITEMS} from "../../../global/data/items.ts";
 import {GenRules} from "../genRules.ts";
 import {createTeamMember} from "../createTeamMember.ts";
+import {toStoredMove} from "./teamMove.ts";
 import {resolveSlugFromShowdownName, showdownNameFromSlug} from "../../../global/data/showdownSpecies.ts";
 import {
     dvToShowdownIv, HIDDEN_POWER_MOVE_ID, hiddenPowerTypeFor,
@@ -66,7 +67,8 @@ function resolveAbility(name: string, candidate: TeamCandidate) {
 
 function resolveMove(name: string, candidate: TeamCandidate): TeamMove | undefined {
     const target = name.trim().toLowerCase();
-    return candidate.moves.find(m => m.name.toLowerCase() === target);
+    const move = candidate.moves.find(m => m.name.toLowerCase() === target);
+    return move && toStoredMove(move);
 }
 
 interface SetHeader {
