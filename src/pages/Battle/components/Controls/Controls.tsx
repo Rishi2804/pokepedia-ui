@@ -81,20 +81,30 @@ const Controls: FC<ControlsProps> = ({request, disabled, onChoose}) => {
                     <ButtonGrid>
                         {request.moves.map(move => {
                             const pokemonType = toPokemonType(move.type);
+                            // Once Z-Move is toggled on, a move without a Z-move name can't
+                            // actually be chosen (the Z-Crystal only applies to some moves) -
+                            // disable it rather than let the click round-trip to the server
+                            // just to come back as an "invalid choice" error.
+                            const showZMove = special.zmove && move.zMove;
+                            const zIneligible = !!special.zmove && !move.zMove;
                             return (
                                 <MoveButton
                                     key={move.index}
                                     typeColor={TypeToCardColor[pokemonType]}
                                     borderColor={TypeToCardBorder[pokemonType]}
-                                    disabled={disabled || move.disabled}
+                                    disabled={disabled || move.disabled || zIneligible}
                                     onClick={() => onChoose({kind: 'move', index: move.index, ...special})}
                                 >
                                     <Box sx={{display: 'flex', alignItems: 'center', gap: 0.75, width: '100%'}}>
                                         <TypeIcon type={pokemonType} variant="circular" size={18}/>
                                         <MoveClassIcon mClass={toMoveClass(move.category)} size={16}/>
-                                        <Typography variant="body2" sx={{fontWeight: 700, flex: 1}}>{move.name}</Typography>
+                                        <Typography variant="body2" sx={{fontWeight: 700, flex: 1}}>
+                                            {showZMove ? move.zMove : move.name}
+                                        </Typography>
                                     </Box>
-                                    <Typography variant="caption" sx={{opacity: 0.85}}>{move.pp}/{move.maxpp} PP</Typography>
+                                    <Typography variant="caption" sx={{opacity: 0.85}}>
+                                        {showZMove ? `from ${move.name}` : `${move.pp}/${move.maxpp} PP`}
+                                    </Typography>
                                 </MoveButton>
                             );
                         })}

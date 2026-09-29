@@ -101,6 +101,7 @@ export interface RequestMoveView {
     pp: number;
     maxpp: number;
     disabled: boolean;
+    zMove: string | null;
 }
 
 export interface RequestSwitchView {
