@@ -190,10 +190,20 @@ export const MoveInput = styled('input')<{ type?: PokemonType }>(({ type, theme 
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
 }))
 
+// Positions the dropdown against the field instead of a distant ancestor, so the
+// list can size itself to the field's width.
+export const MoveField = styled('div')({
+    position: 'relative',
+});
+
+// Wide enough for a name plus the power/accuracy/PP line; wider than a narrow
+// column on purpose -- the list is an overlay, so it may extend past it.
 export const MoveListBox = styled('ul')({
     zIndex: 2,
-    overflow: 'scroll',
-    width: 170,
+    overflowX: 'hidden',
+    overflowY: 'auto',
+    width: '100%',
+    minWidth: 320,
     position: 'absolute',
     listStyle: 'none',
     textAlign: 'left',
@@ -202,7 +212,7 @@ export const MoveListBox = styled('ul')({
     fontSize: '18px',
     fontWeight: 600,
     color: COLORS.WHITE,
-    maxHeight: 200
+    maxHeight: 320
 })
 
 export const MoveOption = styled('li')<{ type: PokemonType }>(({ type }) => ({
@@ -218,3 +228,38 @@ export const MoveOption = styled('li')<{ type: PokemonType }>(({ type }) => ({
         color: 'white',
     },
 }))
+
+export const MoveOptionHeader = styled('div')({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+});
+
+export const MoveOptionName = styled('span')({
+    flex: 1,
+    minWidth: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+});
+
+export const MoveOptionStats = styled('span')({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 6,
+    flexShrink: 0,
+    fontSize: '14px',
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+});
+
+export const MoveOptionDescription = styled('div')({
+    marginTop: 2,
+    fontSize: '13px',
+    fontWeight: 400,
+    opacity: 0.9,
+    display: '-webkit-box',
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+});
