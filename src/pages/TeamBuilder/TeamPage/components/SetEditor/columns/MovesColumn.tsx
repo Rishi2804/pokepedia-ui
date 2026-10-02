@@ -6,6 +6,7 @@ import {PokemonTeamMember, TeamCandidate, TeamMove} from "../../../../../../glob
 import {PokemonType} from "../../../../../../global/enums.ts";
 import {GenRules} from "../../../../genRules.ts";
 import {HIDDEN_POWER_MOVE_ID, hiddenPowerTypeFor} from "../../../../utils/stats.ts";
+import {toStoredMove} from "../../../../utils/teamMove.ts";
 import {useTeamStore} from "../../../../../../store/teamStore.ts";
 
 interface MovesColumnProps {
@@ -19,7 +20,8 @@ interface MovesColumnProps {
 const MovesColumn: FC<MovesColumnProps> = ({slot, member, candidate, rules, editMode}) => {
     const {editPokemon} = useTeamStore();
 
-    const handleMoveChange = (moveIndex: number, move: TeamMove | null) => {
+    const handleMoveChange = (moveIndex: number, picked: TeamMove | null) => {
+        const move = picked && toStoredMove(picked);
         if (move?.id === 851) move.type = member.teraType ?? PokemonType.NORMAL;
         if (move?.id === HIDDEN_POWER_MOVE_ID) move.type = hiddenPowerTypeFor(member.ivs, rules.ivModel);
         const updated = [...member.moves];

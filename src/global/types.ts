@@ -216,6 +216,18 @@ export interface TeamMove {
     moveClass: MoveClass;
 }
 
+// A move as offered by the set editor's picker: the persisted TeamMove plus the
+// selected game's values. Never stored on a team -- see toStoredMove in
+// pages/TeamBuilder/utils/teamMove.ts. power/accuracy/pp are null where the game
+// has none (status moves, "never misses"); cooldown replaces pp in Legends: Z-A.
+export interface CandidateMove extends TeamMove {
+    power: number | null;
+    accuracy: number | null;
+    pp: number | null;
+    cooldown: number | null;
+    description?: string;
+}
+
 // Showdown's stat keys, used for base stats, EVs, and IVs alike so the team
 // builder's model maps onto Showdown's PokemonSet without translation.
 export type StatKey = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
@@ -236,7 +248,7 @@ export interface TeamCandidate extends TeamCandidateSummary {
         id: number;
         name: string;
     }[];
-    moves: TeamMove[];
+    moves: CandidateMove[];
     baseStats: StatSpread;
 }
 
