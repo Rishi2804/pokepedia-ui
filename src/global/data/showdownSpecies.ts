@@ -109,7 +109,7 @@ export function resolveSlugFromShowdownName(name: string, candidates: TeamCandid
  * never legally be a team's species; only its base species + the right item
  * can. Resolves a candidate's own slug (add-from-picker) or a raw pasted
  * Showdown name (import) to {the base candidate to actually submit, the item
- * that reaching this forme requires - if any}. Returns undefined for any
+ * that reaching this forme requires - if any, whether it's a Gmax forme}. Returns undefined for any
  * ordinary, always-selectable forme (Rotom-Wash, Raichu-Alola, ...), which
  * were never added to BATTLE_ONLY_FORMES in the first place.
  *
@@ -121,10 +121,10 @@ export function resolveSlugFromShowdownName(name: string, candidates: TeamCandid
 export function resolveBattleOnlyBase(
     nameOrSlug: string,
     candidates: TeamCandidateSummary[]
-): { candidate: TeamCandidateSummary; requiredItem?: { slug: string; name: string } } | undefined {
+): { candidate: TeamCandidateSummary; requiredItem?: { slug: string; name: string }; gigantamax?: true } | undefined {
     const entry = BATTLE_ONLY_FORMES[toShowdownId(nameOrSlug)];
     if (!entry) return undefined;
     const base = resolveSlugFromShowdownName(entry.baseNames[0], candidates);
     if (!base) return undefined;
-    return {candidate: base, requiredItem: entry.requiredItem};
+    return {candidate: base, requiredItem: entry.requiredItem, gigantamax: entry.gigantamax};
 }

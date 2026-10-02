@@ -7,9 +7,13 @@ export interface BattleOnlyForme {
     /** Present only when reaching this forme requires holding a specific
      *  item (Mega Stones, Primal Orbs, Rusted Sword/Shield, Ultranecrozium Z,
      *  Ogerpon's masks). Absent for ability/move/condition-gated formes
-     *  (Zen Darmanitan, Ash-Greninja, Gmax, ...) - those just redirect to
+     *  (Zen Darmanitan, Ash-Greninja, ...) - those just redirect to
      *  their base species with no item handling. */
     requiredItem?: {slug: string; name: string};
+    /** Set on Gmax formes: the base species is submitted with
+     *  `gigantamax: true` instead of an item, the way a Mega submits its
+     *  Mega Stone. */
+    gigantamax?: true;
 }
 
 // Generated from @pkmn/sim's gen-9 Dex (every species where .battleOnly is
@@ -22,8 +26,12 @@ export interface BattleOnlyForme {
 //     const {Dex} = require('@pkmn/sim');
 //     const gen = Dex.forGen(9);
 //     for (const species of gen.species.all()) {
-//       if (!species.battleOnly) continue;
-//       const baseNames = Array.isArray(species.battleOnly) ? species.battleOnly : [species.battleOnly];
+//       const isGmax = species.forme.includes('Gmax');
+//       if (!species.battleOnly && !isGmax) continue;
+//       // Gmax formes only carry changesFrom, not battleOnly (except the two
+//       // alt-forme ones); they get `gigantamax: true` appended by hand.
+//       const bo = species.battleOnly || species.changesFrom;
+//       const baseNames = Array.isArray(bo) ? bo : [bo];
 //       const reqId = species.requiredItem || (species.requiredItems && species.requiredItems[0]);
 //       const requiredItem = reqId ? {slug: gen.items.get(reqId).id, name: gen.items.get(reqId).name} : null;
 //       console.log(species.id, JSON.stringify({baseNames, requiredItem}));
@@ -40,26 +48,36 @@ export const BATTLE_ONLY_FORMES: Record<string, BattleOnlyForme> = {
     aerodactylmega: {baseNames: ['Aerodactyl'], requiredItem: {slug: 'aerodactylite', name: 'Aerodactylite'}},
     aggronmega: {baseNames: ['Aggron'], requiredItem: {slug: 'aggronite', name: 'Aggronite'}},
     alakazammega: {baseNames: ['Alakazam'], requiredItem: {slug: 'alakazite', name: 'Alakazite'}},
+    alcremiegmax: {baseNames: ['Alcremie'], gigantamax: true},
     altariamega: {baseNames: ['Altaria'], requiredItem: {slug: 'altarianite', name: 'Altarianite'}},
     ampharosmega: {baseNames: ['Ampharos'], requiredItem: {slug: 'ampharosite', name: 'Ampharosite'}},
+    appletungmax: {baseNames: ['Appletun'], gigantamax: true},
     audinomega: {baseNames: ['Audino'], requiredItem: {slug: 'audinite', name: 'Audinite'}},
     banettemega: {baseNames: ['Banette'], requiredItem: {slug: 'banettite', name: 'Banettite'}},
     barbaraclemega: {baseNames: ['Barbaracle'], requiredItem: {slug: 'barbaracite', name: 'Barbaracite'}},
     baxcaliburmega: {baseNames: ['Baxcalibur'], requiredItem: {slug: 'baxcalibrite', name: 'Baxcalibrite'}},
     beedrillmega: {baseNames: ['Beedrill'], requiredItem: {slug: 'beedrillite', name: 'Beedrillite'}},
+    blastoisegmax: {baseNames: ['Blastoise'], gigantamax: true},
     blastoisemega: {baseNames: ['Blastoise'], requiredItem: {slug: 'blastoisinite', name: 'Blastoisinite'}},
     blazikenmega: {baseNames: ['Blaziken'], requiredItem: {slug: 'blazikenite', name: 'Blazikenite'}},
+    butterfreegmax: {baseNames: ['Butterfree'], gigantamax: true},
     cameruptmega: {baseNames: ['Camerupt'], requiredItem: {slug: 'cameruptite', name: 'Cameruptite'}},
     castformrainy: {baseNames: ['Castform']},
     castformsnowy: {baseNames: ['Castform']},
     castformsunny: {baseNames: ['Castform']},
+    centiskorchgmax: {baseNames: ['Centiskorch'], gigantamax: true},
     chandeluremega: {baseNames: ['Chandelure'], requiredItem: {slug: 'chandelurite', name: 'Chandelurite'}},
+    charizardgmax: {baseNames: ['Charizard'], gigantamax: true},
     charizardmegax: {baseNames: ['Charizard'], requiredItem: {slug: 'charizarditex', name: 'Charizardite X'}},
     charizardmegay: {baseNames: ['Charizard'], requiredItem: {slug: 'charizarditey', name: 'Charizardite Y'}},
     cherrimsunshine: {baseNames: ['Cherrim']},
     chesnaughtmega: {baseNames: ['Chesnaught'], requiredItem: {slug: 'chesnaughtite', name: 'Chesnaughtite'}},
     chimechomega: {baseNames: ['Chimecho'], requiredItem: {slug: 'chimechite', name: 'Chimechite'}},
+    cinderacegmax: {baseNames: ['Cinderace'], gigantamax: true},
     clefablemega: {baseNames: ['Clefable'], requiredItem: {slug: 'clefablite', name: 'Clefablite'}},
+    coalossalgmax: {baseNames: ['Coalossal'], gigantamax: true},
+    copperajahgmax: {baseNames: ['Copperajah'], gigantamax: true},
+    corviknightgmax: {baseNames: ['Corviknight'], gigantamax: true},
     crabominablemega: {baseNames: ['Crabominable'], requiredItem: {slug: 'crabominite', name: 'Crabominite'}},
     cramorantgorging: {baseNames: ['Cramorant']},
     cramorantgulping: {baseNames: ['Cramorant']},
@@ -72,12 +90,16 @@ export const BATTLE_ONLY_FORMES: Record<string, BattleOnlyForme> = {
     dragalgemega: {baseNames: ['Dragalge'], requiredItem: {slug: 'dragalgite', name: 'Dragalgite'}},
     dragonitemega: {baseNames: ['Dragonite'], requiredItem: {slug: 'dragoninite', name: 'Dragoninite'}},
     drampamega: {baseNames: ['Drampa'], requiredItem: {slug: 'drampanite', name: 'Drampanite'}},
+    drednawgmax: {baseNames: ['Drednaw'], gigantamax: true},
+    duraludongmax: {baseNames: ['Duraludon'], gigantamax: true},
     eelektrossmega: {baseNames: ['Eelektross'], requiredItem: {slug: 'eelektrossite', name: 'Eelektrossite'}},
+    eeveegmax: {baseNames: ['Eevee'], gigantamax: true},
     eiscuenoice: {baseNames: ['Eiscue']},
     emboarmega: {baseNames: ['Emboar'], requiredItem: {slug: 'emboarite', name: 'Emboarite'}},
     excadrillmega: {baseNames: ['Excadrill'], requiredItem: {slug: 'excadrite', name: 'Excadrite'}},
     falinksmega: {baseNames: ['Falinks'], requiredItem: {slug: 'falinksite', name: 'Falinksite'}},
     feraligatrmega: {baseNames: ['Feraligatr'], requiredItem: {slug: 'feraligite', name: 'Feraligite'}},
+    flapplegmax: {baseNames: ['Flapple'], gigantamax: true},
     // Showdown's own battleOnly for this points at "Floette-Eternal", but
     // that forme is itself unreachable in this format (not unbanned by
     // +Future) - verified empirically that plain "Floette" holding
@@ -85,8 +107,10 @@ export const BATTLE_ONLY_FORMES: Record<string, BattleOnlyForme> = {
     floettemega: {baseNames: ['Floette'], requiredItem: {slug: 'floettite', name: 'Floettite'}},
     froslassmega: {baseNames: ['Froslass'], requiredItem: {slug: 'froslassite', name: 'Froslassite'}},
     gallademega: {baseNames: ['Gallade'], requiredItem: {slug: 'galladite', name: 'Galladite'}},
+    garbodorgmax: {baseNames: ['Garbodor'], gigantamax: true},
     garchompmega: {baseNames: ['Garchomp'], requiredItem: {slug: 'garchompite', name: 'Garchompite'}},
     gardevoirmega: {baseNames: ['Gardevoir'], requiredItem: {slug: 'gardevoirite', name: 'Gardevoirite'}},
+    gengargmax: {baseNames: ['Gengar'], gigantamax: true},
     gengarmega: {baseNames: ['Gengar'], requiredItem: {slug: 'gengarite', name: 'Gengarite'}},
     glaliemega: {baseNames: ['Glalie'], requiredItem: {slug: 'glalitite', name: 'Glalitite'}},
     glimmoramega: {baseNames: ['Glimmora'], requiredItem: {slug: 'glimmoranite', name: 'Glimmoranite'}},
@@ -98,18 +122,24 @@ export const BATTLE_ONLY_FORMES: Record<string, BattleOnlyForme> = {
     // normal selectable ability anyway.
     greninjaash: {baseNames: ['Greninja']},
     greninjamega: {baseNames: ['Greninja'], requiredItem: {slug: 'greninjite', name: 'Greninjite'}},
+    grimmsnarlgmax: {baseNames: ['Grimmsnarl'], gigantamax: true},
     groudonprimal: {baseNames: ['Groudon'], requiredItem: {slug: 'redorb', name: 'Red Orb'}},
     gyaradosmega: {baseNames: ['Gyarados'], requiredItem: {slug: 'gyaradosite', name: 'Gyaradosite'}},
+    hatterenegmax: {baseNames: ['Hatterene'], gigantamax: true},
     hawluchamega: {baseNames: ['Hawlucha'], requiredItem: {slug: 'hawluchanite', name: 'Hawluchanite'}},
     heatranmega: {baseNames: ['Heatran'], requiredItem: {slug: 'heatranite', name: 'Heatranite'}},
     heracrossmega: {baseNames: ['Heracross'], requiredItem: {slug: 'heracronite', name: 'Heracronite'}},
     houndoommega: {baseNames: ['Houndoom'], requiredItem: {slug: 'houndoominite', name: 'Houndoominite'}},
+    inteleongmax: {baseNames: ['Inteleon'], gigantamax: true},
     kangaskhanmega: {baseNames: ['Kangaskhan'], requiredItem: {slug: 'kangaskhanite', name: 'Kangaskhanite'}},
+    kinglergmax: {baseNames: ['Kingler'], gigantamax: true},
     kyogreprimal: {baseNames: ['Kyogre'], requiredItem: {slug: 'blueorb', name: 'Blue Orb'}},
+    laprasgmax: {baseNames: ['Lapras'], gigantamax: true},
     latiasmega: {baseNames: ['Latias'], requiredItem: {slug: 'latiasite', name: 'Latiasite'}},
     latiosmega: {baseNames: ['Latios'], requiredItem: {slug: 'latiosite', name: 'Latiosite'}},
     lopunnymega: {baseNames: ['Lopunny'], requiredItem: {slug: 'lopunnite', name: 'Lopunnite'}},
     lucariomega: {baseNames: ['Lucario'], requiredItem: {slug: 'lucarionite', name: 'Lucarionite'}},
+    machampgmax: {baseNames: ['Machamp'], gigantamax: true},
     magearnamega: {baseNames: ['Magearna'], requiredItem: {slug: 'magearnite', name: 'Magearnite'}},
     magearnaoriginalmega: {baseNames: ['Magearna-Original'], requiredItem: {slug: 'magearnite', name: 'Magearnite'}},
     malamarmega: {baseNames: ['Malamar'], requiredItem: {slug: 'malamarite', name: 'Malamarite'}},
@@ -117,9 +147,11 @@ export const BATTLE_ONLY_FORMES: Record<string, BattleOnlyForme> = {
     mawilemega: {baseNames: ['Mawile'], requiredItem: {slug: 'mawilite', name: 'Mawilite'}},
     medichammega: {baseNames: ['Medicham'], requiredItem: {slug: 'medichamite', name: 'Medichamite'}},
     meganiummega: {baseNames: ['Meganium'], requiredItem: {slug: 'meganiumite', name: 'Meganiumite'}},
+    melmetalgmax: {baseNames: ['Melmetal'], gigantamax: true},
     meloettapirouette: {baseNames: ['Meloetta']},
     meowsticfmega: {baseNames: ['Meowstic-F'], requiredItem: {slug: 'meowsticite', name: 'Meowsticite'}},
     meowsticmmega: {baseNames: ['Meowstic'], requiredItem: {slug: 'meowsticite', name: 'Meowsticite'}},
+    meowthgmax: {baseNames: ['Meowth'], gigantamax: true},
     metagrossmega: {baseNames: ['Metagross'], requiredItem: {slug: 'metagrossite', name: 'Metagrossite'}},
     mewtwomegax: {baseNames: ['Mewtwo'], requiredItem: {slug: 'mewtwonitex', name: 'Mewtwonite X'}},
     mewtwomegay: {baseNames: ['Mewtwo'], requiredItem: {slug: 'mewtwonitey', name: 'Mewtwonite Y'}},
@@ -135,16 +167,20 @@ export const BATTLE_ONLY_FORMES: Record<string, BattleOnlyForme> = {
     ogerponhearthflametera: {baseNames: ['Ogerpon-Hearthflame'], requiredItem: {slug: 'hearthflamemask', name: 'Hearthflame Mask'}},
     ogerpontealtera: {baseNames: ['Ogerpon']},
     ogerponwellspringtera: {baseNames: ['Ogerpon-Wellspring'], requiredItem: {slug: 'wellspringmask', name: 'Wellspring Mask'}},
+    orbeetlegmax: {baseNames: ['Orbeetle'], gigantamax: true},
     palafinhero: {baseNames: ['Palafin']},
     pidgeotmega: {baseNames: ['Pidgeot'], requiredItem: {slug: 'pidgeotite', name: 'Pidgeotite'}},
+    pikachugmax: {baseNames: ['Pikachu'], gigantamax: true},
     pinsirmega: {baseNames: ['Pinsir'], requiredItem: {slug: 'pinsirite', name: 'Pinsirite'}},
     pyroarmega: {baseNames: ['Pyroar'], requiredItem: {slug: 'pyroarite', name: 'Pyroarite'}},
     raichumegax: {baseNames: ['Raichu'], requiredItem: {slug: 'raichunitex', name: 'Raichunite X'}},
     raichumegay: {baseNames: ['Raichu'], requiredItem: {slug: 'raichunitey', name: 'Raichunite Y'}},
     ramnarokradiant: {baseNames: ['Ramnarok']},
     rayquazamega: {baseNames: ['Rayquaza']},
+    rillaboomgmax: {baseNames: ['Rillaboom'], gigantamax: true},
     sableyemega: {baseNames: ['Sableye'], requiredItem: {slug: 'sablenite', name: 'Sablenite'}},
     salamencemega: {baseNames: ['Salamence'], requiredItem: {slug: 'salamencite', name: 'Salamencite'}},
+    sandacondagmax: {baseNames: ['Sandaconda'], gigantamax: true},
     sceptilemega: {baseNames: ['Sceptile'], requiredItem: {slug: 'sceptilite', name: 'Sceptilite'}},
     scizormega: {baseNames: ['Scizor'], requiredItem: {slug: 'scizorite', name: 'Scizorite'}},
     scolipedemega: {baseNames: ['Scolipede'], requiredItem: {slug: 'scolipite', name: 'Scolipite'}},
@@ -153,6 +189,7 @@ export const BATTLE_ONLY_FORMES: Record<string, BattleOnlyForme> = {
     sharpedomega: {baseNames: ['Sharpedo'], requiredItem: {slug: 'sharpedonite', name: 'Sharpedonite'}},
     skarmorymega: {baseNames: ['Skarmory'], requiredItem: {slug: 'skarmorite', name: 'Skarmorite'}},
     slowbromega: {baseNames: ['Slowbro'], requiredItem: {slug: 'slowbronite', name: 'Slowbronite'}},
+    snorlaxgmax: {baseNames: ['Snorlax'], gigantamax: true},
     staraptormega: {baseNames: ['Staraptor'], requiredItem: {slug: 'staraptite', name: 'Staraptite'}},
     starmiemega: {baseNames: ['Starmie'], requiredItem: {slug: 'starminite', name: 'Starminite'}},
     steelixmega: {baseNames: ['Steelix'], requiredItem: {slug: 'steelixite', name: 'Steelixite'}},
@@ -162,9 +199,12 @@ export const BATTLE_ONLY_FORMES: Record<string, BattleOnlyForme> = {
     tatsugiristretchymega: {baseNames: ['Tatsugiri-Stretchy'], requiredItem: {slug: 'tatsugirinite', name: 'Tatsugirinite'}},
     terapagosstellar: {baseNames: ['Terapagos']},
     terapagosterastal: {baseNames: ['Terapagos']},
-    toxtricitylowkeygmax: {baseNames: ['Toxtricity-Low-Key']},
+    toxtricitygmax: {baseNames: ['Toxtricity'], gigantamax: true},
+    toxtricitylowkeygmax: {baseNames: ['Toxtricity-Low-Key'], gigantamax: true},
     tyranitarmega: {baseNames: ['Tyranitar'], requiredItem: {slug: 'tyranitarite', name: 'Tyranitarite'}},
-    urshifurapidstrikegmax: {baseNames: ['Urshifu-Rapid-Strike']},
+    urshifugmax: {baseNames: ['Urshifu'], gigantamax: true},
+    urshifurapidstrikegmax: {baseNames: ['Urshifu-Rapid-Strike'], gigantamax: true},
+    venusaurgmax: {baseNames: ['Venusaur'], gigantamax: true},
     venusaurmega: {baseNames: ['Venusaur'], requiredItem: {slug: 'venusaurite', name: 'Venusaurite'}},
     victreebelmega: {baseNames: ['Victreebel'], requiredItem: {slug: 'victreebelite', name: 'Victreebelite'}},
     wishiwashischool: {baseNames: ['Wishiwashi']},

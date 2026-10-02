@@ -80,7 +80,7 @@ export function toShowdownSet(member: PokemonTeamMember, rules: GenRules): Pokem
     if (rules.tera && member.teraType) set.teraType = pokemonTypeLabel[member.teraType];
     if (rules.dynamax) {
         set.dynamaxLevel = member.dynamaxLevel;
-        set.gigantamax = member.gigantamax;
+        set.gigantamax = member.gigantamax || !!battleOnly?.gigantamax;
     }
 
     return set;

@@ -73,14 +73,19 @@ const Controls: FC<ControlsProps> = ({request, disabled, onChoose}) => {
                             )}
                             {request.special.dynamax && (
                                 <Button size="small" variant={special.dynamax ? 'contained' : 'outlined'} onClick={() => toggleSpecial('dynamax')}>
-                                    Dynamax
+                                    {request.special.gigantamax ? 'Gigantamax' : 'Dynamax'}
                                 </Button>
                             )}
                         </Box>
                     )}
                     <ButtonGrid>
                         {request.moves.map(move => {
-                            const pokemonType = toPokemonType(move.type);
+                            // Same idea as Z-Moves below, but a Dynamaxed Pokemon is locked
+                            // into Max Moves with no toggle (dynamaxed), and every move has
+                            // one - status moves become Max Guard - so none are ineligible,
+                            // only disabled by the Max Move's own flag.
+                            const showMax = !!move.maxMove && (!!special.dynamax || !!request.special.dynamaxed);
+                            const pokemonType = toPokemonType(showMax ? move.maxMove!.type : move.type);
                             // Once Z-Move is toggled on, a move without a Z-move name can't
                             // actually be chosen (the Z-Crystal only applies to some moves) -
                             // disable it rather than let the click round-trip to the server
@@ -92,18 +97,18 @@ const Controls: FC<ControlsProps> = ({request, disabled, onChoose}) => {
                                     key={move.index}
                                     typeColor={TypeToCardColor[pokemonType]}
                                     borderColor={TypeToCardBorder[pokemonType]}
-                                    disabled={disabled || move.disabled || zIneligible}
+                                    disabled={disabled || (showMax ? move.maxMove!.disabled : move.disabled || zIneligible)}
                                     onClick={() => onChoose({kind: 'move', index: move.index, ...special})}
                                 >
                                     <Box sx={{display: 'flex', alignItems: 'center', gap: 0.75, width: '100%'}}>
                                         <TypeIcon type={pokemonType} variant="circular" size={18}/>
                                         <MoveClassIcon mClass={toMoveClass(move.category)} size={16}/>
                                         <Typography variant="body2" sx={{fontWeight: 700, flex: 1}}>
-                                            {showZMove ? move.zMove : move.name}
+                                            {showMax ? move.maxMove!.name : showZMove ? move.zMove : move.name}
                                         </Typography>
                                     </Box>
                                     <Typography variant="caption" sx={{opacity: 0.85}}>
-                                        {showZMove ? `from ${move.name}` : `${move.pp}/${move.maxpp} PP`}
+                                        {showMax || showZMove ? `from ${move.name}` : `${move.pp}/${move.maxpp} PP`}
                                     </Typography>
                                 </MoveButton>
                             );

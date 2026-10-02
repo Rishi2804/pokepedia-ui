@@ -80,7 +80,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
         if (currentTeam.pokemon.length === 6) return
         const newIndex = currentTeam.pokemon.length;
         const entry = BATTLE_ONLY_FORMES[toShowdownId(mon.slug)];
-        addPokemon(mon, entry?.requiredItem?.slug);
+        addPokemon(mon, entry?.requiredItem?.slug, entry?.gigantamax);
         setSelectedSlot(newIndex);
     }
 
@@ -135,6 +135,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
                         }
                         member.item = battleOnly.requiredItem.slug;
                     }
+                    if (battleOnly.gigantamax) member.gigantamax = true;
                 }
                 if (member) newMembers.push(member);
             } catch {
