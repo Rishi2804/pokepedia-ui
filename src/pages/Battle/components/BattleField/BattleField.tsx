@@ -36,6 +36,7 @@ const BattleField: FC<BattleFieldProps> = ({field, me, foe, turn, gen}) => {
                                 shiny={foe.active.shiny}
                                 gender={foe.active.gender}
                                 fainted={foe.active.fainted}
+                                dynamax={foe.active.dynamax}
                                 gen={gen}
                                 size={110}
                             />
@@ -52,6 +53,7 @@ const BattleField: FC<BattleFieldProps> = ({field, me, foe, turn, gen}) => {
                                 shiny={me.active.shiny}
                                 gender={me.active.gender}
                                 fainted={me.active.fainted}
+                                dynamax={me.active.dynamax}
                                 gen={gen}
                                 size={130}
                             />

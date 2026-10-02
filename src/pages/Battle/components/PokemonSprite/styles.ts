@@ -4,14 +4,16 @@ interface SpriteFrameProps {
     size: number;
     fainted: boolean;
     pixelated: boolean;
+    scale: number;
+    side: 'p1' | 'p2';
 }
 
 // Remounted by the parent (keyed on the active Pokemon's ident) whenever a
 // switch happens, so this animation replays on every switch-in for free -
 // no imperative animation triggering needed.
 export const SpriteFrame = styled(Box, {
-    shouldForwardProp: prop => prop !== 'size' && prop !== 'fainted' && prop !== 'pixelated',
-})<SpriteFrameProps>(({size, fainted, pixelated}) => ({
+    shouldForwardProp: prop => prop !== 'size' && prop !== 'fainted' && prop !== 'pixelated' && prop !== 'scale' && prop !== 'side',
+})<SpriteFrameProps>(({size, fainted, pixelated, scale, side}) => ({
     width: size,
     height: size,
     animation: 'battle-sprite-in 0.35s ease-out',
@@ -27,5 +29,12 @@ export const SpriteFrame = styled(Box, {
         height: '100%',
         objectFit: 'contain',
         imageRendering: pixelated ? 'pixelated' : 'auto',
+        // Dynamax/Gigantamax enlarge the sprite itself (not the frame, whose
+        // switch-in animation owns `transform`). Anchored to the outer corner -
+        // growing up/inward from the bottom-left for mine, down/inward from the
+        // top-right for the foe's - so neither runs off the Scene's clipped edge.
+        transform: `scale(${scale})`,
+        transformOrigin: side === 'p1' ? 'left bottom' : 'right top',
+        transition: 'transform 0.3s ease',
     },
 }));
