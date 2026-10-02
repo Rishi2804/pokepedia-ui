@@ -9,7 +9,7 @@ const maxIvSpread = (value: number): StatSpread => ({hp: value, atk: value, def:
 // from the picker never has to wait on the single-candidate fetch. Defaults
 // are gen-appropriate (e.g. DVs default to 15 pre-gen-3, IVs to 31 from gen 3
 // on) but otherwise as neutral as Showdown's own new-set defaults.
-export function createTeamMember(candidate: TeamCandidateSummary, versionGroup: VersionGroup | null, itemOverride?: string): PokemonTeamMember {
+export function createTeamMember(candidate: TeamCandidateSummary, versionGroup: VersionGroup | null, itemOverride?: string, gigantamax = false): PokemonTeamMember {
     const rules = getGenRules(versionGroup);
 
     return {
@@ -34,6 +34,6 @@ export function createTeamMember(candidate: TeamCandidateSummary, versionGroup: 
         happiness: 255,
         pokeball: 'Poké Ball',
         dynamaxLevel: 10,
-        gigantamax: false,
+        gigantamax,
     };
 }

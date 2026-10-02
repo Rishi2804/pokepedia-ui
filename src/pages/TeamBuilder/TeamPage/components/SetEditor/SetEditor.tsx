@@ -88,6 +88,7 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
             }
             imported.item = battleOnly.requiredItem.slug;
         }
+        if (imported && battleOnly?.gigantamax) imported.gigantamax = true;
         if (imported) editPokemon(slot, imported);
         return errors;
     };

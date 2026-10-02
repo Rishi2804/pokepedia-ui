@@ -18,7 +18,7 @@ interface TeamStore {
     teams: PokemonTeam[];
     removedPokemonCache: Map<number, PokemonTeamMember>;
     changeTeamName: (name: string) => void;
-    addPokemon: (candidate: TeamCandidateSummary, itemOverride?: string) => void;
+    addPokemon: (candidate: TeamCandidateSummary, itemOverride?: string, gigantamax?: boolean) => void;
     duplicatePokemon: (index: number) => void;
     removePokemon: (index: number) => void;
     editPokemon: (index: number, mon: PokemonTeamMember) => void;
@@ -41,12 +41,12 @@ export const useTeamStore = create<TeamStore>((set, getState) => ({
         return ({currentTeam: {...state.currentTeam, name: name}});
     }),
 
-    addPokemon: (candidate: TeamCandidateSummary, itemOverride?: string) => set((state) => {
+    addPokemon: (candidate: TeamCandidateSummary, itemOverride?: string, gigantamax?: boolean) => set((state) => {
         if (!state.currentTeam) return state;
         // A cache hit restores exactly what the user had before removing it -
-        // itemOverride only applies to a genuinely fresh member.
+        // itemOverride/gigantamax only apply to a genuinely fresh member.
         const mon = state.removedPokemonCache.get(candidate.id)
-            ?? createTeamMember(candidate, state.currentTeam.versionGroup, itemOverride);
+            ?? createTeamMember(candidate, state.currentTeam.versionGroup, itemOverride, gigantamax);
         return ({
             currentTeam: {
                 ...state.currentTeam,
