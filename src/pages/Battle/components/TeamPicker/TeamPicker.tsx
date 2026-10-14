@@ -16,18 +16,27 @@ export interface TeamPickerSelection {
     versionGroup: VersionGroup | null;
 }
 
+export interface TeamPickerLock {
+    versionGroup: VersionGroup | null;
+}
+
 interface TeamPickerProps {
     onSelect: (selection: TeamPickerSelection) => void;
+    // Joining a room: only teams built for the room's game are allowed.
+    lockedTo?: TeamPickerLock;
 }
+
+const lockLabel = (lock: TeamPickerLock) => lock.versionGroup ? versionGroupLabel[lock.versionGroup] : 'Home';
 
 // Picks a roster to battle with - either an existing saved team (unedited,
 // straight from the team builder) or a one-off Showdown-format paste that's
 // never written to the team store. Either way the result is just handed to
 // the parent; this component owns no battle-flow state of its own.
-const TeamPicker: FC<TeamPickerProps> = ({onSelect}) => {
+const TeamPicker: FC<TeamPickerProps> = ({onSelect, lockedTo}) => {
     const [tab, setTab] = useState<'saved' | 'paste'>('saved');
     const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
-    const {teams} = useTeamStore();
+    const {teams: allTeams} = useTeamStore();
+    const teams = lockedTo ? allTeams.filter(team => team.versionGroup === lockedTo.versionGroup) : allTeams;
 
     const handleSelectSaved = (team: PokemonTeam) => {
         setSelectedTeamId(team.id);
@@ -48,7 +57,9 @@ const TeamPicker: FC<TeamPickerProps> = ({onSelect}) => {
             {tab === 'saved' && (
                 teams.length === 0 ? (
                     <Typography color="text.secondary">
-                        You haven't built any teams yet — head to Team Builder first, or paste a Showdown team instead.
+                        {lockedTo
+                            ? `You have no saved ${lockLabel(lockedTo)} teams — build one in Team Builder first, or paste a Showdown team instead.`
+                            : "You haven't built any teams yet — head to Team Builder first, or paste a Showdown team instead."}
                     </Typography>
                 ) : (
                     <Box sx={{display: 'flex', flexDirection: 'column', gap: 1}}>
@@ -67,13 +78,14 @@ const TeamPicker: FC<TeamPickerProps> = ({onSelect}) => {
                     </Box>
                 )
             )}
-            {tab === 'paste' && <PasteTeamTab onImported={handleImported}/>}
+            {tab === 'paste' && <PasteTeamTab onImported={handleImported} lockedTo={lockedTo}/>}
         </Box>
     );
 };
 
-const PasteTeamTab: FC<{ onImported: (selection: TeamPickerSelection) => void }> = ({onImported}) => {
-    const [versionGroup, setVersionGroup] = useState<VersionGroup | null>(null);
+const PasteTeamTab: FC<{ onImported: (selection: TeamPickerSelection) => void; lockedTo?: TeamPickerLock }> = ({onImported, lockedTo}) => {
+    const [pickedVersionGroup, setVersionGroup] = useState<VersionGroup | null>(null);
+    const versionGroup = lockedTo ? lockedTo.versionGroup : pickedVersionGroup;
     const [text, setText] = useState('');
     const [errors, setErrors] = useState<string[]>([]);
     const [importing, setImporting] = useState(false);
@@ -105,6 +117,7 @@ const PasteTeamTab: FC<{ onImported: (selection: TeamPickerSelection) => void }>
             <Select
                 value={versionGroup ?? 'national'}
                 onChange={e => setVersionGroup(e.target.value === 'national' ? null : e.target.value as VersionGroup)}
+                disabled={!!lockedTo}
                 sx={{marginBottom: 2, minWidth: 240}}
             >
                 <MenuItem value="national">Home</MenuItem>

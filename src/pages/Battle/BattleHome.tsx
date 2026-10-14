@@ -2,10 +2,12 @@ import {Alert, Box, Button, TextField, ToggleButton, ToggleButtonGroup, Typograp
 import {FC, useCallback, useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import MetaData from "../../components/MetaData/MetaData.tsx";
-import {BATTLE_WS_URL} from "../../services/battle/constants.ts";
+import {versionGroupLabel} from "../../global/labels.ts";
+import {BATTLE_WS_URL, ROOM_CODE_LENGTH} from "../../services/battle/constants.ts";
 import {describeBattle} from "../../services/battle/describeBattle.ts";
 import type {ClientMessage, ServerMessage} from "../../services/battle/protocol.ts";
 import {toBattleTeam} from "../../services/battle/toBattleTeam.ts";
+import {useBattleRoom} from "../../services/battle/useBattleRoom.ts";
 import {useBattleSocket} from "../../services/battle/useBattleSocket.ts";
 import {saveBattleSession, loadBattleSession, clearBattleSession} from "../../services/battle/session.ts";
 import TeamPicker, {TeamPickerSelection} from "./components/TeamPicker/TeamPicker.tsx";
@@ -63,8 +65,23 @@ const BattleHome: FC = () => {
         }
     }, [status, connecting, send]);
 
+    // Joining: the room decides the format, so look it up as soon as the code
+    // is complete and hold the team to the room's version group.
+    const roomCode = joinCode.trim().toUpperCase();
+    const roomLookup = useBattleRoom(mode === 'join' ? roomCode : '');
+    const room = roomLookup.data;
+    const lockedTo = mode === 'join' && room?.joinable ? {versionGroup: room.versionGroup} : undefined;
+    const lockedVersionGroup = lockedTo?.versionGroup;
+    const isLocked = !!lockedTo;
+
+    // A team picked before the room was known (or for a previous code) may not
+    // fit - drop it rather than letting a doomed join through.
+    useEffect(() => {
+        if (isLocked && selection && selection.versionGroup !== lockedVersionGroup) setSelection(null);
+    }, [isLocked, lockedVersionGroup, selection]);
+
     const canSubmit = !!selection && selection.pokemon.length > 0 && name.trim().length > 0 &&
-        (mode === 'create' || joinCode.trim().length > 0);
+        (mode === 'create' || (!!room?.joinable && selection.versionGroup === room.versionGroup));
 
     const handleSubmit = () => {
         if (!selection) return;
@@ -76,7 +93,7 @@ const BattleHome: FC = () => {
 
         pendingMessageRef.current = mode === 'create'
             ? {t: 'create', versionGroup, name: trimmedName, team}
-            : {t: 'join', code: joinCode.trim().toUpperCase(), versionGroup, name: trimmedName, team};
+            : {t: 'join', code: roomCode, versionGroup, name: trimmedName, team};
 
         setError(null);
         setConnecting(true);
@@ -138,12 +155,36 @@ const BattleHome: FC = () => {
                         value={joinCode}
                         onChange={e => setJoinCode(e.target.value.toUpperCase())}
                         sx={{marginBottom: 2}}
-                        slotProps={{htmlInput: {style: {fontFamily: 'monospace', letterSpacing: 2}}}}
+                        slotProps={{htmlInput: {style: {fontFamily: 'monospace', letterSpacing: 2}, maxLength: ROOM_CODE_LENGTH}}}
                     />
                 )}
 
+                {mode === 'join' && roomCode.length === ROOM_CODE_LENGTH && (
+                    <Box sx={{marginBottom: 2}}>
+                        {roomLookup.isPending && (
+                            <Typography variant="body2" color="text.secondary">Looking up room…</Typography>
+                        )}
+                        {roomLookup.isError && (
+                            <Alert severity="error">Couldn't reach the battle server to look up that room.</Alert>
+                        )}
+                        {roomLookup.isSuccess && !room && (
+                            <Alert severity="warning">No battle room with that code.</Alert>
+                        )}
+                        {room && !room.joinable && (
+                            <Alert severity="warning">That battle room already has two players.</Alert>
+                        )}
+                        {room?.joinable && (
+                            <Alert severity="info">
+                                {room.host ? `${room.host}'s` : 'This'} room is a {room.formatName} battle
+                                ({room.versionGroup ? versionGroupLabel[room.versionGroup] : 'Home'}) — pick a team built for
+                                the same game.
+                            </Alert>
+                        )}
+                    </Box>
+                )}
+
                 <Typography variant="h4" sx={{marginBottom: 1}}>Choose your team</Typography>
-                <TeamPicker onSelect={next => {
+                <TeamPicker lockedTo={lockedTo} onSelect={next => {
                     setSelection(next);
                     setError(null);
                 }}/>
