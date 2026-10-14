@@ -60,14 +60,19 @@ function resolveItemSlug(name: string): string | undefined {
     return PLACEHOLDER_ITEMS.find(i => i.name.toLowerCase() === target || i.slug === target)?.slug;
 }
 
+// Compares names with case, spaces and punctuation ignored: our data spells
+// "Soft Boiled"/"U Turn"/"Will O Wisp" where Showdown writes "Soft-Boiled"/
+// "U-turn"/"Will-O-Wisp", so an exact match would drop those moves on import.
+const looseName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
 function resolveAbility(name: string, candidate: TeamCandidate) {
-    const target = name.trim().toLowerCase();
-    return candidate.abilities.find(a => a.name.toLowerCase() === target);
+    const target = looseName(name);
+    return candidate.abilities.find(a => looseName(a.name) === target);
 }
 
 function resolveMove(name: string, candidate: TeamCandidate): TeamMove | undefined {
-    const target = name.trim().toLowerCase();
-    const move = candidate.moves.find(m => m.name.toLowerCase() === target);
+    const target = looseName(name);
+    const move = candidate.moves.find(m => looseName(m.name) === target);
     return move && toStoredMove(move);
 }
 

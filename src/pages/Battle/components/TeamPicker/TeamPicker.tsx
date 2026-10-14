@@ -5,11 +5,10 @@ import PokemonImg from "../../../../components/PokemonImg/PokemonImg.tsx";
 import {VersionGroup} from "../../../../global/enums.ts";
 import {versionGroupLabel, versionGroupToSlug} from "../../../../global/labels.ts";
 import {PokemonTeam, PokemonTeamMember} from "../../../../global/types.ts";
-import {teamCandidateQuery} from "../../../../services/api/hooks/useTeamCandidateData.ts";
 import {useTeamCandidatesDetails} from "../../../../services/api/hooks/useTeamCandidatesData.ts";
 import {useTeamStore} from "../../../../store/teamStore.ts";
 import {getGenRules} from "../../../TeamBuilder/genRules.ts";
-import {importSet, parseSpeciesName, resolveSpecies, splitTeamText} from "../../../TeamBuilder/utils/showdownText.ts";
+import {importTeamText} from "../../../TeamBuilder/utils/importTeam.ts";
 import {MemberRow, MemberThumb, TeamOption} from "./styles.ts";
 
 export interface TeamPickerSelection {
@@ -85,31 +84,18 @@ const PasteTeamTab: FC<{ onImported: (selection: TeamPickerSelection) => void }>
     const handleImport = async () => {
         if (!data) return;
         setImporting(true);
+        setErrors([]);
 
-        const allCandidates = data.flatMap(group => group.pokemon);
-        const rules = getGenRules(versionGroup);
-        const blocks = splitTeamText(text).slice(0, 6);
-        const newErrors: string[] = [];
-        const members: PokemonTeamMember[] = [];
+        const {members, errors: importErrors} = await importTeamText({
+            text,
+            allCandidates: data.flatMap(group => group.pokemon),
+            versionGroup,
+            versionSlug,
+            rules: getGenRules(versionGroup),
+            queryClient,
+        });
 
-        for (const block of blocks) {
-            const speciesName = parseSpeciesName(block);
-            const resolved = resolveSpecies(speciesName, allCandidates);
-            if (!resolved) {
-                newErrors.push(`"${speciesName}" isn't available in this version group.`);
-                continue;
-            }
-            try {
-                const detail = await queryClient.fetchQuery(teamCandidateQuery(versionSlug, resolved.id));
-                const {member, errors: setErrors} = importSet(block, detail, versionGroup, rules);
-                newErrors.push(...setErrors);
-                if (member) members.push(member);
-            } catch {
-                newErrors.push(`Couldn't load data for ${resolved.name}.`);
-            }
-        }
-
-        setErrors(newErrors);
+        setErrors(importErrors);
         setImporting(false);
         if (members.length) onImported({pokemon: members, versionGroup});
     };

@@ -143,7 +143,10 @@ const BattleHome: FC = () => {
                 )}
 
                 <Typography variant="h4" sx={{marginBottom: 1}}>Choose your team</Typography>
-                <TeamPicker onSelect={setSelection}/>
+                <TeamPicker onSelect={next => {
+                    setSelection(next);
+                    setError(null);
+                }}/>
 
                 {mode === 'create' && selection && (
                     <Typography variant="body2" color="text.secondary" sx={{marginTop: 2}}>
