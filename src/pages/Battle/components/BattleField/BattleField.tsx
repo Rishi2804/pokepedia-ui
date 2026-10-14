@@ -12,12 +12,11 @@ interface BattleFieldProps {
     me: SideView;
     foe: SideView;
     turn: number;
-    gen: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 }
 
 // Foe upper-right, mine lower-left. Real Showdown front/back sprites make
 // the two sides face each other with no mirroring needed.
-const BattleField: FC<BattleFieldProps> = ({field, me, foe, turn, gen}) => {
+const BattleField: FC<BattleFieldProps> = ({field, me, foe, turn}) => {
     const gradient = field.weather ? WEATHER_GRADIENT[field.weather.id] ?? null : null;
     const terrainColor = field.terrain ? TERRAIN_COLOR[field.terrain.id] ?? null : null;
 
@@ -31,13 +30,10 @@ const BattleField: FC<BattleFieldProps> = ({field, me, foe, turn, gen}) => {
                             <StatBar slot={foe.active} boosts={foe.active.boosts} volatiles={foe.active.volatiles} align="right"/>
                             <PokemonSprite
                                 key={foe.active.ident}
-                                speciesForme={foe.active.speciesForme}
+                                sprite={foe.active.sprite}
+                                name={foe.active.speciesForme}
                                 side="p2"
-                                shiny={foe.active.shiny}
-                                gender={foe.active.gender}
                                 fainted={foe.active.fainted}
-                                dynamax={foe.active.dynamax}
-                                gen={gen}
                                 size={110}
                             />
                         </>
@@ -48,13 +44,10 @@ const BattleField: FC<BattleFieldProps> = ({field, me, foe, turn, gen}) => {
                         <>
                             <PokemonSprite
                                 key={me.active.ident}
-                                speciesForme={me.active.speciesForme}
+                                sprite={me.active.sprite}
+                                name={me.active.speciesForme}
                                 side="p1"
-                                shiny={me.active.shiny}
-                                gender={me.active.gender}
                                 fainted={me.active.fainted}
-                                dynamax={me.active.dynamax}
-                                gen={gen}
                                 size={130}
                             />
                             <StatBar slot={me.active} boosts={me.active.boosts} volatiles={me.active.volatiles} align="left"/>

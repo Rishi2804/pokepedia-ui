@@ -92,7 +92,20 @@ export interface SlotView {
 
 export type BoostID = 'atk' | 'def' | 'spa' | 'spd' | 'spe' | 'accuracy' | 'evasion';
 
+/** Everything needed to draw a battle sprite - the server picks the file
+ * (generation art, shiny/gender variants, Gmax swap), so the UI just renders it. */
+export interface BattleSprite {
+    url: string;
+    w: number;
+    h: number;
+    pixelated: boolean;
+    /** Extra on-screen enlargement for Dynamax/Gigantamax (1 otherwise). */
+    scale: number;
+}
+
 export interface ActiveView extends SlotView {
+    /** Back-facing for `me`, front-facing for `foe`. */
+    sprite: BattleSprite;
     boosts: Partial<Record<BoostID, number>>;
     volatiles: Named[];
     /** 'gigantamax' only for a Gmax-capable Pokemon that actually Gigantamaxed. */
