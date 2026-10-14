@@ -1,14 +1,11 @@
 import {Alert, Box, Button, TextField, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
-import {FC, useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {FC, useCallback, useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import MetaData from "../../components/MetaData/MetaData.tsx";
-import {versionGroupLabel} from "../../global/labels.ts";
-import {VersionGroup} from "../../global/enums.ts";
-import {getGenRules} from "../TeamBuilder/genRules.ts";
-import {VersionToGen} from "../TeamBuilder/TeamPage/constants.ts";
 import {BATTLE_WS_URL} from "../../services/battle/constants.ts";
-import type {BattleFormatKey, ClientMessage, ServerMessage, SupportedGen} from "../../services/battle/protocol.ts";
-import {toShowdownTeam, toVisualMeta} from "../../services/battle/toShowdownTeam.ts";
+import {describeBattle} from "../../services/battle/describeBattle.ts";
+import type {ClientMessage, ServerMessage} from "../../services/battle/protocol.ts";
+import {toBattleTeam} from "../../services/battle/toBattleTeam.ts";
 import {useBattleSocket} from "../../services/battle/useBattleSocket.ts";
 import {saveBattleSession, loadBattleSession, clearBattleSession} from "../../services/battle/session.ts";
 import TeamPicker, {TeamPickerSelection} from "./components/TeamPicker/TeamPicker.tsx";
@@ -66,31 +63,20 @@ const BattleHome: FC = () => {
         }
     }, [status, connecting, send]);
 
-    // A "Home" team isn't pinned to one game, so it plays National Dex AG -
-    // every Pokemon from every gen, with Megas, Z-Moves and Tera all at once.
-    // Version-pinned teams keep their own gen's Anything Goes.
-    const derivedFormatKey = useMemo<BattleFormatKey | null>(() => {
-        if (!selection) return null;
-        if (!selection.versionGroup) return 'nationaldex';
-        if (selection.versionGroup === VersionGroup.LEGENDS_ZA) return 'legendsza';
-        return VersionToGen[selection.versionGroup] as SupportedGen;
-    }, [selection]);
-
     const canSubmit = !!selection && selection.pokemon.length > 0 && name.trim().length > 0 &&
         (mode === 'create' || joinCode.trim().length > 0);
 
     const handleSubmit = () => {
-        if (!selection || !derivedFormatKey) return;
+        if (!selection) return;
         const trimmedName = name.trim();
         localStorage.setItem(PLAYER_NAME_KEY, trimmedName);
 
-        const rules = getGenRules(selection.versionGroup);
-        const team = toShowdownTeam(selection.pokemon, rules);
-        const visualMeta = toVisualMeta(selection.pokemon);
+        const {versionGroup} = selection;
+        const team = toBattleTeam(selection.pokemon);
 
         pendingMessageRef.current = mode === 'create'
-            ? {t: 'create', formatKey: derivedFormatKey, name: trimmedName, team, visualMeta}
-            : {t: 'join', code: joinCode.trim().toUpperCase(), name: trimmedName, team, visualMeta};
+            ? {t: 'create', versionGroup, name: trimmedName, team}
+            : {t: 'join', code: joinCode.trim().toUpperCase(), versionGroup, name: trimmedName, team};
 
         setError(null);
         setConnecting(true);
@@ -159,13 +145,9 @@ const BattleHome: FC = () => {
                 <Typography variant="h4" sx={{marginBottom: 1}}>Choose your team</Typography>
                 <TeamPicker onSelect={setSelection}/>
 
-                {mode === 'create' && selection && derivedFormatKey && (
+                {mode === 'create' && selection && (
                     <Typography variant="body2" color="text.secondary" sx={{marginTop: 2}}>
-                        {derivedFormatKey === 'nationaldex'
-                            ? 'This will be a National Dex Anything Goes battle (Home) — every Pokémon from every generation, with Mega Evolution, Z-Moves and Terastallization all available.'
-                            : derivedFormatKey === 'legendsza'
-                            ? 'This will be a Legends: Z-A battle — Mega Evolution is available, Terastallization is not.'
-                            : `This will be a Gen ${derivedFormatKey} Anything Goes battle${selection.versionGroup ? ` (${versionGroupLabel[selection.versionGroup]})` : ''}.`}
+                        {describeBattle(selection.versionGroup)}
                     </Typography>
                 )}
 

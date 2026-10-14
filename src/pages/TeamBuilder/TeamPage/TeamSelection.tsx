@@ -73,8 +73,8 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
     // The roster keeps showing whatever forme was picked, Mega included -
     // only the item is pre-filled here. The actual submitted species/item
     // (and the ability/stat pool the editor works against) get redirected to
-    // the base species elsewhere - see SetEditor.tsx and toShowdownTeam.ts's
-    // toShowdownSet, since a battle-only forme can never legally be a team's
+    // the base species elsewhere - see SetEditor.tsx and the battle server's
+    // teamConvert.ts, since a battle-only forme can never legally be a team's
     // submitted species (showdownSpecies.ts's resolveBattleOnlyBase).
     const handleAdd = (mon: TeamCandidateSummary) => {
         if (currentTeam.pokemon.length === 6) return
@@ -114,7 +114,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
                 // Fetched against the base species so importSet resolves
                 // ability/moves against its real pool (Mega Emboar's own
                 // ability list is just "Mold Breaker", never something a
-                // player actually picks - see toShowdownTeam.ts). The
+                // player actually picks - see the battle server's teamConvert.ts). The
                 // roster keeps showing whatever forme was pasted, so the
                 // identity fields get restored to it afterward.
                 const detail = await queryClient.fetchQuery(teamCandidateQuery(versionSlug, resolved.id));
