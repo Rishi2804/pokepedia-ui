@@ -1,12 +1,12 @@
+import type {PokemonType, VersionGroup} from "../../global/enums.ts";
+import type {NatureName} from "../../global/data/natures.ts";
 import type {StatSpread} from "../../global/types.ts";
 
 // Mirror of pokepedia-battle/src/protocol.ts. Duplicated deliberately (the
 // two live in separate repos with no shared package) - if you change one,
-// change the other. The only real divergence is PokemonSet: the server
-// imports it from @pkmn/sim, but the browser has no @pkmn dependency at all
-// (that's load-bearing, not an oversight - see the battle plan's Phase 2),
-// so it's defined locally here to the exact shape @pkmn/types's PokemonSet
-// has (verified against pokepedia-battle's node_modules/@pkmn/types).
+// change the other. The browser has no @pkmn dependency for the contract:
+// teams go over the wire in PokePedia's own shape (BattleTeamMember) and the
+// server converts them to Showdown sets.
 
 export type SupportedGen = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
@@ -19,14 +19,28 @@ export type BattleFormatKey = SupportedGen | 'nationaldex' | 'legendsza';
 export type SideID = 'p1' | 'p2';
 export type RoomPhase = 'waiting' | 'validating' | 'battle' | 'ended';
 
-export interface VisualMeta {
+/** A team member as PokePedia's team builder stores it, trimmed to what the
+ * battle server needs - see pokepedia-battle's teamConvert.ts for how it
+ * becomes a Showdown set. evs/ivs stay on the team's own scale (Stat Exp/DVs
+ * in gens 1-2). */
+export interface BattleTeamMember {
     pokemonId: number;
+    slug: string;
+    nickname: string | null;
     shiny: boolean;
-    female: boolean;
+    gender: 'male' | 'female' | 'genderless';
+    ability: string | null;
+    moves: string[];
+    level: number;
+    nature: NatureName;
+    item: string | null;
+    evs: StatSpread;
+    ivs: StatSpread;
+    happiness: number;
+    teraType: PokemonType | null;
+    dynamaxLevel: number;
+    gigantamax: boolean;
 }
-
-/** Keyed by Showdown species id (toShowdownId(slug), lowercased/no punctuation). */
-export type VisualMetaMap = Record<string, VisualMeta>;
 
 /** A dex object (move/item/ability/type/weather/...) reduced to what the UI
  * renders - id for icons/lookups, name for display. Resolved server-side so
@@ -78,7 +92,20 @@ export interface SlotView {
 
 export type BoostID = 'atk' | 'def' | 'spa' | 'spd' | 'spe' | 'accuracy' | 'evasion';
 
+/** Everything needed to draw a battle sprite - the server picks the file
+ * (generation art, shiny/gender variants, Gmax swap), so the UI just renders it. */
+export interface BattleSprite {
+    url: string;
+    w: number;
+    h: number;
+    pixelated: boolean;
+    /** Extra on-screen enlargement for Dynamax/Gigantamax (1 otherwise). */
+    scale: number;
+}
+
 export interface ActiveView extends SlotView {
+    /** Back-facing for `me`, front-facing for `foe`. */
+    sprite: BattleSprite;
     boosts: Partial<Record<BoostID, number>>;
     volatiles: Named[];
     /** 'gigantamax' only for a Gmax-capable Pokemon that actually Gigantamaxed. */
@@ -160,6 +187,8 @@ export interface BattleView {
     turn: number;
     gen: number;
     format: string;
+    /** Display label ("Gen 4 Anything Goes"); `format` is the raw Showdown id. */
+    formatName: string;
     field: FieldView;
     me: SideView;
     foe: SideView;
@@ -179,35 +208,12 @@ export type Choice =
     | { kind: 'default' }
     | { kind: 'undo' };
 
-/** Local mirror of @pkmn/types's PokemonSet<string> - the shape
- * pokepedia-battle's TeamValidator/Teams.pack expect. evs/ivs reuse
- * StatSpread since PokePedia's team model already keys stats the same way
- * Showdown does (see global/types.ts's StatKey comment). */
-export interface PokemonSet {
-    name: string;
-    species: string;
-    item: string;
-    ability: string;
-    moves: string[];
-    nature: string;
-    gender: string;
-    evs: StatSpread;
-    ivs: StatSpread;
-    level: number;
-    shiny?: boolean;
-    happiness?: number;
-    pokeball?: string;
-    hpType?: string;
-    dynamaxLevel?: number;
-    gigantamax?: boolean;
-    teraType?: string;
-}
-
 export type ClientMessage =
-    // `formatKey` is what the room should play under (a gen, or 'nationaldex'),
-    // not the resolved Showdown format id - that comes back as `format` below.
-    | { t: 'create'; formatKey: BattleFormatKey; name: string; team: PokemonSet[]; visualMeta: VisualMetaMap }
-    | { t: 'join'; code: string; name: string; team: PokemonSet[]; visualMeta: VisualMetaMap }
+    // The server picks the room's format from `versionGroup` (null for a Home
+    // team). `join` carries its own because the conversion depends on the
+    // joiner's own team, not the room's.
+    | { t: 'create'; versionGroup: VersionGroup | null; name: string; team: BattleTeamMember[] }
+    | { t: 'join'; code: string; versionGroup: VersionGroup | null; name: string; team: BattleTeamMember[] }
     | { t: 'resume'; code: string; seatToken: string }
     | { t: 'choose'; rqid: number; choice: Choice }
     | { t: 'leave' }
@@ -219,8 +225,8 @@ export type ClientMessage =
 // `t: 'created' | 'joined'` isn't assignable to `t: 'created'` alone, so
 // Extract resolves to `never`.
 export type ServerMessage =
-    | { t: 'created'; code: string; seat: SideID; seatToken: string; format: string }
-    | { t: 'joined'; code: string; seat: SideID; seatToken: string; format: string }
+    | { t: 'created'; code: string; seat: SideID; seatToken: string; format: string; formatName: string }
+    | { t: 'joined'; code: string; seat: SideID; seatToken: string; format: string; formatName: string }
     | { t: 'roomState'; phase: RoomPhase; players: Partial<Record<SideID, string>> }
     | { t: 'update'; log: LogEntry[]; view: BattleView }
     /** Raw per-seat sim protocol lines, gated behind a server-side dev flag.

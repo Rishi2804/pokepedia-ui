@@ -2,7 +2,6 @@ import {Alert, Box, Button, Chip, ToggleButton, ToggleButtonGroup, Typography} f
 import {FC} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import MetaData from "../../components/MetaData/MetaData.tsx";
-import {formatLabel} from "../../services/battle/formatLabel.ts";
 import type {LogSpeed} from "../../services/battle/useBattleView.ts";
 import {useBattleView} from "../../services/battle/useBattleView.ts";
 import BattleField from "./components/BattleField/BattleField.tsx";
@@ -89,7 +88,7 @@ const BattleRoom: FC = () => {
                 <>
                     <FormPaper sx={{marginBottom: 3, textAlign: 'center'}}>
                         <Typography variant="h4">
-                            {view.phase === 'teampreview' ? 'Team Preview' : formatLabel(view.format)}
+                            {view.phase === 'teampreview' ? 'Team Preview' : view.formatName}
                         </Typography>
                         {view.winner && (
                             <Typography variant="h5" sx={{marginTop: 1}}>
@@ -113,7 +112,7 @@ const BattleRoom: FC = () => {
                                 <SideBar team={view.foe.team} teamSize={view.foe.teamSize} conditions={view.foe.conditions}/>
 
                                 <Box sx={{marginY: 1.5}}>
-                                    <BattleField field={view.field} me={view.me} foe={view.foe} turn={view.turn} gen={view.gen as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}/>
+                                    <BattleField field={view.field} me={view.me} foe={view.foe} turn={view.turn}/>
                                 </Box>
 
                                 <Typography variant="body2" color="text.secondary" sx={{marginBottom: 0.5}}>
