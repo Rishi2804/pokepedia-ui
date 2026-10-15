@@ -1,7 +1,7 @@
 import {FC} from "react";
 import {Box, Chip, Grid2 as Grid, Paper, Stack, Typography} from "@mui/material";
 import {ItemDetails as ItemDetailsData} from "../../../../../global/types.ts";
-import {titleCase} from "../../../../../services/api/parsers/parseItems.ts";
+import {titleCase} from "../../../../../global/utils.ts";
 import {formatLabel} from "../../formatLabels.ts";
 
 interface IItemDetailsProps {

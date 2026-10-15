@@ -15,6 +15,16 @@ export function navName(name: string): string {
     return name.toLowerCase().replace(/ /g, "-");
 }
 
+// "held-items" -> "Held Items": the display form of an API slug that has no
+// display name of its own (item categories and pockets).
+export function titleCase(slug: string): string {
+    return slug
+        .split("-")
+        .filter(word => word !== "")
+        .map(word => word[0].toUpperCase() + word.slice(1))
+        .join(" ");
+}
+
 // Pokemon navigate by numeric id (the backend resolves variant ids >=10000
 // to their species internally); moves and abilities navigate by slug. Items
 // go by id too: a search hit carries only the display name, and "King's Rock"

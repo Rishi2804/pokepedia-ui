@@ -24,7 +24,21 @@ interface WireItemDetail {
 export function parseItem(json: unknown): ItemDetails {
     const wire = json as WireItemDetail;
     return {
-        ...wire,
+        id: wire.id,
+        slug: wire.slug,
+        name: wire.name,
+        gen: wire.gen,
+        category: wire.category,
+        pocket: wire.pocket,
+        cost: wire.cost,
+        flingPower: wire.flingPower,
+        flingEffect: wire.flingEffect,
+        effect: wire.effect,
+        shortEffect: wire.shortEffect,
+        sprite: wire.sprite,
+        holdable: wire.holdable,
+        showdownId: wire.showdownId,
+        legalFormats: wire.legalFormats,
         descriptions: parseDescriptions(wire.descriptions),
         pokemon: wire.pokemon.map(toPokemonSnapshot),
     };

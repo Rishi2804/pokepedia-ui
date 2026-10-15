@@ -1,7 +1,7 @@
 import {useMemo, useState} from "react";
 import {Box, Grid2 as Grid, Typography} from "@mui/material";
 import {useItemsDetails} from "../../../services/api/hooks/useItemsData.ts";
-import {titleCase} from "../../../services/api/parsers/parseItems.ts";
+import {titleCase} from "../../../global/utils.ts";
 import {ItemGroup, ItemSnapshot} from "../../../global/types.ts";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";

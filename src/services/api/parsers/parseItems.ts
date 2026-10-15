@@ -1,4 +1,27 @@
 import {ItemGroup, ItemSnapshot} from "../../../global/types.ts";
+import {titleCase} from "../../../global/utils.ts";
+
+interface WireItemSnap {
+    id: number;
+    slug: string;
+    name: string;
+    gen: number | null;
+    category: string;
+    pocket: string;
+    sprite: string;
+}
+
+function toItemSnapshot(item: WireItemSnap): ItemSnapshot {
+    return {
+        id: item.id,
+        slug: item.slug,
+        name: item.name,
+        gen: item.gen,
+        category: item.category,
+        pocket: item.pocket,
+        sprite: item.sprite,
+    };
+}
 
 // Display order and labels for PokeAPI's pockets. An unknown pocket (PokeAPI
 // adding one) still renders, last, under its title-cased slug.
@@ -12,16 +35,8 @@ const POCKETS: { pocket: string; label: string }[] = [
     {pocket: "key", label: "Key Items"},
 ];
 
-export function titleCase(slug: string): string {
-    return slug
-        .split("-")
-        .filter(word => word !== "")
-        .map(word => word[0].toUpperCase() + word.slice(1))
-        .join(" ");
-}
-
 export function parseItems(json: unknown): ItemGroup[] {
-    const items = json as ItemSnapshot[];
+    const items = (json as WireItemSnap[]).map(toItemSnapshot);
 
     const byPocket = new Map<string, ItemSnapshot[]>();
     for (const item of items) {
