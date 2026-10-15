@@ -165,7 +165,7 @@ export interface AbilitySnapshot {
 // PokemonType/Game: it's used to pick a UI section, not translated to a
 // display label, and the wire value is already lowercase ("pokemon"), which
 // doesn't fit asEnum's key-equals-value assumption.
-export type SearchEntityType = "pokemon" | "move" | "ability";
+export type SearchEntityType = "pokemon" | "move" | "ability" | "item";
 
 export interface SearchHit {
     type: SearchEntityType;

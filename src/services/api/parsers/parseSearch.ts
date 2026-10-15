@@ -21,7 +21,7 @@ interface WireSearchResults {
     groups: WireSearchGroup[];
 }
 
-const ENTITY_TYPES: readonly string[] = ["pokemon", "move", "ability"];
+const ENTITY_TYPES: readonly string[] = ["pokemon", "move", "ability", "item"];
 
 // Not asEnum: the wire value is already lowercase, which doesn't fit
 // asEnum's key-equals-value assumption — see the SearchEntityType comment

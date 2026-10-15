@@ -16,7 +16,9 @@ export function navName(name: string): string {
 }
 
 // Pokemon navigate by numeric id (the backend resolves variant ids >=10000
-// to their species internally); moves and abilities navigate by slug.
+// to their species internally); moves and abilities navigate by slug. Items
+// go by id too: a search hit carries only the display name, and "King's Rock"
+// can't be turned back into its slug "kings-rock" (/item/:id takes either).
 export function searchHitPath(hit: SearchHit): string {
     switch (hit.type) {
         case "pokemon":
@@ -25,6 +27,8 @@ export function searchHitPath(hit: SearchHit): string {
             return `/move/${navName(hit.name)}`;
         case "ability":
             return `/ability/${navName(hit.name)}`;
+        case "item":
+            return `/item/${hit.id}`;
     }
 }
 
