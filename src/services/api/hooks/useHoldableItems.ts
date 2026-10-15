@@ -6,10 +6,17 @@ import type {BattleFormatKey} from "../../battle/protocol.ts";
 
 // The items the team builder may offer for one battle format. Reference data
 // that only changes with a scrape, so it is fetched once per format.
-export const useHoldableItems = (format: BattleFormatKey) =>
+// Exported as query options too so non-component code (the team import) can
+// fetchQuery the same cache entry the picker uses.
+export const holdableItemsQuery = (format: BattleFormatKey) => ({
+    queryKey: ['holdable-items', format],
+    queryFn: () => getJson(`${ENDPOINTS.GET_HOLDABLE_ITEMS}/${format}`, parseHoldableItems),
+    staleTime: Infinity,
+});
+
+export const useHoldableItems = (format: BattleFormatKey, enabled = true) =>
     useQuery({
-        queryKey: ['holdable-items', format],
-        queryFn: () => getJson(`${ENDPOINTS.GET_HOLDABLE_ITEMS}/${format}`, parseHoldableItems),
-        staleTime: Infinity,
+        ...holdableItemsQuery(format),
+        enabled,
         placeholderData: keepPreviousData,
     });

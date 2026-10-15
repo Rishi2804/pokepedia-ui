@@ -13,8 +13,8 @@ import {versionGroupToSlug} from "../../../../../global/labels.ts";
 import {PokemonTeamMember, TeamCandidateSummary} from "../../../../../global/types.ts";
 import {VersionGroup} from "../../../../../global/enums.ts";
 import {getGenRules} from "../../../genRules.ts";
-import type {BattleFormatKey, SupportedGen} from "../../../../../services/battle/protocol.ts";
-import {VersionToGen} from "../../constants.ts";
+import {useHoldableItems} from "../../../../../services/api/hooks/useHoldableItems.ts";
+import {battleFormatKeyFor} from "../../../utils/battleFormat.ts";
 import {exportSet, importSet, parseSpeciesName, resolveSpecies} from "../../../utils/showdownText.ts";
 import {resolveBattleOnlyBase} from "../../../../../global/data/showdownSpecies.ts";
 import {useTeamStore} from "../../../../../store/teamStore.ts";
@@ -42,6 +42,10 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
     const queryClient = useQueryClient();
     const [showImportExport, setShowImportExport] = useState(false);
     const versionSlug = versionGroup ? versionGroupToSlug(versionGroup) : 'national';
+    const formatKey = battleFormatKeyFor(versionGroup);
+    // Same query the item picker uses, so this costs no extra request. Needed
+    // here to name items on export and to resolve them on import.
+    const items = useHoldableItems(formatKey, getGenRules(versionGroup).items).data ?? [];
     // The header/sprite above keep showing member's own identity (Mega
     // included), but the ability/move/stat columns below need the BASE
     // species' real pool - Mega Emboar's own "ability" is just its fixed
@@ -55,17 +59,6 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
     if (error) throw error;
 
     const rules = getGenRules(versionGroup);
-    // National/home teams aren't pinned to one game's item pool, so they battle
-    // in (and draw items from) National Dex - which is the only place Mega
-    // Stones and Z-Crystals are legal alongside gen 9 mechanics. Legends: Z-A
-    // gets its own key so itemsFor offers its Mega Stones without pulling in
-    // the rest of the National Dex pool - see items.ts's itemsFor.
-    const formatKey: BattleFormatKey = !versionGroup
-        ? 'nationaldex'
-        : versionGroup === VersionGroup.LEGENDS_ZA
-        ? 'legendsza'
-        : VersionToGen[versionGroup] as SupportedGen;
-
     // A battle-only forme (Mega/Primal/Zen/...) can never legally be a
     // team's species - see showdownSpecies.ts's resolveBattleOnlyBase - so a
     // pasted set naming one imports against its base species instead, with
@@ -81,7 +74,7 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
         } catch {
             return [`Couldn't load data for ${resolved.name}.`];
         }
-        const {member: imported, errors} = importSet(text, detail, versionGroup, rules);
+        const {member: imported, errors} = importSet(text, detail, versionGroup, rules, items);
         if (imported && battleOnly?.requiredItem) {
             if (imported.item && imported.item !== battleOnly.requiredItem.slug) {
                 errors.push(`${speciesName} transforms in-battle with ${battleOnly.requiredItem.name}, please fix its item.`);
@@ -117,7 +110,7 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
             </Box>
 
             <Collapse in={showImportExport}>
-                <ImportExport label="Set" exportText={exportSet(member, rules)} onImport={handleImportSet} disabled={!editMode}/>
+                <ImportExport label="Set" exportText={exportSet(member, rules, items)} onImport={handleImportSet} disabled={!editMode}/>
             </Collapse>
 
             <EditorHeader type1={member.teraType ?? member.type1} type2={member.teraType ?? member.type2}>

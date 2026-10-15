@@ -21,6 +21,8 @@ import {getGenRules} from "../genRules.ts";
 import {useQueryClient} from "@tanstack/react-query";
 import {exportTeam} from "../utils/showdownText.ts";
 import {importTeamText} from "../utils/importTeam.ts";
+import {battleFormatKeyFor} from "../utils/battleFormat.ts";
+import {useHoldableItems} from "../../../services/api/hooks/useHoldableItems.ts";
 import {toShowdownId} from "../../../global/data/showdownSpecies.ts";
 import {BATTLE_ONLY_FORMES} from "../../../global/data/battleOnlyFormes.ts";
 
@@ -42,6 +44,11 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
     const [editMode, setEditMode] = useState<boolean>(!!isEditMode)
     const [selectedSlot, setSelectedSlot] = useState<number | null>(null)
     const [showTeamImportExport, setShowTeamImportExport] = useState<boolean>(false)
+    // Names items on export; the same per-format query the item picker uses.
+    const items = useHoldableItems(
+        battleFormatKeyFor(currentTeam?.versionGroup ?? null),
+        !!currentTeam && getGenRules(currentTeam.versionGroup).items,
+    ).data ?? [];
 
     useEffect(() => {
         if (versionGroup) {
@@ -137,7 +144,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
             <Collapse in={showTeamImportExport}>
                 <ImportExport
                     label="Team"
-                    exportText={exportTeam(currentTeam.pokemon, rules)}
+                    exportText={exportTeam(currentTeam.pokemon, rules, items)}
                     onImport={handleImportTeam}
                     disabled={!editMode}
                 />

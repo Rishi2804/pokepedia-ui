@@ -1,12 +1,11 @@
 import {PokemonType, VersionGroup} from "../../../global/enums.ts";
 import {pokemonTypeLabel} from "../../../global/labels.ts";
-import {PokemonTeamMember, StatKey, StatSpread, TeamCandidate, TeamCandidateSummary, TeamMove} from "../../../global/types.ts";
+import {HoldableItem, PokemonTeamMember, StatKey, StatSpread, TeamCandidate, TeamCandidateSummary, TeamMove} from "../../../global/types.ts";
 import {NATURES, NatureName} from "../../../global/data/natures.ts";
-import {PLACEHOLDER_ITEMS} from "../../../global/data/items.ts";
 import {GenRules} from "../genRules.ts";
 import {createTeamMember} from "../createTeamMember.ts";
 import {toStoredMove} from "./teamMove.ts";
-import {resolveSlugFromShowdownName, showdownNameFromSlug} from "../../../global/data/showdownSpecies.ts";
+import {resolveSlugFromShowdownName, showdownNameFromSlug, toShowdownId} from "../../../global/data/showdownSpecies.ts";
 import {
     dvToShowdownIv, HIDDEN_POWER_MOVE_ID, hiddenPowerTypeFor,
     ivsForHiddenPower, showdownEvToStatExp, showdownIvToDv, statExpToShowdownEv,
@@ -51,13 +50,14 @@ function resolveNature(name: string): NatureName | undefined {
     return (Object.keys(NATURES) as NatureName[]).find(key => key === target || NATURES[key].name.toLowerCase() === target);
 }
 
-// Items are a placeholder (see global/data/items.ts) covering ~20 well-known
-// items, not the real dex — an unresolved item is silently skipped rather
-// than treated as an import error, since most real Showdown pastes will name
-// items we simply don't have yet.
-function resolveItemSlug(name: string): string | undefined {
-    const target = name.trim().toLowerCase();
-    return PLACEHOLDER_ITEMS.find(i => i.name.toLowerCase() === target || i.slug === target)?.slug;
+// Matches a pasted item name against the items the team's battle format
+// allows. Showdown ids ("choicescarf") are just the name lowercased with
+// everything but letters and digits dropped, so "Choice Scarf" and
+// "choice-scarf" both resolve; the format's own list is what makes an item
+// that exists but isn't legal here (a Mega Stone in a gen 9 team) not match.
+function resolveItem(name: string, items: HoldableItem[]): HoldableItem | undefined {
+    const target = toShowdownId(name);
+    return items.find(i => i.showdownId === target);
 }
 
 // Compares names with case, spaces and punctuation ignored: our data spells
@@ -148,7 +148,7 @@ export interface ImportResult {
 // (already resolved and fetched by the caller via resolveSpecies + the same
 // fetch SetEditor uses) — id/type1/type2/gen/genderLock all come from
 // createTeamMember, the same function the picker uses, never from the text.
-export function importSet(block: string, candidate: TeamCandidate, versionGroup: VersionGroup | null, rules: GenRules): ImportResult {
+export function importSet(block: string, candidate: TeamCandidate, versionGroup: VersionGroup | null, rules: GenRules, items: HoldableItem[]): ImportResult {
     const errors: string[] = [];
     const lines = block.split('\n').map(l => l.trim()).filter(l => l.length > 0);
     if (lines.length === 0) return {member: null, errors: ['Empty set.']};
@@ -161,10 +161,11 @@ export function importSet(block: string, candidate: TeamCandidate, versionGroup:
         if (header.gender === 'M') member.gender = 'male';
         else if (header.gender === 'F') member.gender = 'female';
     }
-    if (header.itemName) {
-        const slug = resolveItemSlug(header.itemName);
-        if (slug) member.item = slug;
-        // Unresolved item: left null rather than an error — see resolveItemSlug.
+    // Games without held items (Gen 1, Let's Go, Legends) ignore the item line.
+    if (header.itemName && rules.items) {
+        const item = resolveItem(header.itemName, items);
+        if (item) member.item = item.showdownId;
+        else errors.push(`Item "${header.itemName}" isn't available in this format.`);
     }
 
     const evs: StatSpread = {...member.evs};
@@ -263,7 +264,7 @@ export function importSet(block: string, candidate: TeamCandidate, versionGroup:
     return {member, errors};
 }
 
-export function exportSet(member: PokemonTeamMember, rules: GenRules): string {
+export function exportSet(member: PokemonTeamMember, rules: GenRules, items: HoldableItem[]): string {
     let out = '';
 
     // Falls back to our own display name for teams saved before `slug` was
@@ -277,8 +278,10 @@ export function exportSet(member: PokemonTeamMember, rules: GenRules): string {
     if (member.gender === 'male') out += ' (M)';
     if (member.gender === 'female') out += ' (F)';
     if (member.item) {
-        const item = PLACEHOLDER_ITEMS.find(i => i.slug === member.item);
-        if (item) out += ` @ ${item.name}`;
+        // An item missing from the list (not legal in this format any more, or
+        // the list hasn't loaded) still exports: Showdown reads its id as a name.
+        const item = items.find(i => i.showdownId === member.item);
+        out += ` @ ${item?.name ?? member.item}`;
     }
     out += '  \n';
 
@@ -327,6 +330,6 @@ export function exportSet(member: PokemonTeamMember, rules: GenRules): string {
     return out;
 }
 
-export function exportTeam(members: PokemonTeamMember[], rules: GenRules): string {
-    return members.map(member => exportSet(member, rules)).join('\n');
+export function exportTeam(members: PokemonTeamMember[], rules: GenRules, items: HoldableItem[]): string {
+    return members.map(member => exportSet(member, rules, items)).join('\n');
 }
