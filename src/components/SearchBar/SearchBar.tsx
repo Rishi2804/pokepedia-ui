@@ -11,6 +11,7 @@ const TYPE_LABELS: Record<SearchHit["type"], string> = {
     pokemon: "Pokémon",
     move: "Move",
     ability: "Ability",
+    item: "Item",
 };
 
 const SearchBar: FC = () => {
@@ -78,7 +79,7 @@ const SearchBar: FC = () => {
             <SearchInput
                 {...getInputProps()}
                 onKeyDown={handleKeyDown}
-                placeholder="Search Pokémon, moves, abilities…"
+                placeholder="Search Pokémon, moves, abilities, items…"
             />
             {/* inputValue check: a cleared/disabled query keeps stale options via keepPreviousData */}
             {popupOpen && inputValue.trim() !== "" && options.length > 0 && (

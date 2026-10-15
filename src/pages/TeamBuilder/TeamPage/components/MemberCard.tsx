@@ -13,8 +13,10 @@ import {PokemonType} from "../../../../global/enums.ts";
 import {PokemonTeamMember} from "../../../../global/types.ts";
 import {useTeamStore} from "../../../../store/teamStore.ts";
 import {NATURES} from "../../../../global/data/natures.ts";
-import {PLACEHOLDER_ITEMS} from "../../../../global/data/items.ts";
 import {getGenRules} from "../../genRules.ts";
+import {useHoldableItems} from "../../../../services/api/hooks/useHoldableItems.ts";
+import {battleFormatKeyFor} from "../../utils/battleFormat.ts";
+import ItemImage from "../../../../components/ItemImage/ItemImage.tsx";
 
 interface IMemberCardProps {
     i: number;
@@ -26,6 +28,9 @@ interface IMemberCardProps {
 const MemberCard: FC<IMemberCardProps> = ({i, editMode, selectedSlot, setSelectedSlot}) => {
 
     const { currentTeam, editPokemon, removePokemon } = useTeamStore()
+    const teamVersionGroup = currentTeam?.versionGroup ?? null;
+    // Names the held item; one query per format, shared by all six cards.
+    const {data: items} = useHoldableItems(battleFormatKeyFor(teamVersionGroup), getGenRules(teamVersionGroup).items);
     const pokemon = currentTeam?.pokemon[i];
     if (!pokemon) return null;
 
@@ -66,7 +71,10 @@ const MemberCard: FC<IMemberCardProps> = ({i, editMode, selectedSlot, setSelecte
     }
 
     const selected = selectedSlot === i;
-    const itemName = pokemon.item ? PLACEHOLDER_ITEMS.find(item => item.slug === pokemon.item)?.name : null;
+    const heldItem = pokemon.item ? items?.find(item => item.showdownId === pokemon.item) : undefined;
+    // Until the list loads there is no name to show; an item the list doesn't
+    // know (no longer legal here) falls back to its id.
+    const itemName = heldItem?.name ?? (items ? pokemon.item : null);
 
     return (
         <Grid size={{xs: 2}}>
@@ -135,7 +143,14 @@ const MemberCard: FC<IMemberCardProps> = ({i, editMode, selectedSlot, setSelecte
                 <Box sx={{display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center'}}>
                     {pokemon.ability && <Chip label={pokemon.ability.name} size="small"/>}
                     <Chip label={NATURES[pokemon.nature].name} size="small"/>
-                    {itemName && <Chip label={itemName} size="small"/>}
+                    {itemName && (
+                        <Chip
+                            label={itemName}
+                            size="small"
+                            icon={heldItem ? <ItemImage image={heldItem.image} name={itemName} size={18}/> : undefined}
+                            sx={{'& .MuiChip-icon': {marginLeft: 0.75, marginRight: -0.25}}}
+                        />
+                    )}
                 </Box>
             </MemberInfo>
         </Grid>

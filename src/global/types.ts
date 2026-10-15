@@ -165,7 +165,7 @@ export interface AbilitySnapshot {
 // PokemonType/Game: it's used to pick a UI section, not translated to a
 // display label, and the wire value is already lowercase ("pokemon"), which
 // doesn't fit asEnum's key-equals-value assumption.
-export type SearchEntityType = "pokemon" | "move" | "ability";
+export type SearchEntityType = "pokemon" | "move" | "ability" | "item";
 
 export interface SearchHit {
     type: SearchEntityType;
@@ -185,6 +185,61 @@ export interface SearchResults {
     query: string;
     degraded: boolean;
     groups: SearchGroup[];
+}
+
+// The API groups items by PokeAPI pocket; "misc" is the pocket most held items
+// (Leftovers, Mega Stones, plates, ...) live in, so the page also shows each
+// item's category.
+export interface ItemSnapshot {
+    id: number;
+    // URL form (/item/choice-scarf). name can't stand in for it: "King's Rock"
+    // is "kings-rock", and the Z-Crystals are "firium-z--held".
+    slug: string;
+    name: string;
+    gen: number | null;
+    category: string;
+    pocket: string;
+    // Object-store key under the images bucket, e.g. "items/choice-scarf.png".
+    // A naming convention: the image may not exist (see ItemImage).
+    image: string;
+}
+
+export interface ItemGroup {
+    pocket: string;
+    label: string;
+    items: ItemSnapshot[];
+}
+
+export interface ItemDetails {
+    id: number;
+    slug: string;
+    name: string;
+    gen: number | null;
+    category: string;
+    pocket: string;
+    cost: number;
+    flingPower: number | null;
+    flingEffect: string | null;
+    effect: string;
+    shortEffect: string;
+    image: string;
+    holdable: boolean;
+    // Showdown's id for the item; what PokemonTeamMember.item stores.
+    showdownId: string | null;
+    // Battle formats the item is legal in: "2".."9", "nationaldex", "legendsza".
+    legalFormats: string[];
+    descriptions: Description[];
+    // Pokemon found holding the item in the wild.
+    pokemon: PokemonSnapshot[];
+}
+
+// One option in the team builder's item picker: held in battle and accepted
+// by the battle server for the team's format.
+export interface HoldableItem {
+    showdownId: string;
+    name: string;
+    image: string;
+    shortEffect: string;
 }
 
 export interface AbilityDetails {

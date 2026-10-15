@@ -11,7 +11,8 @@ import {ColumnPaper} from "../styles.ts";
 import {PokemonTeamMember, TeamCandidate} from "../../../../../../global/types.ts";
 import {PokemonType} from "../../../../../../global/enums.ts";
 import {GenRules} from "../../../../genRules.ts";
-import {itemsFor} from "../../../../../../global/data/items.ts";
+import {useHoldableItems} from "../../../../../../services/api/hooks/useHoldableItems.ts";
+import ItemAutoComplete from "../../ItemAutoComplete.tsx";
 import type {BattleFormatKey} from "../../../../../../services/battle/protocol.ts";
 import {useTeamStore} from "../../../../../../store/teamStore.ts";
 
@@ -40,7 +41,7 @@ const DetailsColumn: FC<DetailsColumnProps> = ({slot, member, candidate, rules, 
         update({teraType: tera, moves});
     };
 
-    const items = itemsFor(formatKey);
+    const {data: items} = useHoldableItems(formatKey, rules.items);
 
     return (
         <ColumnPaper elevation={2}>
@@ -90,21 +91,14 @@ const DetailsColumn: FC<DetailsColumnProps> = ({slot, member, candidate, rules, 
             </Box>
 
             {rules.items && (
-                <FormControl fullWidth sx={{marginBottom: 2}}>
-                    <StaticLabel>Held Item</StaticLabel>
-                    <Select
-                        variant="outlined"
-                        value={member.item ?? ''}
-                        onChange={e => update({item: e.target.value || null})}
-                        input={<AbilityInput/>}
+                <Box sx={{marginBottom: 2}}>
+                    <ItemAutoComplete
+                        value={member.item}
+                        items={items}
+                        onChange={item => update({item})}
                         disabled={!editMode}
-                    >
-                        <MenuItem value="">None</MenuItem>
-                        {items.map(item => (
-                            <MenuItem value={item.slug} key={item.slug}>{item.name}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                    />
+                </Box>
             )}
 
             {rules.abilities && (

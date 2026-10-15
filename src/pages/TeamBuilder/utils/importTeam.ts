@@ -1,9 +1,11 @@
 import type {QueryClient} from "@tanstack/react-query";
 import {resolveBattleOnlyBase} from "../../../global/data/showdownSpecies.ts";
 import type {VersionGroup} from "../../../global/enums.ts";
-import type {PokemonTeamMember, TeamCandidateSummary} from "../../../global/types.ts";
+import type {HoldableItem, PokemonTeamMember, TeamCandidateSummary} from "../../../global/types.ts";
 import {teamCandidateQuery} from "../../../services/api/hooks/useTeamCandidateData.ts";
+import {holdableItemsQuery} from "../../../services/api/hooks/useHoldableItems.ts";
 import type {GenRules} from "../genRules.ts";
+import {battleFormatKeyFor} from "./battleFormat.ts";
 import {importSet, parseSpeciesName, resolveSpecies, splitTeamText} from "./showdownText.ts";
 
 interface ImportTeamArgs {
@@ -24,6 +26,17 @@ export async function importTeamText({text, allCandidates, versionGroup, version
     const errors: string[] = [];
     const members: PokemonTeamMember[] = [];
 
+    // The items this team's format allows; a set naming any other item reports
+    // it instead of silently dropping it.
+    let items: HoldableItem[] = [];
+    if (rules.items) {
+        try {
+            items = await queryClient.fetchQuery(holdableItemsQuery(battleFormatKeyFor(versionGroup)));
+        } catch {
+            errors.push("Couldn't load the item list, so held items were skipped.");
+        }
+    }
+
     for (const block of blocks) {
         const speciesName = parseSpeciesName(block);
         const pickedCandidate = resolveSpecies(speciesName, allCandidates);
@@ -41,7 +54,7 @@ export async function importTeamText({text, allCandidates, versionGroup, version
             // The roster keeps showing whatever forme was pasted, so the
             // identity fields get restored to it afterward.
             const detail = await queryClient.fetchQuery(teamCandidateQuery(versionSlug, resolved.id));
-            const {member, errors: setErrors} = importSet(block, detail, versionGroup, rules);
+            const {member, errors: setErrors} = importSet(block, detail, versionGroup, rules, items);
             errors.push(...setErrors);
             if (member && battleOnly) {
                 if (pickedCandidate) {

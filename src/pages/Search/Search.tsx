@@ -5,6 +5,8 @@ import MetaData from "../../components/MetaData/MetaData.tsx";
 import PokemonList from "../../components/PokemonList/PokemonList.tsx";
 import MoveList from "../../components/MoveList/MoveList.tsx";
 import {AbilityContainer, AbilityText} from "../Abilities/AbilityHome/styles.ts";
+import {ItemContainer, ItemLink, ItemText} from "../Items/ItemHome/styles.ts";
+import ItemImage from "../../components/ItemImage/ItemImage.tsx";
 import {useSearchResults} from "../../services/api/hooks/useSearch.ts";
 import {asEnum, asNullableEnum} from "../../services/api/parse.ts";
 import {MoveClass, PokemonType} from "../../global/enums.ts";
@@ -17,6 +19,7 @@ const GROUP_LABELS: Record<SearchEntityType, string> = {
     pokemon: "Pokémon",
     move: "Moves",
     ability: "Abilities",
+    item: "Items",
 };
 
 // Degraded (Postgres fallback) hits carry no meta at all, so they can't
@@ -142,6 +145,32 @@ const Search = () => {
                                                 {hit.name}
                                             </AbilityText>
                                         </AbilityContainer>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                            {showAll(group)}
+                        </GroupSection>
+                    );
+                }
+
+                if (group.type === "item" && !data.degraded) {
+                    return (
+                        <GroupSection key={group.type}>
+                            <Typography variant="h2" sx={{marginBottom: 2}}>
+                                {GROUP_LABELS.item} ({group.total})
+                            </Typography>
+                            <Grid container spacing={2} sx={{marginBottom: 3}}>
+                                {group.hits.map(hit => (
+                                    <Grid size={{xs: 12, sm: 6, md: 4, lg: 3}} key={hit.id}>
+                                        <ItemLink to={searchHitPath(hit)}>
+                                            <ItemContainer>
+                                                <ItemImage
+                                                    image={typeof hit.meta?.image === "string" ? hit.meta.image : null}
+                                                    name={hit.name}
+                                                />
+                                                <ItemText className="item-name">{hit.name}</ItemText>
+                                            </ItemContainer>
+                                        </ItemLink>
                                     </Grid>
                                 ))}
                             </Grid>
