@@ -7,19 +7,25 @@ interface ItemSpriteProps {
     // shows the placeholder straight away.
     sprite: string | null | undefined;
     name: string;
-    // Rendered square size in px. The source sprites are ~30px pixel art, so
-    // they are scaled up without smoothing.
+    // Rendered square size in px.
     size?: number;
 }
 
 const BASE_URL: string = `${import.meta.env.VITE_POKEMON_IMAGES_URL}`;
 
+// Images up to this wide are the ~30px pixel art from PokeAPI's sprite set,
+// which looks right scaled up with hard pixels. Wider ones (Bulbapedia's
+// 128-160px bag images) are shrunk to fit, and nearest-neighbour shrinking
+// makes them jagged, so those use normal smoothing.
+const PIXEL_ART_MAX_WIDTH = 64;
+
 // Not every item has an image: the sprite key is a naming convention, and
-// roughly a third of items (plus a handful of holdable ones, such as Mail and
+// roughly one in six items (plus a handful of holdable ones, such as Mail and
 // the Gen 2 berries) have no source image at all. A failed load falls back to
 // a placeholder instead of a broken-image icon.
 const ItemSprite: FC<ItemSpriteProps> = ({sprite, name, size = 32}) => {
     const [failedSprite, setFailedSprite] = useState<string | null>(null);
+    const [pixelArt, setPixelArt] = useState(true);
 
     if (!sprite || failedSprite === sprite) {
         return (
@@ -43,8 +49,9 @@ const ItemSprite: FC<ItemSpriteProps> = ({sprite, name, size = 32}) => {
             width={size}
             height={size}
             loading="lazy"
+            onLoad={e => setPixelArt(e.currentTarget.naturalWidth <= PIXEL_ART_MAX_WIDTH)}
             onError={() => setFailedSprite(sprite)}
-            style={{imageRendering: "pixelated", objectFit: "contain", flexShrink: 0}}
+            style={{imageRendering: pixelArt ? "pixelated" : "auto", objectFit: "contain", flexShrink: 0}}
         />
     );
 };
