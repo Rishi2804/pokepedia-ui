@@ -2,10 +2,10 @@ import {FC, useState} from "react";
 import {Box} from "@mui/material";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 
-interface ItemSpriteProps {
+interface ItemImageProps {
     // Object-store key from the API (e.g. "items/choice-scarf.png"); null/empty
     // shows the placeholder straight away.
-    sprite: string | null | undefined;
+    image: string | null | undefined;
     name: string;
     // Rendered square size in px.
     size?: number;
@@ -19,15 +19,15 @@ const BASE_URL: string = `${import.meta.env.VITE_POKEMON_IMAGES_URL}`;
 // makes them jagged, so those use normal smoothing.
 const PIXEL_ART_MAX_WIDTH = 64;
 
-// Not every item has an image: the sprite key is a naming convention, and
+// Not every item has an image: the image key is a naming convention, and
 // roughly one in six items (plus a handful of holdable ones, such as Mail and
 // the Gen 2 berries) have no source image at all. A failed load falls back to
 // a placeholder instead of a broken-image icon.
-const ItemSprite: FC<ItemSpriteProps> = ({sprite, name, size = 32}) => {
-    const [failedSprite, setFailedSprite] = useState<string | null>(null);
+const ItemImage: FC<ItemImageProps> = ({image, name, size = 32}) => {
+    const [failedImage, setFailedImage] = useState<string | null>(null);
     const [pixelArt, setPixelArt] = useState(true);
 
-    if (!sprite || failedSprite === sprite) {
+    if (!image || failedImage === image) {
         return (
             <Box
                 role="img"
@@ -44,16 +44,16 @@ const ItemSprite: FC<ItemSpriteProps> = ({sprite, name, size = 32}) => {
 
     return (
         <img
-            src={`${BASE_URL}/${sprite}`}
+            src={`${BASE_URL}/${image}`}
             alt={name}
             width={size}
             height={size}
             loading="lazy"
             onLoad={e => setPixelArt(e.currentTarget.naturalWidth <= PIXEL_ART_MAX_WIDTH)}
-            onError={() => setFailedSprite(sprite)}
+            onError={() => setFailedImage(image)}
             style={{imageRendering: pixelArt ? "pixelated" : "auto", objectFit: "contain", flexShrink: 0}}
         />
     );
 };
 
-export default ItemSprite;
+export default ItemImage;

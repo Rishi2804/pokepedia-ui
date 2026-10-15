@@ -200,8 +200,8 @@ export interface ItemSnapshot {
     category: string;
     pocket: string;
     // Object-store key under the images bucket, e.g. "items/choice-scarf.png".
-    // A naming convention: the image may not exist (see ItemSprite).
-    sprite: string;
+    // A naming convention: the image may not exist (see ItemImage).
+    image: string;
 }
 
 export interface ItemGroup {
@@ -222,7 +222,7 @@ export interface ItemDetails {
     flingEffect: string | null;
     effect: string;
     shortEffect: string;
-    sprite: string;
+    image: string;
     holdable: boolean;
     // Showdown's id for the item; what PokemonTeamMember.item stores.
     showdownId: string | null;
@@ -238,7 +238,7 @@ export interface ItemDetails {
 export interface HoldableItem {
     showdownId: string;
     name: string;
-    sprite: string;
+    image: string;
     shortEffect: string;
 }
 

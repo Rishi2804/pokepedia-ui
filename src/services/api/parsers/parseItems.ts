@@ -8,7 +8,7 @@ interface WireItemSnap {
     gen: number | null;
     category: string;
     pocket: string;
-    sprite: string;
+    image: string;
 }
 
 function toItemSnapshot(item: WireItemSnap): ItemSnapshot {
@@ -19,7 +19,7 @@ function toItemSnapshot(item: WireItemSnap): ItemSnapshot {
         gen: item.gen,
         category: item.category,
         pocket: item.pocket,
-        sprite: item.sprite,
+        image: item.image,
     };
 }
 

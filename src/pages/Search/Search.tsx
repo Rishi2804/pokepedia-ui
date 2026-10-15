@@ -6,7 +6,7 @@ import PokemonList from "../../components/PokemonList/PokemonList.tsx";
 import MoveList from "../../components/MoveList/MoveList.tsx";
 import {AbilityContainer, AbilityText} from "../Abilities/AbilityHome/styles.ts";
 import {ItemContainer, ItemLink, ItemText} from "../Items/ItemHome/styles.ts";
-import ItemSprite from "../../components/ItemSprite/ItemSprite.tsx";
+import ItemImage from "../../components/ItemImage/ItemImage.tsx";
 import {useSearchResults} from "../../services/api/hooks/useSearch.ts";
 import {asEnum, asNullableEnum} from "../../services/api/parse.ts";
 import {MoveClass, PokemonType} from "../../global/enums.ts";
@@ -164,8 +164,8 @@ const Search = () => {
                                     <Grid size={{xs: 12, sm: 6, md: 4, lg: 3}} key={hit.id}>
                                         <ItemLink to={searchHitPath(hit)}>
                                             <ItemContainer>
-                                                <ItemSprite
-                                                    sprite={typeof hit.meta?.sprite === "string" ? hit.meta.sprite : null}
+                                                <ItemImage
+                                                    image={typeof hit.meta?.image === "string" ? hit.meta.image : null}
                                                     name={hit.name}
                                                 />
                                                 <ItemText className="item-name">{hit.name}</ItemText>

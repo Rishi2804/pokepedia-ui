@@ -1,7 +1,7 @@
 import {FC} from "react";
 import {Autocomplete, Box, TextField, Typography} from "@mui/material";
 import {HoldableItem} from "../../../../global/types.ts";
-import ItemSprite from "../../../../components/ItemSprite/ItemSprite.tsx";
+import ItemImage from "../../../../components/ItemImage/ItemImage.tsx";
 
 interface ItemAutoCompleteProps {
     // Showdown id of the held item (PokemonTeamMember.item), or null.
@@ -22,7 +22,7 @@ const ItemAutoComplete: FC<ItemAutoCompleteProps> = ({value, items, onChange, di
     const match = value ? items?.find(item => item.showdownId === value) : undefined;
     const unavailable = !!value && loaded && !match;
     const shown: HoldableItem | null = match
-        ?? (value ? {showdownId: value, name: value, sprite: "", shortEffect: ""} : null);
+        ?? (value ? {showdownId: value, name: value, image: "", shortEffect: ""} : null);
 
     return (
         <Autocomplete
@@ -46,7 +46,7 @@ const ItemAutoComplete: FC<ItemAutoCompleteProps> = ({value, items, onChange, di
                 const {key, ...optionProps} = props;
                 return (
                     <Box component="li" key={key} {...optionProps} sx={{display: "flex", gap: 1.5, alignItems: "center"}}>
-                        <ItemSprite sprite={option.sprite} name={option.name} size={32}/>
+                        <ItemImage image={option.image} name={option.name} size={32}/>
                         <Box sx={{minWidth: 0}}>
                             <Typography>{option.name}</Typography>
                             {option.shortEffect && (

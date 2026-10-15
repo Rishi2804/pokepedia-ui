@@ -6,7 +6,7 @@ import {ItemGroup, ItemSnapshot} from "../../../global/types.ts";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
 import Filters from "../../../components/Filters/Filters.tsx";
-import ItemSprite from "../../../components/ItemSprite/ItemSprite.tsx";
+import ItemImage from "../../../components/ItemImage/ItemImage.tsx";
 import ItemHomeSkeleton from "./ItemHomeSkeleton.tsx";
 import {ItemContainer, ItemLink, ItemText} from "./styles.ts";
 
@@ -82,7 +82,7 @@ const ItemHome = () => {
                                                 <Grid key={item.id} size={{xs: 12, sm: 6, md: 4, lg: 3}}>
                                                     <ItemLink to={`/item/${item.slug}`}>
                                                         <ItemContainer>
-                                                            <ItemSprite sprite={item.sprite} name={item.name}/>
+                                                            <ItemImage image={item.image} name={item.name}/>
                                                             <ItemText className="item-name">{item.name}</ItemText>
                                                         </ItemContainer>
                                                     </ItemLink>

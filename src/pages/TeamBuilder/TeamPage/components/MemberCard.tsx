@@ -16,7 +16,7 @@ import {NATURES} from "../../../../global/data/natures.ts";
 import {getGenRules} from "../../genRules.ts";
 import {useHoldableItems} from "../../../../services/api/hooks/useHoldableItems.ts";
 import {battleFormatKeyFor} from "../../utils/battleFormat.ts";
-import ItemSprite from "../../../../components/ItemSprite/ItemSprite.tsx";
+import ItemImage from "../../../../components/ItemImage/ItemImage.tsx";
 
 interface IMemberCardProps {
     i: number;
@@ -147,7 +147,7 @@ const MemberCard: FC<IMemberCardProps> = ({i, editMode, selectedSlot, setSelecte
                         <Chip
                             label={itemName}
                             size="small"
-                            icon={heldItem ? <ItemSprite sprite={heldItem.sprite} name={itemName} size={18}/> : undefined}
+                            icon={heldItem ? <ItemImage image={heldItem.image} name={itemName} size={18}/> : undefined}
                             sx={{'& .MuiChip-icon': {marginLeft: 0.75, marginRight: -0.25}}}
                         />
                     )}

@@ -13,7 +13,7 @@ interface WireItemDetail {
     flingEffect: string | null;
     effect: string;
     shortEffect: string;
-    sprite: string;
+    image: string;
     holdable: boolean;
     showdownId: string | null;
     legalFormats: string[];
@@ -35,7 +35,7 @@ export function parseItem(json: unknown): ItemDetails {
         flingEffect: wire.flingEffect,
         effect: wire.effect,
         shortEffect: wire.shortEffect,
-        sprite: wire.sprite,
+        image: wire.image,
         holdable: wire.holdable,
         showdownId: wire.showdownId,
         legalFormats: wire.legalFormats,

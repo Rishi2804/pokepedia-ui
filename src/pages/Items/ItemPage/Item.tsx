@@ -4,7 +4,7 @@ import {useItemDetails} from "../../../services/api/hooks/useItemData.ts";
 import MetaData from "../../../components/MetaData/MetaData.tsx";
 import PokemonList from "../../../components/PokemonList/PokemonList.tsx";
 import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
-import ItemSprite from "../../../components/ItemSprite/ItemSprite.tsx";
+import ItemImage from "../../../components/ItemImage/ItemImage.tsx";
 import ItemEffects from "./components/ItemEffects/ItemEffects.tsx";
 import ItemDetails from "./components/ItemDetails/ItemDetails.tsx";
 import ItemDescriptions from "./components/ItemDescriptions/ItemDescriptions.tsx";
@@ -35,7 +35,7 @@ const Item = () => {
         <>
             <MetaData pageTitle={`${data.name} | PokePedia`}/>
             <Box sx={{display: "flex", alignItems: "center", justifyContent: "center", gap: 2, marginTop: 3, marginBottom: 1}}>
-                <ItemSprite sprite={data.sprite} name={data.name} size={64}/>
+                <ItemImage image={data.image} name={data.name} size={64}/>
                 <Typography variant="h1" textAlign={"center"}>{data.name}</Typography>
             </Box>
             {data.holdable && (

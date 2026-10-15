@@ -21,13 +21,10 @@ const ItemDetails: FC<IItemDetailsProps> = ({item}) => {
             <Typography variant="h2" sx={{marginBottom: 2}} id={"Details"}>Details</Typography>
             <Paper sx={{padding: 2}}>
                 <Stack spacing={2}>
-                    <Box sx={{display: "grid", gap: 2, gridTemplateColumns: {xs: "1fr 1fr", md: "repeat(4, 1fr)"}}}>
+                    <Box sx={{display: "grid", gap: 2, gridTemplateColumns: {xs: "1fr 1fr", md: "repeat(3, 1fr)"}}}>
                         <Fact label="Category" value={titleCase(item.category)}/>
                         <Fact label="Introduced" value={item.gen ? `Generation ${item.gen}` : "Unknown"}/>
                         <Fact label="Buy price" value={item.cost > 0 ? `₽${item.cost.toLocaleString()}` : "Not sold"}/>
-                        <Fact label="Fling" value={item.flingPower
-                            ? `${item.flingPower} power${item.flingEffect ? `, ${item.flingEffect}` : ""}`
-                            : "Cannot be flung"}/>
                     </Box>
                     {item.holdable && item.legalFormats.length > 0 && (
                         <Box>
@@ -40,6 +37,14 @@ const ItemDetails: FC<IItemDetailsProps> = ({item}) => {
                                 ))}
                             </Box>
                         </Box>
+                    )}
+                    {/* Fling only matters to a few niche strategies, so it is a footnote
+                        rather than one of the headline facts, and absent when the item
+                        can't be flung. */}
+                    {item.flingPower != null && (
+                        <Typography variant="caption" color="text.secondary">
+                            Fling: {item.flingPower} power{item.flingEffect ? `, ${item.flingEffect}` : ""}
+                        </Typography>
                     )}
                 </Stack>
             </Paper>

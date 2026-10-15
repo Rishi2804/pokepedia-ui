@@ -3,7 +3,7 @@ import {HoldableItem} from "../../../global/types.ts";
 interface WireHoldableItem {
     showdownId: string;
     name: string;
-    sprite: string;
+    image: string;
     shortEffect: string;
 }
 
@@ -11,7 +11,7 @@ function toHoldableItem(item: WireHoldableItem): HoldableItem {
     return {
         showdownId: item.showdownId,
         name: item.name,
-        sprite: item.sprite,
+        image: item.image,
         shortEffect: item.shortEffect,
     };
 }
