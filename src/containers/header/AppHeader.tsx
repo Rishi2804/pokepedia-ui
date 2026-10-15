@@ -18,6 +18,7 @@ const AppHeader: React.FC = () => {
         'Pokedex': '/pokedex',
         'Moves': '/attackdex',
         'Abilities': '/ability',
+        'Items': '/item',
         'Types': '/types',
         'Team Builder': '/team-builder',
         'Battle': '/battle',
