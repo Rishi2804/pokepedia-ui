@@ -4,6 +4,9 @@ import type {NatureName} from "./data/natures.ts";
 interface IDNamePair {
     id: number;
     name: string;
+    // Showdown's id for an ability picked from the API's candidates; absent on
+    // teams saved before the API sent it.
+    showdownId?: string | null;
 }
 
 export interface PokemonSnapshot {
@@ -272,6 +275,9 @@ export interface TypeCoverage {
 export interface TeamMove {
     id: number;
     name: string;
+    // Showdown's id ("uturn"), kept so the battle server never has to guess it
+    // from the name; absent on teams saved before the API sent it.
+    showdownId?: string;
     type: PokemonType;
     moveClass: MoveClass;
 }

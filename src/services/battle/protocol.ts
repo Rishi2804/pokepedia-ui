@@ -26,10 +26,14 @@ export type RoomPhase = 'waiting' | 'validating' | 'battle' | 'ended';
 export interface BattleTeamMember {
     pokemonId: number;
     slug: string;
+    /** Showdown's species id, from the API - the server looks the species up by it. */
+    showdownId: string;
     nickname: string | null;
     shiny: boolean;
     gender: 'male' | 'female' | 'genderless';
+    /** Showdown id of the ability when known, else its name. */
     ability: string | null;
+    /** Showdown ids of the moves when known, else their names. */
     moves: string[];
     level: number;
     nature: NatureName;

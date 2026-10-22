@@ -1,12 +1,14 @@
 import {Alert, Box, Button, TextField, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {FC, useCallback, useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {useQueryClient} from "@tanstack/react-query";
 import MetaData from "../../components/MetaData/MetaData.tsx";
 import {versionGroupLabel} from "../../global/labels.ts";
 import {BATTLE_WS_URL, ROOM_CODE_LENGTH} from "../../services/battle/constants.ts";
 import {describeBattle} from "../../services/battle/describeBattle.ts";
 import type {ClientMessage, ServerMessage} from "../../services/battle/protocol.ts";
 import {toBattleTeam} from "../../services/battle/toBattleTeam.ts";
+import {teamCandidatesQuery} from "../../services/api/hooks/useTeamCandidatesData.ts";
 import {useBattleRoom} from "../../services/battle/useBattleRoom.ts";
 import {useBattleSocket} from "../../services/battle/useBattleSocket.ts";
 import {saveBattleSession, loadBattleSession, clearBattleSession} from "../../services/battle/session.ts";
@@ -24,6 +26,7 @@ interface FlowError {
 
 const BattleHome: FC = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [mode, setMode] = useState<Mode>('create');
     const [name, setName] = useState(() => localStorage.getItem(PLAYER_NAME_KEY) ?? '');
     const [joinCode, setJoinCode] = useState('');
@@ -83,13 +86,21 @@ const BattleHome: FC = () => {
     const canSubmit = !!selection && selection.pokemon.length > 0 && name.trim().length > 0 &&
         (mode === 'create' || (!!room?.joinable && selection.versionGroup === room.versionGroup));
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!selection) return;
         const trimmedName = name.trim();
         localStorage.setItem(PLAYER_NAME_KEY, trimmedName);
 
         const {versionGroup} = selection;
-        const team = toBattleTeam(selection.pokemon);
+        // The national list carries every Pokemon's Showdown id; usually a cache hit.
+        let team;
+        try {
+            const groups = await queryClient.fetchQuery(teamCandidatesQuery('national'));
+            team = toBattleTeam(selection.pokemon, groups.flatMap(group => group.pokemon));
+        } catch {
+            setError({message: "Couldn't load Pokémon data to build your team. Check the connection and try again."});
+            return;
+        }
 
         pendingMessageRef.current = mode === 'create'
             ? {t: 'create', versionGroup, name: trimmedName, team}
