@@ -16,6 +16,7 @@ import ArrowBack from '@mui/icons-material/ArrowBack';
 import DeleteTeamButton from "./components/DeleteTeamButton.tsx";
 import ViewTeamButton from "./components/ViewTeamButton.tsx";
 import SetEditor from "./components/SetEditor/SetEditor.tsx";
+import TeamValidationPanel from "./components/TeamValidationPanel.tsx";
 import ImportExport from "./components/SetEditor/ImportExport.tsx";
 import {getGenRules} from "../genRules.ts";
 import {useQueryClient} from "@tanstack/react-query";
@@ -147,6 +148,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
                 />
             </Collapse>
             <TeamView isCreateFlow={isCreateFlow} editMode={editMode} setEditMode={setEditMode} selectedSlot={selectedSlot} setSelectedSlot={setSelectedSlot}/>
+            <TeamValidationPanel members={currentTeam.pokemon} versionGroup={currentTeam.versionGroup} candidates={allCandidates}/>
             {
                 selectedMember ? (
                     <SetEditor
