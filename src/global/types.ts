@@ -22,6 +22,7 @@ export interface PokedexDetails {
 
 interface PokemonAbility {
     id: number;
+    slug: string;
     name: string;
     isHidden: boolean;
     genRemoved: number | null;
@@ -57,6 +58,7 @@ interface Evolution {
 // cooldown in place of pp, leaving the other three absent.
 export interface PokemonMoveSnapshot {
     id: number;
+    slug: string;
     name: string;
     type: PokemonType;
     moveClass: MoveClass;
@@ -123,6 +125,7 @@ export interface DexEntry {
 
 export interface MoveSnapshot {
     id: number;
+    slug: string;
     name: string;
     type: PokemonType;
     moveClass: MoveClass;
@@ -157,6 +160,7 @@ export interface MoveDetails {
 
 export interface AbilitySnapshot {
     id: number;
+    slug: string;
     name: string;
     gen: number;
 }
@@ -171,6 +175,7 @@ export interface SearchHit {
     type: SearchEntityType;
     id: number;
     name: string;
+    slug: string;
     gen: number;
     meta?: Record<string, unknown>;
 }

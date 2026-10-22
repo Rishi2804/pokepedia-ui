@@ -5,6 +5,7 @@ import {groupByGen} from "./shared.ts";
 
 interface WireMoveSnap {
     id: number;
+    slug: string;
     name: string;
     type: string;
     moveClass: string;

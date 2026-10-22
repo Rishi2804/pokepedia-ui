@@ -2,11 +2,11 @@ import {FC} from "react";
 import {Stack, Typography} from "@mui/material";
 import {AbilityText, InfoSection} from "../styles.tsx";
 import {useNavigate} from "react-router-dom";
-import {navName} from "../../../../../global/utils.ts";
 
 interface IAbilitiesProps {
     abilities: {
         id: number;
+        slug: string;
         name: string;
         isHidden: boolean;
         genRemoved: number | null;
@@ -16,8 +16,8 @@ interface IAbilitiesProps {
 const Abilities: FC<IAbilitiesProps> = ({abilities}) => {
     const navigate = useNavigate()
 
-    const handleNavigate = (abilityName: string) => {
-        navigate(`/ability/${navName(abilityName)}`)
+    const handleNavigate = (abilitySlug: string) => {
+        navigate(`/ability/${abilitySlug}`)
     }
 
     return (
@@ -28,7 +28,7 @@ const Abilities: FC<IAbilitiesProps> = ({abilities}) => {
                     abilities.map((ability, index) => {
                         return (
                             <Stack direction="row" spacing={1} sx={{alignItems: "center"}} key={index}>
-                                <AbilityText onClick={() => handleNavigate(ability.name)}>{ability.name}</AbilityText>
+                                <AbilityText onClick={() => handleNavigate(ability.slug)}>{ability.name}</AbilityText>
                                 {ability.genRemoved && <Typography variant="caption">(Gen {ability.genRemoved} and prior)</Typography>}
                                 {ability.isHidden && <Typography variant="caption">(Hidden Ability)</Typography>}
                             </Stack>

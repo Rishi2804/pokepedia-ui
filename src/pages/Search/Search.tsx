@@ -40,6 +40,7 @@ function toMoveSnapshot(hit: SearchHit): MoveSnapshot | null {
     if (!hit.meta) return null;
     return {
         id: hit.id,
+        slug: hit.slug,
         name: hit.name,
         type: asEnum(PokemonType, hit.meta.move_type, "meta.move_type"),
         moveClass: asEnum(MoveClass, hit.meta.move_class, "meta.move_class"),
