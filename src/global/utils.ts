@@ -11,6 +11,13 @@ export function formatText(name: string): string {
         .join(' ');
 }
 
+// Showdown's own toID (sim/dex-data.ts): lowercase, strip everything that
+// isn't a-z0-9. "Choice Scarf" and "choice-scarf" are both "choicescarf";
+// "Charizard-Mega-X" is "charizardmegax".
+export function toShowdownId(text: string): string {
+    return text.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
 // "held-items" -> "Held Items": the display form of an API slug that has no
 // display name of its own (item categories and pockets).
 export function titleCase(slug: string): string {

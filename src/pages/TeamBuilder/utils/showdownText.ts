@@ -5,7 +5,8 @@ import {NATURES, NatureName} from "../../../global/data/natures.ts";
 import {GenRules} from "../genRules.ts";
 import {createTeamMember} from "../createTeamMember.ts";
 import {toStoredMove} from "./teamMove.ts";
-import {resolveSlugFromShowdownName, showdownNameFromSlug, toShowdownId} from "../../../global/data/showdownSpecies.ts";
+import {resolveSlugFromShowdownName, showdownNameFor} from "../../../global/data/showdownSpecies.ts";
+import {toShowdownId} from "../../../global/utils.ts";
 import {
     dvToShowdownIv, HIDDEN_POWER_MOVE_ID, hiddenPowerTypeFor,
     ivsForHiddenPower, showdownEvToStatExp, showdownIvToDv, statExpToShowdownEv,
@@ -264,12 +265,10 @@ export function importSet(block: string, candidate: TeamCandidate, versionGroup:
     return {member, errors};
 }
 
-export function exportSet(member: PokemonTeamMember, rules: GenRules, items: HoldableItem[]): string {
+export function exportSet(member: PokemonTeamMember, rules: GenRules, items: HoldableItem[], candidates: TeamCandidateSummary[]): string {
     let out = '';
 
-    // Falls back to our own display name for teams saved before `slug` was
-    // added to PokemonTeamMember — no migration exists for those.
-    const speciesName = member.slug ? showdownNameFromSlug(member.slug) : member.name;
+    const speciesName = showdownNameFor(member, candidates);
     if (member.nickname && member.nickname !== member.name) {
         out += `${member.nickname} (${speciesName})`;
     } else {
@@ -330,6 +329,6 @@ export function exportSet(member: PokemonTeamMember, rules: GenRules, items: Hol
     return out;
 }
 
-export function exportTeam(members: PokemonTeamMember[], rules: GenRules, items: HoldableItem[]): string {
-    return members.map(member => exportSet(member, rules, items)).join('\n');
+export function exportTeam(members: PokemonTeamMember[], rules: GenRules, items: HoldableItem[], candidates: TeamCandidateSummary[]): string {
+    return members.map(member => exportSet(member, rules, items, candidates)).join('\n');
 }

@@ -281,6 +281,8 @@ export interface TeamMove {
 // pages/TeamBuilder/utils/teamMove.ts. power/accuracy/pp are null where the game
 // has none (status moves, "never misses"); cooldown replaces pp in Legends: Z-A.
 export interface CandidateMove extends TeamMove {
+    slug: string;
+    showdownId: string;
     power: number | null;
     accuracy: number | null;
     pp: number | null;
@@ -293,20 +295,35 @@ export interface CandidateMove extends TeamMove {
 export type StatKey = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
 export type StatSpread = Record<StatKey, number>;
 
+// A forme only a battle reaches (Mega, Primal, Crowned, Gmax, ...): a team
+// submits baseId's species instead, holding requiredItem. Either can be null:
+// Ogerpon's masks need an item and have no base, a Gmax forme has a base and
+// no item.
+export interface BattleOnly {
+    baseId: number | null;
+    requiredItem: {showdownId: string; name: string} | null;
+    gigantamax: boolean;
+}
+
 export interface TeamCandidateSummary {
     id: number;
     name: string;
     slug: string;
+    showdownId: string;
+    showdownName: string;
     type1: PokemonType;
     type2: PokemonType | null;
     gen: number;
     genderRate: number;
+    battleOnly: BattleOnly | null;
 }
 
 export interface TeamCandidate extends TeamCandidateSummary {
     abilities: {
         id: number;
+        slug: string;
         name: string;
+        showdownId: string | null;
     }[];
     moves: CandidateMove[];
     baseStats: StatSpread;

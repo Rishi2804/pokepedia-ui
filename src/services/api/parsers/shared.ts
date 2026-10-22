@@ -52,6 +52,8 @@ export interface WireTeamMove {
 }
 
 export interface WireCandidateMove extends WireTeamMove {
+    slug: string;
+    showdownId: string;
     power: number | null;
     accuracy: number | null;
     pp: number | null;
@@ -59,14 +61,23 @@ export interface WireCandidateMove extends WireTeamMove {
     description?: string;
 }
 
+export interface WireBattleOnly {
+    baseId: number | null;
+    requiredItem: { showdownId: string; name: string } | null;
+    gigantamax: boolean;
+}
+
 export interface WireTeamCandidateSummary {
     id: number;
     name: string;
     slug: string;
+    showdownId: string;
+    showdownName: string;
     gen: number;
     type1: string;
     type2: string | null;
     genderRate: number;
+    battleOnly: WireBattleOnly | null;
 }
 
 export interface WireStats {
@@ -81,7 +92,7 @@ export interface WireStats {
 
 export interface WireTeamCandidate extends WireTeamCandidateSummary {
     stats: WireStats;
-    abilities: { id: number; name: string }[];
+    abilities: { id: number; slug: string; name: string; showdownId: string | null }[];
     moves: WireCandidateMove[];
 }
 
@@ -97,6 +108,8 @@ export function toTeamMove(m: WireTeamMove): TeamMove {
 export function toCandidateMove(m: WireCandidateMove): CandidateMove {
     return {
         ...toTeamMove(m),
+        slug: m.slug,
+        showdownId: m.showdownId,
         power: m.power,
         accuracy: m.accuracy,
         pp: m.pp,
@@ -126,8 +139,18 @@ export function toTeamCandidateSummary(c: WireTeamCandidateSummary): TeamCandida
         id: c.id,
         name: c.name,
         slug: c.slug,
+        showdownId: c.showdownId,
+        showdownName: c.showdownName,
         gen: c.gen,
         genderRate: c.genderRate,
+        battleOnly: c.battleOnly && {
+            baseId: c.battleOnly.baseId,
+            requiredItem: c.battleOnly.requiredItem && {
+                showdownId: c.battleOnly.requiredItem.showdownId,
+                name: c.battleOnly.requiredItem.name,
+            },
+            gigantamax: c.battleOnly.gigantamax,
+        },
         type1: asEnum(PokemonType, c.type1, 'type1'),
         type2: asNullableEnum(PokemonType, c.type2, 'type2'),
     };

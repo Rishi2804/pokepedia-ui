@@ -23,8 +23,6 @@ import {exportTeam} from "../utils/showdownText.ts";
 import {importTeamText} from "../utils/importTeam.ts";
 import {battleFormatKeyFor} from "../utils/battleFormat.ts";
 import {useHoldableItems} from "../../../services/api/hooks/useHoldableItems.ts";
-import {toShowdownId} from "../../../global/data/showdownSpecies.ts";
-import {BATTLE_ONLY_FORMES} from "../../../global/data/battleOnlyFormes.ts";
 
 interface TeamSelectionProps {
     isCreateFlow?: boolean;
@@ -86,8 +84,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
     const handleAdd = (mon: TeamCandidateSummary) => {
         if (currentTeam.pokemon.length === 6) return
         const newIndex = currentTeam.pokemon.length;
-        const entry = BATTLE_ONLY_FORMES[toShowdownId(mon.slug)];
-        addPokemon(mon, entry?.requiredItem?.slug, entry?.gigantamax);
+        addPokemon(mon, mon.battleOnly?.requiredItem?.showdownId, mon.battleOnly?.gigantamax);
         setSelectedSlot(newIndex);
     }
 
@@ -144,7 +141,7 @@ const TeamSelection: FC<TeamSelectionProps> = ({isCreateFlow, isEditMode}) => {
             <Collapse in={showTeamImportExport}>
                 <ImportExport
                     label="Team"
-                    exportText={exportTeam(currentTeam.pokemon, rules, items)}
+                    exportText={exportTeam(currentTeam.pokemon, rules, items, allCandidates)}
                     onImport={handleImportTeam}
                     disabled={!editMode}
                 />
