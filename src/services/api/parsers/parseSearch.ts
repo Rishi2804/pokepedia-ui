@@ -5,6 +5,7 @@ interface WireSearchHit {
     type: string;
     id: number;
     name: string;
+    slug: string;
     gen: number;
     meta?: Record<string, unknown>;
 }
@@ -36,6 +37,7 @@ function parseSearchHit(h: WireSearchHit): SearchHit {
         type: asEntityType(h.type, 'hit.type'),
         id: h.id,
         name: h.name,
+        slug: h.slug,
         gen: h.gen,
         meta: h.meta,
     };

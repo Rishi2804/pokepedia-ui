@@ -1,106 +1,30 @@
-import {TeamCandidateSummary} from "../types.ts";
-import {BATTLE_ONLY_FORMES} from "./battleOnlyFormes.ts";
+import {PokemonTeamMember, TeamCandidateSummary} from "../types.ts";
+import {toShowdownId} from "../utils.ts";
 
-// Matches Showdown's own toID (sim/dex-data.ts): lowercase, strip everything
-// that isn't a-z0-9. Our DB stores PokeAPI-style slugs (e.g. "raichu-alola"),
-// which normalize to the same key Showdown uses for that species
-// ("raichualola") for 1198 of our 1244 Pokemon — see SLUG_TO_SHOWDOWN_ID for
-// the rest.
-export function toShowdownId(slug: string): string {
-    return slug.toLowerCase().replace(/[^a-z0-9]/g, '');
+// Everything here runs on the Showdown data the API sends with each candidate
+// (showdownId, showdownName, battleOnly), which the scraper joins from
+// Showdown's own dex. It used to be a 46-entry override table and a
+// 163-entry battle-only table kept by hand in this file and again in the
+// battle server.
+
+// The name a real Showdown client expects for this team member, for export.
+// A member from before candidates carried it (or whose candidate isn't loaded)
+// falls back to title-casing its slug's segments, which is right for all but
+// the few formes Showdown names differently.
+export function showdownNameFor(member: PokemonTeamMember, candidates: TeamCandidateSummary[]): string {
+    const candidate = candidates.find(c => c.id === member.id);
+    if (candidate) return candidate.showdownName;
+    if (!member.slug) return member.name;
+    return member.slug.split('-').map(seg => seg.charAt(0).toUpperCase() + seg.slice(1)).join('-');
 }
 
-// Forward direction of resolveSlugFromShowdownName below - the override's id
-// when our slug doesn't normalize onto Showdown's own directly.
-export function showdownIdFromSlug(slug: string): string {
-    return SLUG_TO_SHOWDOWN_ID[slug]?.id ?? toShowdownId(slug);
-}
-
-// The 46 slugs that don't resolve by normalizing alone, hand-written from
-// Showdown's real `forme`/`baseSpecies` fields (../pokemon-showdown/data/pokedex.ts),
-// cross-referenced by dex number — NOT derived by a "guess the base form"
-// heuristic. An earlier heuristic attempt (map every straggler to its bare
-// base species) reported "46 resolved, 0 ambiguous" and was wrong for 17 of
-// them: PokeAPI names some non-default forms as if they were the default
-// (e.g. "meowstic-female" isn't "meowstic", it's Showdown's "Meowstic-F";
-// "necrozma-dusk" is "Necrozma-Dusk-Mane", not "Necrozma-Dusk"). Verified:
-// every one of our 1244 slugs (direct match or override) resolves to a real
-// key in Showdown's pokedex with a matching dex number, and no two of our
-// slugs collide on the same Showdown key.
-const SLUG_TO_SHOWDOWN_ID: Record<string, { id: string; name: string }> = {
-    "deoxys-normal": {id: "deoxys", name: "Deoxys"},
-    "wormadam-plant": {id: "wormadam", name: "Wormadam"},
-    "giratina-altered": {id: "giratina", name: "Giratina"},
-    "shaymin-land": {id: "shaymin", name: "Shaymin"},
-    "basculin-red-striped": {id: "basculin", name: "Basculin"},
-    "darmanitan-standard": {id: "darmanitan", name: "Darmanitan"},
-    "darmanitan-galar-standard": {id: "darmanitangalar", name: "Darmanitan-Galar"},
-    "tornadus-incarnate": {id: "tornadus", name: "Tornadus"},
-    "thundurus-incarnate": {id: "thundurus", name: "Thundurus"},
-    "landorus-incarnate": {id: "landorus", name: "Landorus"},
-    "keldeo-ordinary": {id: "keldeo", name: "Keldeo"},
-    "meloetta-aria": {id: "meloetta", name: "Meloetta"},
-    "meowstic-male": {id: "meowstic", name: "Meowstic"},
-    "meowstic-female": {id: "meowsticf", name: "Meowstic-F"},
-    "aegislash-shield": {id: "aegislash", name: "Aegislash"},
-    "pumpkaboo-average": {id: "pumpkaboo", name: "Pumpkaboo"},
-    "gourgeist-average": {id: "gourgeist", name: "Gourgeist"},
-    "zygarde-50": {id: "zygarde", name: "Zygarde"},
-    "oricorio-baile": {id: "oricorio", name: "Oricorio"},
-    "lycanroc-midday": {id: "lycanroc", name: "Lycanroc"},
-    "wishiwashi-solo": {id: "wishiwashi", name: "Wishiwashi"},
-    "mimikyu-disguised": {id: "mimikyu", name: "Mimikyu"},
-    "toxtricity-amped": {id: "toxtricity", name: "Toxtricity"},
-    "eiscue-ice": {id: "eiscue", name: "Eiscue"},
-    "indeedee-male": {id: "indeedee", name: "Indeedee"},
-    "indeedee-female": {id: "indeedeef", name: "Indeedee-F"},
-    "morpeko-full-belly": {id: "morpeko", name: "Morpeko"},
-    "urshifu-single-strike": {id: "urshifu", name: "Urshifu"},
-    "urshifu-single-strike-gmax": {id: "urshifugmax", name: "Urshifu-Gmax"},
-    "basculegion-male": {id: "basculegion", name: "Basculegion"},
-    "basculegion-female": {id: "basculegionf", name: "Basculegion-F"},
-    "enamorus-incarnate": {id: "enamorus", name: "Enamorus"},
-    "minior-red": {id: "minior", name: "Minior"},
-    "necrozma-dusk": {id: "necrozmaduskmane", name: "Necrozma-Dusk-Mane"},
-    "necrozma-dawn": {id: "necrozmadawnwings", name: "Necrozma-Dawn-Wings"},
-    "oinkologne-female": {id: "oinkolognef", name: "Oinkologne-F"},
-    "maushold-family-of-three": {id: "mausholdfour", name: "Maushold-Four"},
-    "tauros-paldea-combat-breed": {id: "taurospaldeacombat", name: "Tauros-Paldea-Combat"},
-    "tauros-paldea-blaze-breed": {id: "taurospaldeablaze", name: "Tauros-Paldea-Blaze"},
-    "tauros-paldea-aqua-breed": {id: "taurospaldeaaqua", name: "Tauros-Paldea-Aqua"},
-    "squawkabilly-blue-plumage": {id: "squawkabillyblue", name: "Squawkabilly-Blue"},
-    "squawkabilly-yellow-plumage": {id: "squawkabillyyellow", name: "Squawkabilly-Yellow"},
-    "squawkabilly-white-plumage": {id: "squawkabillywhite", name: "Squawkabilly-White"},
-    "ogerpon-wellspring-mask": {id: "ogerponwellspring", name: "Ogerpon-Wellspring"},
-    "ogerpon-hearthflame-mask": {id: "ogerponhearthflame", name: "Ogerpon-Hearthflame"},
-    "ogerpon-cornerstone-mask": {id: "ogerponcornerstone", name: "Ogerpon-Cornerstone"},
-};
-
-// The name a real Showdown client shows/expects for this slug — used for
-// export. Title-casing each hyphen segment reproduces Showdown's canonical
-// name for the 1198 slugs that don't need an override (raichu-alola ->
-// Raichu-Alola); overridden slugs use their mapped form's real name instead,
-// since naive title-casing would be wrong or simply not a valid Showdown name
-// (indeedee-female -> "Indeedee-Female" isn't a species Showdown knows, but
-// "Indeedee-F" is).
-export function showdownNameFromSlug(slug: string): string {
-    const override = SLUG_TO_SHOWDOWN_ID[slug];
-    if (override) return override.name;
-    return slug.split('-').map(seg => seg.charAt(0).toUpperCase() + seg.slice(1)).join('-');
-}
-
-// For import: toID the pasted species name and match it against
-// toShowdownId(candidate.slug), consulting the override table for the 46
-// that don't line up directly. Where two of our slugs collapse onto the same
-// Showdown id (our "maushold" and "maushold-family-of-three" both exist, but
-// only "maushold-family-of-three" needs the override to "mausholdfour" since
-// plain "maushold" already claims the bare id), an exact toShowdownId match
-// always wins over a mapped override.
+// For import: toID the pasted species name and match it against each
+// candidate's Showdown id. Showdown ids are unique, so there is nothing to
+// disambiguate (our "maushold" and "maushold-family-of-three" are "maushold"
+// and "mausholdfour").
 export function resolveSlugFromShowdownName(name: string, candidates: TeamCandidateSummary[]): TeamCandidateSummary | undefined {
     const target = toShowdownId(name);
-    const exact = candidates.find(c => toShowdownId(c.slug) === target);
-    if (exact) return exact;
-    return candidates.find(c => SLUG_TO_SHOWDOWN_ID[c.slug]?.id === target);
+    return candidates.find(c => c.showdownId === target);
 }
 
 /**
@@ -109,22 +33,34 @@ export function resolveSlugFromShowdownName(name: string, candidates: TeamCandid
  * never legally be a team's species; only its base species + the right item
  * can. Resolves a candidate's own slug (add-from-picker) or a raw pasted
  * Showdown name (import) to {the base candidate to actually submit, the item
- * that reaching this forme requires - if any, whether it's a Gmax forme}. Returns undefined for any
- * ordinary, always-selectable forme (Rotom-Wash, Raichu-Alola, ...), which
- * were never added to BATTLE_ONLY_FORMES in the first place.
+ * that reaching this forme requires - if any, whether it's a Gmax forme}.
+ * Returns undefined for any ordinary, always-selectable forme (Rotom-Wash,
+ * Raichu-Alola, ...), and for a forme that isn't among the candidates, which
+ * means the game it was pasted into doesn't have it.
  *
  * Two species (Necrozma-Ultra, Zygarde-Complete/-Mega) have more than one
  * legal base forme, disambiguated in a real battle by which move is chosen -
- * this always picks BATTLE_ONLY_FORMES' first entry as a reasonable default;
- * picking the other variant means picking that candidate directly instead.
+ * the API reports the first as the default; picking the other variant means
+ * picking that candidate directly instead.
  */
 export function resolveBattleOnlyBase(
     nameOrSlug: string,
     candidates: TeamCandidateSummary[]
 ): { candidate: TeamCandidateSummary; requiredItem?: { slug: string; name: string }; gigantamax?: true } | undefined {
-    const entry = BATTLE_ONLY_FORMES[toShowdownId(nameOrSlug)];
-    if (!entry) return undefined;
-    const base = resolveSlugFromShowdownName(entry.baseNames[0], candidates);
+    // A slug (add-from-picker, saved members) is matched as-is first: not every
+    // slug normalises onto its Showdown id ("meowstic-female-mega" is
+    // "meowsticfmega"). A pasted name only has its Showdown id to go on.
+    const forme = candidates.find(c => c.slug === nameOrSlug)
+        ?? candidates.find(c => c.showdownId === toShowdownId(nameOrSlug));
+    const battleOnly = forme?.battleOnly;
+    if (!battleOnly || battleOnly.baseId === null) return undefined;
+    const base = candidates.find(c => c.id === battleOnly.baseId);
     if (!base) return undefined;
-    return {candidate: base, requiredItem: entry.requiredItem, gigantamax: entry.gigantamax};
+    return {
+        candidate: base,
+        requiredItem: battleOnly.requiredItem
+            ? {slug: battleOnly.requiredItem.showdownId, name: battleOnly.requiredItem.name}
+            : undefined,
+        gigantamax: battleOnly.gigantamax ? true : undefined,
+    };
 }

@@ -6,7 +6,6 @@ import QuickScroll from "../../../components/QuickScroll/QuickScroll.tsx";
 import Filters from "../../../components/Filters/Filters.tsx";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {navName} from "../../../global/utils.ts";
 import AbilityHomeSkeleton from "./AbilityHomeSkeleton.tsx";
 
 const AbilityHome = () => {
@@ -14,8 +13,8 @@ const AbilityHome = () => {
     const { data, isPending, error } = useAbilitiesDetails();
     const navigate = useNavigate();
 
-    const handleNavigate = (ability: string) => {
-        navigate(`/ability/${navName(ability)}`)
+    const handleNavigate = (abilitySlug: string) => {
+        navigate(`/ability/${abilitySlug}`)
     }
 
     if (isPending) {
@@ -50,7 +49,7 @@ const AbilityHome = () => {
                                     return (
                                         <Grid size={3}>
                                             <AbilityContainer>
-                                                <AbilityText onClick={() => handleNavigate(ability.name)} key={index}>{ability.name}</AbilityText>
+                                                <AbilityText onClick={() => handleNavigate(ability.slug)} key={index}>{ability.name}</AbilityText>
                                             </AbilityContainer>
                                         </Grid>
                                     )

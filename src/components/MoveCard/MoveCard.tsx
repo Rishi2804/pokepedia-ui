@@ -6,7 +6,6 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import TypeIcon from "../TypeIcon/TypeIcon.tsx";
 import MoveClassIcon from "../MoveClassIcon/MoveClassIcon.tsx";
 import {useNavigate} from "react-router-dom";
-import {navName} from "../../global/utils.ts";
 
 interface IMoveCardProps {
     move: PokemonMoveSnapshot | MoveSnapshot
@@ -20,7 +19,7 @@ const MoveCard: FC<IMoveCardProps> = ({ move }) => {
     const naviagate = useNavigate()
 
     const handleNavigate = () => {
-        naviagate(`/move/${navName(move.name)}`)
+        naviagate(`/move/${move.slug}`)
     }
 
     const legendsSecondLevel = isPokemonMoveSnapshot(move) ? move.secondLevel : null;

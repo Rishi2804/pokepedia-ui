@@ -4,6 +4,9 @@ import type {NatureName} from "./data/natures.ts";
 interface IDNamePair {
     id: number;
     name: string;
+    // Showdown's id for an ability picked from the API's candidates; absent on
+    // teams saved before the API sent it.
+    showdownId?: string | null;
 }
 
 export interface PokemonSnapshot {
@@ -22,6 +25,7 @@ export interface PokedexDetails {
 
 interface PokemonAbility {
     id: number;
+    slug: string;
     name: string;
     isHidden: boolean;
     genRemoved: number | null;
@@ -57,6 +61,7 @@ interface Evolution {
 // cooldown in place of pp, leaving the other three absent.
 export interface PokemonMoveSnapshot {
     id: number;
+    slug: string;
     name: string;
     type: PokemonType;
     moveClass: MoveClass;
@@ -123,6 +128,7 @@ export interface DexEntry {
 
 export interface MoveSnapshot {
     id: number;
+    slug: string;
     name: string;
     type: PokemonType;
     moveClass: MoveClass;
@@ -157,6 +163,7 @@ export interface MoveDetails {
 
 export interface AbilitySnapshot {
     id: number;
+    slug: string;
     name: string;
     gen: number;
 }
@@ -171,6 +178,7 @@ export interface SearchHit {
     type: SearchEntityType;
     id: number;
     name: string;
+    slug: string;
     gen: number;
     meta?: Record<string, unknown>;
 }
@@ -267,6 +275,9 @@ export interface TypeCoverage {
 export interface TeamMove {
     id: number;
     name: string;
+    // Showdown's id ("uturn"), kept so the battle server never has to guess it
+    // from the name; absent on teams saved before the API sent it.
+    showdownId?: string;
     type: PokemonType;
     moveClass: MoveClass;
 }
@@ -276,6 +287,8 @@ export interface TeamMove {
 // pages/TeamBuilder/utils/teamMove.ts. power/accuracy/pp are null where the game
 // has none (status moves, "never misses"); cooldown replaces pp in Legends: Z-A.
 export interface CandidateMove extends TeamMove {
+    slug: string;
+    showdownId: string;
     power: number | null;
     accuracy: number | null;
     pp: number | null;
@@ -288,20 +301,35 @@ export interface CandidateMove extends TeamMove {
 export type StatKey = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
 export type StatSpread = Record<StatKey, number>;
 
+// A forme only a battle reaches (Mega, Primal, Crowned, Gmax, ...): a team
+// submits baseId's species instead, holding requiredItem. Either can be null:
+// Ogerpon's masks need an item and have no base, a Gmax forme has a base and
+// no item.
+export interface BattleOnly {
+    baseId: number | null;
+    requiredItem: {showdownId: string; name: string} | null;
+    gigantamax: boolean;
+}
+
 export interface TeamCandidateSummary {
     id: number;
     name: string;
     slug: string;
+    showdownId: string;
+    showdownName: string;
     type1: PokemonType;
     type2: PokemonType | null;
     gen: number;
     genderRate: number;
+    battleOnly: BattleOnly | null;
 }
 
 export interface TeamCandidate extends TeamCandidateSummary {
     abilities: {
         id: number;
+        slug: string;
         name: string;
+        showdownId: string | null;
     }[];
     moves: CandidateMove[];
     baseStats: StatSpread;

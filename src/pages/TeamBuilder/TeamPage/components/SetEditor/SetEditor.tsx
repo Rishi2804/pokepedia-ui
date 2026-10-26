@@ -110,7 +110,7 @@ const SetEditor: FC<SetEditorProps> = ({member, slot, editMode, versionGroup, ca
             </Box>
 
             <Collapse in={showImportExport}>
-                <ImportExport label="Set" exportText={exportSet(member, rules, items)} onImport={handleImportSet} disabled={!editMode}/>
+                <ImportExport label="Set" exportText={exportSet(member, rules, items, candidates)} onImport={handleImportSet} disabled={!editMode}/>
             </Collapse>
 
             <EditorHeader type1={member.teraType ?? member.type1} type2={member.teraType ?? member.type2}>

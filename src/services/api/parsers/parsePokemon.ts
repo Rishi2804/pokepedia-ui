@@ -7,6 +7,7 @@ import {asEnum, asNullableEnum} from "../parse.ts";
 // game. See PokemonMoveSnapshot in global/types.ts.
 interface WireMove {
     id: number;
+    slug: string;
     name: string;
     type: string;
     moveClass: string;
@@ -28,7 +29,7 @@ export interface WirePokemonDetails {
     gen: number;
     type1: string;
     type2: string | null;
-    abilities: { id: number; name: string; isHidden: boolean; genRemoved: number | null }[];
+    abilities: { id: number; slug: string; name: string; isHidden: boolean; genRemoved: number | null }[];
     weight: number;
     height: number;
     genderRate: number;

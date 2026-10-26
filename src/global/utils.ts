@@ -11,8 +11,11 @@ export function formatText(name: string): string {
         .join(' ');
 }
 
-export function navName(name: string): string {
-    return name.toLowerCase().replace(/ /g, "-");
+// Showdown's own toID (sim/dex-data.ts): lowercase, strip everything that
+// isn't a-z0-9. "Choice Scarf" and "choice-scarf" are both "choicescarf";
+// "Charizard-Mega-X" is "charizardmegax".
+export function toShowdownId(text: string): string {
+    return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
 // "held-items" -> "Held Items": the display form of an API slug that has no
@@ -26,19 +29,19 @@ export function titleCase(slug: string): string {
 }
 
 // Pokemon navigate by numeric id (the backend resolves variant ids >=10000
-// to their species internally); moves and abilities navigate by slug. Items
-// go by id too: a search hit carries only the display name, and "King's Rock"
-// can't be turned back into its slug "kings-rock" (/item/:id takes either).
+// to their species internally); moves, abilities and items by the slug the
+// API sends with every hit, since a display name can't be turned back into
+// one ("King's Shield" is "kings-shield").
 export function searchHitPath(hit: SearchHit): string {
     switch (hit.type) {
         case "pokemon":
             return `/pokemon/${hit.id}`;
         case "move":
-            return `/move/${navName(hit.name)}`;
+            return `/move/${hit.slug}`;
         case "ability":
-            return `/ability/${navName(hit.name)}`;
+            return `/ability/${hit.slug}`;
         case "item":
-            return `/item/${hit.id}`;
+            return `/item/${hit.slug}`;
     }
 }
 
